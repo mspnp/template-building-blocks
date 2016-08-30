@@ -1,0 +1,26 @@
+﻿{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentContext": { "type": "object" },
+    "source": { "type": "object" },
+    "context": { "type": "object" }
+  },
+  "variables": {
+    "linuxEnableIptablesRoutesScript": "[uri(deployment().properties.templateLink.uri, '../../resources/Microsoft.Compute/virtualMachines/extensions/linux/enable-iptables-routes/enable-iptables-routes.sh')]",
+    "instance": {
+      "settings": {
+        "fileUris": [ "[variables('linuxEnableIptablesRoutesScript')]" ],
+        "commandToExecute": "bash enable-iptables-routes.sh"
+      },
+      "protectedSettings": { }
+    }
+  },
+  "resources": [ ],
+  "outputs": {
+    "settings": {
+      "type": "object",
+      "value": "[variables('instance')]"
+    }
+  }
+}

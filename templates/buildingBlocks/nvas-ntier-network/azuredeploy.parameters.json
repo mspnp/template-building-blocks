@@ -4,14 +4,14 @@
   "parameters": {
     "loadBalancerSettings": {
       "value": {
-        "name": "nva-ilb",
+        "name": "bb-nva-ilb",
         "frontendIPConfigurations": [
           {
-            "name": "lbfe1",
+            "name": "lb-fe-config1",
             "loadBalancerType": "internal",
             "internalLoadBalancerSettings": {
               "privateIPAddress": "10.0.1.250",
-              "subnetName": "app1-in-subnet"
+              "subnetName": "bb-nva-in-sn"
             }
           }
         ],
@@ -22,7 +22,7 @@
             "backendPort": 80,
             "protocol": "Tcp",
             "backendPoolName": "lb-bep1",
-            "frontendIPConfigurationName": "lbfe1"
+            "frontendIPConfigurationName": "lb-fe-config1"
           }
         ],
         "probes": [
@@ -44,7 +44,7 @@
     },
     "virtualMachinesSettings": {
       "value": {
-        "namePrefix": "ra-nva",
+        "namePrefix": "bb-nva",
         "computerNamePrefix": "cn",
         "size": "Standard_DS2",
         "osType": "linux",
@@ -55,7 +55,7 @@
         "nics": [
           {
             "isPublic": "false",
-            "subnetName": "ra-nva-in",
+            "subnetName": "bb-nva-in-sn",
             "privateIPAllocationMethod": "static",
             "startingIPAddress": "10.0.1.242",
             "isPrimary": "true",
@@ -64,7 +64,7 @@
           },
           {
             "isPublic": "false",
-            "subnetName": "ra-nva-out",
+            "subnetName": "bb-nva-out-sn",
             "privateIPAllocationMethod": "dynamic",
             "isPrimary": "false",
             "enableIPForwarding": true,
@@ -86,14 +86,25 @@
         },
         "availabilitySet": {
           "useExistingAvailabilitySet": "No",
-          "name": "ra-nva-as"
-        }
+          "name": "bb-nva-as"
+        },
+        "extensions": [
+          {
+            "name": "bb-nva-config-ext",
+            "settingsMapperUri": "https://raw.githubusercontent.com/mspnp/template-building-blocks/kirpas/bb-nva/templates/buildingBlocks/nvas-ntier-network/nvas-ntier-settings-mapper.json",
+            "publisher": "Microsoft.OSTCExtensions",
+            "type": "CustomScriptForLinux",
+            "typeHandlerVersion": "1.5",
+            "autoUpgradeMinorVersion": true,
+            "properties": { }
+          }
+        ]
       }
     },
     "virtualNetworkSettings": {
       "value": {
-        "name": "ra-nva-vnet",
-        "resourceGroup": "ra-nva-rg"
+        "name": "bb-nva-vnet",
+        "resourceGroup": "bb-nva-rg"
       }
     },
     "buildingBlockSettings": {
@@ -107,7 +118,7 @@
     "routeTableSettings": {
       "value": [
         {
-          "name": "ra-nva-gw-rt",
+          "name": "bb-nva-gw-rt",
           "subnets": [
             "GatewaySubnet"
           ],

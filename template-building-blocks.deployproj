@@ -54,6 +54,7 @@
     <None Include="templates\buildingBlocks\networkSecurityGroups\scenarios\multiple-nsgs-on-subnets-nics.parameters.json" />
     <None Include="templates\buildingBlocks\nvas-ntier-network\azuredeploy.json" />
     <None Include="templates\buildingBlocks\nvas-ntier-network\azuredeploy.parameters.json" />
+    <None Include="templates\buildingBlocks\nvas-ntier-network\nvas-ntier-settings-mapper.json" />
     <None Include="templates\buildingBlocks\nvas-ntier-network\scenarios\2-nva-gwy-vm-ipfwding-enabled.parameters.json" />
     <None Include="templates\buildingBlocks\nvas-ntier-network\scenarios\network-topology.png" />
     <None Include="templates\buildingBlocks\nvas-ntier-network\scenarios\setup-script.ps1" />
