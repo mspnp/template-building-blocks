@@ -1,0 +1,68 @@
+﻿{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "dmzSettings": {
+      "value": {
+        "endpoint": {
+          "hasPublicEndpoint": "no",
+          "internalLoadBalancerSettings": {
+            "privateIPAddress": "10.0.0.10",
+            "subnetName": "dmz-in"
+          }
+        },
+        "applianceSettings": {
+          "ports": [
+            {
+              "port": 80,
+              "protocol": "Tcp",
+              "healthProbe": "hp1"
+            }
+          ],
+          "healthProbes": [
+            {
+              "name": "hp1",
+              "port": 80,
+              "protocol": "http",
+              "requestPath": "/"
+            }
+          ],
+          "virtualMachineSettings": {
+            "count": 2,
+            "size": "Standard_DS2_v2",
+            "adminUsername": "testuser",
+            "adminPassword": "AweS0me@PW",
+            "sshPublicKey": "",
+            "osAuthenticationType": "password",
+            "imageReference": {
+              "publisher": "Canonical",
+              "offer": "UbuntuServer",
+              "sku": "14.04.5-LTS",
+              "version": "latest"
+            },
+            "extensions": [ ]
+          }
+        },
+        "securedAddressSpace": [ "10.0.1.0/24", "10.0.2.0/24" ],
+        "subnets": {
+          "useExistingSubnets": "no",
+          "inSubnet": {
+            "name": "dmz-in",
+            "addressPrefix": "10.0.0.0/27"
+          },
+          "outSubnet": {
+            "name": "dmz-out",
+            "addressPrefix": "10.0.0.32/27"
+          }
+        }
+
+      }
+    },
+    "virtualNetworkSettings": {
+      "value": {
+        "name": "bb-dev-vnet",
+        "resourceGroup": "bb-dev-rg"
+      }
+    }
+  }
+}
