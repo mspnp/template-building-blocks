@@ -1,0 +1,137 @@
+﻿{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentContext": {
+      "type": "object",
+      "defaultValue": {
+        "parentTemplateUniqueString": "bbNVAs"
+      }
+    },
+    "dmzSettings": {
+      "type": "object",
+      "metadata": {
+        "description": "Settings for DMZ"
+      }
+    }
+  },
+  "variables": {
+    "templateUniqueString": "[uniqueString(concat(string(parameters('deploymentContext')), string(parameters('dmzSettings'))))]",
+
+    "buildingBlockSettingsTemplateName": "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-nvaBBParam-', variables('templateUniqueString'))]",
+    "buildingBlockSettingsTemplate": "[uri(deployment().properties.templateLink.uri, 'buildingBlockSettings.json')]",
+    "loadBalancerSettingsTemplateName": "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-nvaLBParam-', variables('templateUniqueString'))]",
+    "loadBalancerSettingsTemplate": "[uri(deployment().properties.templateLink.uri, 'loadBalancerSettings.json')]",
+    "vmSettingsTemplateName": "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-nvaVMParam-', variables('templateUniqueString'))]",
+    "vmSettingsTemplate": "[uri(deployment().properties.templateLink.uri, 'virtualMachineSettings.json')]",
+    "routeTableSettingsTemplateName": "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-nvaRTParam-', variables('templateUniqueString'))]",
+    "routeTableSettingsTemplates": {
+      "yes": "[uri(deployment().properties.templateLink.uri, 'routeTableSettings-nop.json')]",
+      "no": "[uri(deployment().properties.templateLink.uri, 'routeTableSettings.json')]"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "name": "[variables('buildingBlockSettingsTemplateName')]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": { "uri": "[variables('buildingBlockSettingsTemplate')]" },
+        "parameters": {
+          "deploymentContext": {
+            "value": {
+              "parentTemplateUniqueString": "[concat(variables('templateUniqueString') , '-nvaBBParam')]"
+            }
+          },
+          "context": {
+            "value": {
+              "vmCount": "[parameters('dmzSettings').applianceSettings.virtualMachineSettings.count]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "name": "[variables('loadBalancerSettingsTemplateName')]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": { "uri": "[variables('loadBalancerSettingsTemplate')]" },
+        "parameters": {
+          "deploymentContext": {
+            "value": {
+              "parentTemplateUniqueString": "[concat(variables('templateUniqueString') , '-nvaLBParam')]"
+            }
+          },
+          "context": {
+            "value": {
+              "dmzSettings": "[parameters('dmzSettings')]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "name": "[variables('vmSettingsTemplateName')]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": { "uri": "[variables('vmSettingsTemplate')]" },
+        "parameters": {
+          "deploymentContext": {
+            "value": {
+              "parentTemplateUniqueString": "[concat(variables('templateUniqueString') , '-nvaVMParam')]"
+            }
+          },
+          "context": {
+            "value": {
+              "dmzSettings": "[parameters('dmzSettings')]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "name": "[variables('routeTableSettingsTemplateName')]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": { "uri": "[variables('routeTableSettingsTemplates')[tolower(parameters('dmzSettings').endpoint.hasPublicEndpoint)]]" },
+        "parameters": {
+          "deploymentContext": {
+            "value": {
+              "parentTemplateUniqueString": "[concat(variables('templateUniqueString') , '-nvaRTParam')]"
+            }
+          },
+          "context": {
+            "value": {
+              "dmzSettings": "[parameters('dmzSettings')]"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "buildingBlockSettings": {
+      "type": "object",
+      "value": "[reference(variables('buildingBlockSettingsTemplateName')).outputs.result.value]"
+    },
+    "loadBalancerSettings": {
+      "type": "object",
+      "value": "[reference(variables('loadBalancerSettingsTemplateName')).outputs.result.value]"
+    },
+    "vmSettings": {
+      "type": "object",
+      "value": "[reference(variables('vmSettingsTemplateName')).outputs.result.value]"
+    },
+    "routeTableSettings": {
+      "type": "array",
+      "value": "[reference(variables('routeTableSettingsTemplateName')).outputs.result.value]"
+    }
+  }
+}

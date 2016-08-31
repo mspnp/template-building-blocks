@@ -43,6 +43,7 @@
     <None Include="templates\buildingBlocks\dmz\azuredeploy.json" />
     <None Include="templates\buildingBlocks\dmz\azuredeploy.parameters.json" />
     <None Include="templates\buildingBlocks\dmz\mappers\buildingBlockSettings.json" />
+    <None Include="templates\buildingBlocks\dmz\mappers\dmzSettings.json" />
     <None Include="templates\buildingBlocks\dmz\mappers\loadBalancerSettings-probes.json" />
     <None Include="templates\buildingBlocks\dmz\mappers\loadBalancerSettings-rules.json" />
     <None Include="templates\buildingBlocks\dmz\mappers\loadBalancerSettings.json" />
@@ -98,11 +99,8 @@
     <None Include="templates\resources\Microsoft.Compute\virtualMachines\availabilitySet-new.json" />
     <None Include="templates\resources\Microsoft.Compute\virtualMachines\availabilitySet-neworempty.json" />
     <None Include="templates\resources\Microsoft.Compute\virtualMachines\extensions\linux\enable-default-gateway-multi-nic\enable-default-gateway.sh" />
-    <None Include="templates\resources\Microsoft.Compute\virtualMachines\extensions\linux\enable-default-gateway-multi-nic\extension-enable-default-gateway.json" />
     <None Include="templates\resources\Microsoft.Compute\virtualMachines\extensions\linux\enable-ip-forwarding\enable-ip-forwarding.sh" />
-    <None Include="templates\resources\Microsoft.Compute\virtualMachines\extensions\linux\enable-ip-forwarding\extension-enable-ip-forwarding.json" />
     <None Include="templates\resources\Microsoft.Compute\virtualMachines\extensions\linux\enable-iptables-routes\enable-iptables-routes.sh" />
-    <None Include="templates\resources\Microsoft.Compute\virtualMachines\extensions\linux\enable-iptables-routes\extension-enable-iptables-routes.json" />
     <None Include="templates\resources\Microsoft.Compute\virtualMachines\extensions\linux\jmeter\2.8\extension-jmeter-2.8.json" />
     <None Include="templates\resources\Microsoft.Compute\virtualMachines\extensions\linux\jmeter\2.8\install-jmeter-2.8.sh" />
     <None Include="templates\resources\Microsoft.Compute\virtualMachines\extensions\virtualMachine-extensions-multiple.json" />
@@ -176,9 +174,6 @@
     <None Include="templates\resources\Microsoft.Network\virtualNetworks\virtualNetwork.json" />
     <None Include="templates\resources\Microsoft.Storage\storageAccounts\storageAccount.json" />
     <None Include="templates\resources\Microsoft.Storage\storageAccounts\storageAccounts.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="templates\resources\Microsoft.Compute\virtualMachines\extensions\linux\os-patching\" />
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />
 </Project>

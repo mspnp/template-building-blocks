@@ -2,8 +2,8 @@
 bash -c "echo net.ipv4.ip_forward=1 >> /etc/sysctl.conf"
 sysctl -p /etc/sysctl.conf
 
-LB_TYPE = $1
-DEST_IP_ADDRESS = $2
+LB_TYPE=$1
+DEST_IP_ADDRESS=$2
 if [[ "$LB_TYPE" == "public" ]] 
 then
 	IP_ADDRESS=$(wget http://ipinfo.io/ip -qO -)

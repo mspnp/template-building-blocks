@@ -28,7 +28,7 @@
             }
           ],
           "virtualMachineSettings": {
-            "count": 3,
+            "count": 2,
             "size": "Standard_DS2_v2",
             "adminUsername": "testuser",
             "adminPassword": "AweS0me@PW",
@@ -63,7 +63,7 @@
     "virtualNetworkSettings": {
       "value": {
         "name": "bb-dev-vnet",
-        "resourceGroup": "rs-bb33-rg"
+        "resourceGroup": "rs-bb22-rg"
       }
     }
   }
