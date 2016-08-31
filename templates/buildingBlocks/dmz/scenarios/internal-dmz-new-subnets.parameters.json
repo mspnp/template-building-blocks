@@ -40,7 +40,23 @@
               "sku": "14.04.5-LTS",
               "version": "latest"
             },
-            "extensions": [ ]
+            "extensions": [
+              {
+                "name": "enable-iptables-routes",
+                "publisher": "Microsoft.OSTCExtensions",
+                "type": "CustomScriptForLinux",
+                "typeHandlerVersion": "1.5",
+                "autoUpgradeMinorVersion": true,
+                "settingsConfigMapperUri": "https://raw.githubusercontent.com/mspnp/template-building-blocks/master/templates/resources/Microsoft.Compute/virtualMachines/extensions/vm-extension-passthrough-settings-mapper.json",
+                "settingsConfig": {
+                  "fileUris": [
+                    "https://pnparmtest.blob.core.windows.net/roshar/templates/resources/Microsoft.Compute/virtualMachines/extensions/linux/enable-iptables-routes/enable-iptables-routes.sh"
+                  ],
+                  "commandToExecute": "bash enable-iptables-routes.sh internal 10.0.1.100"
+                },
+                "protectedSettingsConfig": { }
+              }
+            ]
           }
         },
         "securedAddressSpace": [ "10.0.1.0/24", "10.0.2.0/24" ],

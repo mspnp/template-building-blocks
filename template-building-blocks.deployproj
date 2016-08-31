@@ -67,11 +67,6 @@
     <None Include="templates\buildingBlocks\networkSecurityGroups\azuredeploy.json" />
     <None Include="templates\buildingBlocks\networkSecurityGroups\scenarios\3-nsgs-on-3-subnets.parameters.json" />
     <None Include="templates\buildingBlocks\networkSecurityGroups\scenarios\multiple-nsgs-on-subnets-nics.parameters.json" />
-    <None Include="templates\buildingBlocks\nvas-ntier-network\azuredeploy.json" />
-    <None Include="templates\buildingBlocks\nvas-ntier-network\azuredeploy.parameters.json" />
-    <None Include="templates\buildingBlocks\nvas-ntier-network\scenarios\2-nva-gwy-vm-ipfwding-enabled.parameters.json" />
-    <None Include="templates\buildingBlocks\nvas-ntier-network\scenarios\network-topology.png" />
-    <None Include="templates\buildingBlocks\nvas-ntier-network\scenarios\setup-script.ps1" />
     <None Include="templates\buildingBlocks\userDefinedRoutes\azuredeploy.json" />
     <None Include="templates\buildingBlocks\userDefinedRoutes\scenarios\multiple-routes-on-subnets.parameters.json" />
     <None Include="templates\buildingBlocks\virtualMachine-extensions\azuredeploy.json" />
