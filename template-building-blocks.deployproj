@@ -30,7 +30,6 @@
     </None>
     <Content Include="Scripts\Deploy-AzureResourceGroup.ps1" />
     <None Include="scenarios\dmz\azuredeploy.json" />
-    <None Include="scenarios\dmz\parameters\azuredeploy.parameters.json" />
     <None Include="scenarios\dmz\parameters\internal-dmz-existing-subnets.parameters.json" />
     <None Include="scenarios\dmz\parameters\internal-dmz-new-subnets.parameters.json" />
     <None Include="scenarios\dmz\parameters\public-dmz-existing-subnets.parameters.json" />
