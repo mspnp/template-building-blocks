@@ -50,6 +50,9 @@
     <None Include="scenarios\userDefinedRoutes\azuredeploy.json" />
     <None Include="scenarios\userDefinedRoutes\parameters\multiple-routes-on-subnets.parameters.json" />
     <None Include="scenarios\virtualMachine-extensions\azuredeploy.json" />
+    <None Include="scenarios\virtualMachine-extensions\parameters\multiple-extensions-multiple-vms.parameters.json" />
+    <None Include="scenarios\virtualMachine-extensions\parameters\multiple-extensions-single-vm.parameters.json" />
+    <None Include="scenarios\virtualMachine-extensions\parameters\single-extension-multiple-vms.parameters.json" />
     <None Include="scenarios\vnet-n-subnet\azuredeploy.json" />
     <None Include="scenarios\vnet-n-subnet\parameters\vnet-3-tier-mgmt-gw.parameters.json" />
     <None Include="scenarios\vnet-n-subnet\parameters\vnet-multiple-subnet-dns.parameters.json" />
@@ -158,19 +161,19 @@
     <None Include="templates\resources\Microsoft.Network\networkSecurityGroups\networkSecurityGroup-subnets.json" />
     <None Include="templates\resources\Microsoft.Network\networkSecurityGroups\networkSecurityGroup.json" />
     <None Include="templates\resources\Microsoft.Network\networkSecurityGroups\networkSecurityGroups.json" />
+    <None Include="templates\resources\Microsoft.Network\routeTables\routeTable-nop.json" />
     <None Include="templates\resources\Microsoft.Network\routeTables\routeTable-routes.json" />
     <None Include="templates\resources\Microsoft.Network\routeTables\routeTable.json" />
     <None Include="templates\resources\Microsoft.Network\routeTables\routeTables.json" />
     <None Include="templates\resources\Microsoft.Network\routeTables\rt-routes-no-next-hop-ip-address.json" />
     <None Include="templates\resources\Microsoft.Network\routeTables\rt-routes-with-next-hop-ip-address.json" />
     <None Include="templates\resources\Microsoft.Network\virtualNetworkGateways\virtualNetworkGateway.json" />
+    <None Include="templates\resources\Microsoft.Network\virtualNetworks\subnets-new.json" />
+    <None Include="templates\resources\Microsoft.Network\virtualNetworks\subnets-nop.json" />
     <None Include="templates\resources\Microsoft.Network\virtualNetworks\virtualNetwork-subnets.json" />
     <None Include="templates\resources\Microsoft.Network\virtualNetworks\virtualNetwork.json" />
     <None Include="templates\resources\Microsoft.Storage\storageAccounts\storageAccount.json" />
     <None Include="templates\resources\Microsoft.Storage\storageAccounts\storageAccounts.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="scenarios\virtualMachine-extensions\parameters\" />
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />
 </Project>
