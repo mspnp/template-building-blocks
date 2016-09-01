@@ -31,8 +31,10 @@
     <Content Include="Scripts\Deploy-AzureResourceGroup.ps1" />
     <None Include="scenarios\dmz\azuredeploy.json" />
     <None Include="scenarios\dmz\parameters\azuredeploy.parameters.json" />
-    <None Include="scenarios\dmz\parameters\internal-dmz.parameters.json" />
-    <None Include="scenarios\dmz\parameters\public-dmz.parameters.json" />
+    <None Include="scenarios\dmz\parameters\internal-dmz-existing-subnets.parameters.json" />
+    <None Include="scenarios\dmz\parameters\internal-dmz-new-subnets.parameters.json" />
+    <None Include="scenarios\dmz\parameters\public-dmz-existing-subnets.parameters.json" />
+    <None Include="scenarios\dmz\parameters\public-dmz-new-subnets.parameters.json" />
     <None Include="scenarios\loadBalancer-backend-n-vm\azuredeploy.json" />
     <None Include="scenarios\loadBalancer-backend-n-vm\parameters\internal-loadBalancer-multi-backends.parameters.json" />
     <None Include="scenarios\loadBalancer-backend-n-vm\parameters\internal-loadBalancer.parameters.json" />
@@ -48,7 +50,6 @@
     <None Include="scenarios\userDefinedRoutes\azuredeploy.json" />
     <None Include="scenarios\userDefinedRoutes\parameters\multiple-routes-on-subnets.parameters.json" />
     <None Include="scenarios\virtualMachine-extensions\azuredeploy.json" />
-    <None Include="scenarios\virtualMachine-extensions\parameters\multiple-extensions-on-vms.parameters.json" />
     <None Include="scenarios\vnet-n-subnet\azuredeploy.json" />
     <None Include="scenarios\vnet-n-subnet\parameters\vnet-3-tier-mgmt-gw.parameters.json" />
     <None Include="scenarios\vnet-n-subnet\parameters\vnet-multiple-subnet-dns.parameters.json" />
@@ -61,7 +62,6 @@
     <None Include="scripts\iisaspnet.ps1.zip" />
     <None Include="scripts\nva.sh" />
     <None Include="templates\buildingBlocks\dmz\azuredeploy.json" />
-    <None Include="templates\buildingBlocks\dmz\azuredeploy.parameters.json" />
     <None Include="templates\buildingBlocks\dmz\mappers\buildingBlockSettings.json" />
     <None Include="templates\buildingBlocks\dmz\mappers\dmzSettings.json" />
     <None Include="templates\buildingBlocks\dmz\mappers\loadBalancerSettings-probes.json" />
@@ -168,6 +168,9 @@
     <None Include="templates\resources\Microsoft.Network\virtualNetworks\virtualNetwork.json" />
     <None Include="templates\resources\Microsoft.Storage\storageAccounts\storageAccount.json" />
     <None Include="templates\resources\Microsoft.Storage\storageAccounts\storageAccounts.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="scenarios\virtualMachine-extensions\parameters\" />
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />
 </Project>
