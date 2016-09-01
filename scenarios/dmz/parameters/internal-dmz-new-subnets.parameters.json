@@ -7,8 +7,8 @@
         "endpoint": {
           "hasPublicEndpoint": "no",
           "internalLoadBalancerSettings": {
-            "privateIPAddress": "10.0.4.250",
-            "subnetName": "in-sn"
+            "privateIPAddress": "10.0.0.10",
+            "subnetName": "dmz-in"
           }
         },
         "applianceSettings": {
@@ -50,9 +50,9 @@
                 "settingsConfigMapperUri": "https://raw.githubusercontent.com/mspnp/template-building-blocks/master/templates/resources/Microsoft.Compute/virtualMachines/extensions/vm-extension-passthrough-settings-mapper.json",
                 "settingsConfig": {
                   "fileUris": [
-                    "https://pnparmtest.blob.core.windows.net/roshar/templates/resources/Microsoft.Compute/virtualMachines/extensions/linux/enable-iptables-routes/enable-iptables-routes.sh"
+                    "https://raw.githubusercontent.com/mspnp/template-building-blocks/master/templates/resources/Microsoft.Compute/virtualMachines/extensions/linux/enable-iptables-routes/enable-iptables-routes.sh"
                   ],
-                  "commandToExecute": "bash enable-iptables-routes.sh public 10.0.0.254"
+                  "commandToExecute": "bash enable-iptables-routes.sh internal 10.0.1.100"
                 },
                 "protectedSettingsConfig": { }
               }
@@ -63,12 +63,12 @@
         "subnets": {
           "useExistingSubnets": "no",
           "inSubnet": {
-            "name": "in-sn",
-            "addressPrefix": "10.0.4.0/24"
+            "name": "dmz-in",
+            "addressPrefix": "10.0.0.0/27"
           },
           "outSubnet": {
-            "name": "out-sn",
-            "addressPrefix": "10.0.5.0/24"
+            "name": "dmz-out",
+            "addressPrefix": "10.0.0.32/27"
           }
         }
 
@@ -77,9 +77,8 @@
     "virtualNetworkSettings": {
       "value": {
         "name": "bb-dev-vnet",
-        "resourceGroup": "rs-bb44-rg"
+        "resourceGroup": "bb-dev-rg"
       }
     }
   }
 }
-

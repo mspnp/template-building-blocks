@@ -9,15 +9,15 @@
         "subnets": [
           {
             "name": "web",
-            "addressPrefix": "10.0.0.0/24"
-          },
-          {
-            "name": "biz",
             "addressPrefix": "10.0.1.0/24"
           },
           {
-            "name": "data",
+            "name": "biz",
             "addressPrefix": "10.0.2.0/24"
+          },
+          {
+            "name": "data",
+            "addressPrefix": "10.0.3.0/24"
           },
           {
             "name": "GatewaySubnet",

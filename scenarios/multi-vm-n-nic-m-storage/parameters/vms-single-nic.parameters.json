@@ -16,7 +16,6 @@
             "isPublic": "false",
             "subnetName": "data",
             "privateIPAllocationMethod": "Static",
-            "publicIPAllocationMethod": "Dynamic",
             "startingIPAddress": "10.0.3.101",
             "enableIPForwarding": false,
             "dnsServers": [

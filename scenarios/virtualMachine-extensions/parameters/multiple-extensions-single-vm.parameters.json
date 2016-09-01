@@ -5,7 +5,7 @@
     "virtualMachinesExtensionSettings": {
       "value": [
         {
-          "vms": [ "bb-dev-vm1", "bb-dev-vm2" ],
+          "vms": [ "bb-dev-jb-vm1" ],
           "extensions": [
             {
               "name": "IaaSAntimalware",
@@ -24,9 +24,7 @@
                   "scanType": "Quick"
                 },
                 "Exclusions": {
-                  "Extensions": ".gif",
-                  "Paths": "c:\\test",
-                  "Processes": "test.exe"
+                  "Extensions": ".gif"
                 }
               },
               "protectedSettingsConfig": { }
@@ -39,35 +37,6 @@
               "autoUpgradeMinorVersion": true,
               "settingsConfigMapperUri": "https://raw.githubusercontent.com/mspnp/template-building-blocks/master/templates/resources/Microsoft.Compute/virtualMachines/extensions/vm-extension-passthrough-settings-mapper.json",
               "settingsConfig": {
-              },
-              "protectedSettingsConfig": { }
-            }
-          ]
-        },
-        {
-          "vms": [ "bb-dev-vm3" ],
-          "extensions": [
-            {
-              "name": "IaaSAntimalware",
-              "publisher": "Microsoft.Azure.Security",
-              "type": "IaaSAntimalware",
-              "typeHandlerVersion": "1.3",
-              "autoUpgradeMinorVersion": true,
-              "settingsConfigMapperUri": "https://raw.githubusercontent.com/mspnp/template-building-blocks/master/templates/resources/Microsoft.Compute/virtualMachines/extensions/vm-extension-passthrough-settings-mapper.json",
-              "settingsConfig": {
-                "AntimalwareEnabled": true,
-                "RealtimeProtectionEnabled": "false",
-                "ScheduledScanSettings": {
-                  "isEnabled": "false",
-                  "day": "7",
-                  "time": "120",
-                  "scanType": "Quick"
-                },
-                "Exclusions": {
-                  "Extensions": ".gif",
-                  "Paths": "c:\\test",
-                  "Processes": "test.exe"
-                }
               },
               "protectedSettingsConfig": { }
             }
