@@ -21,7 +21,7 @@
         "properties": {
           "privateIPAllocationMethod": "Static",
           "privateIPAddress": "[parameters('source').internalLoadBalancerSettings.privateIPAddress]",
-          "subnet": { "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('context').vetName, parameters('source').internalLoadBalancerSettings.subnetName)]" }
+          "subnet": { "id": "[resourceId(parameters('context').virtualNetworkSettings.resourceGroup, 'Microsoft.Network/virtualNetworks/subnets', parameters('context').virtualNetworkSettings.name, parameters('source').internalLoadBalancerSettings.subnetName)]" }
         }
       }
     ]

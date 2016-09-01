@@ -5,9 +5,6 @@
     "deploymentContext": {
       "type": "object"
     },
-    "virtualNetworkSettings": {
-      "type": "object"
-    },
     "virtualMachinesExtensionSettings": {
       "type": "object",
       "metadata": {
@@ -16,7 +13,7 @@
     }
   },
   "variables": {
-    "templateUniqueString": "[uniqueString(concat(string(parameters('deploymentContext')), string(parameters('virtualNetworkSettings')), string(parameters('virtualMachinesExtensionSettings'))))]",
+    "templateUniqueString": "[uniqueString(concat(string(parameters('deploymentContext')), string(parameters('virtualMachinesExtensionSettings'))))]",
     "extTemplate": "[uri(deployment().properties.templateLink.uri, 'virtualMachine-extensions.json')]"
   },
   "resources": [
@@ -42,7 +39,6 @@
           "source": { "value": "[parameters('virtualMachinesExtensionSettings').extensions]" },
           "context": {
             "value": {
-              "virtualNetworkSettings": "[parameters('virtualNetworkSettings')]",
               "vmName": "[parameters('virtualMachinesExtensionSettings').vms[copyIndex()]]"
             }
           }

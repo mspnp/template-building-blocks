@@ -14,7 +14,7 @@
     "extensionsDeploymentName": "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-exts-', variables('templateUniqueString'))]",
     "vmName": "[parameters('context').vmName]",
     "extensionTemplates": [
-      "[uri(deployment().properties.templateLink.uri, 'virtualMachines-extensions-nop.json')]",
+      "[uri(deployment().properties.templateLink.uri, 'virtualMachine-extensions-nop.json')]",
       "[uri(deployment().properties.templateLink.uri, 'virtualMachine-extensions-one.json')]",
       "[uri(deployment().properties.templateLink.uri, 'virtualMachine-extensions-multiple.json')]"
     ],

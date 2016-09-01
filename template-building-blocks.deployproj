@@ -29,13 +29,33 @@
       <Visible>False</Visible>
     </None>
     <Content Include="Scripts\Deploy-AzureResourceGroup.ps1" />
-    <None Include="drivers\bash\deploy-template-with-param.sh" />
-    <None Include="drivers\json\deploy-template-with-param.json" />
-    <None Include="drivers\json\deploy-template-with-param.parameters.json" />
-    <None Include="drivers\json\deploy-template-return-outputs.json" />
-    <None Include="drivers\json\output-mapper.json" />
-    <None Include="drivers\ps\Deploy-Template.ps1" />
-    <None Include="drivers\ps\deploy-vnet-n-subnets.ps1" />
+    <None Include="scenarios\dmz\azuredeploy.json" />
+    <None Include="scenarios\dmz\parameters\azuredeploy.parameters.json" />
+    <None Include="scenarios\dmz\parameters\internal-dmz.parameters.json" />
+    <None Include="scenarios\dmz\parameters\public-dmz.parameters.json" />
+    <None Include="scenarios\loadBalancer-backend-n-vm\azuredeploy.json" />
+    <None Include="scenarios\loadBalancer-backend-n-vm\parameters\internal-loadBalancer-multi-backends.parameters.json" />
+    <None Include="scenarios\loadBalancer-backend-n-vm\parameters\internal-loadBalancer.parameters.json" />
+    <None Include="scenarios\loadBalancer-backend-n-vm\parameters\public-loadBalancer.parameters.json" />
+    <None Include="scenarios\multi-vm-n-nic-m-storage\azuredeploy.json" />
+    <None Include="scenarios\multi-vm-n-nic-m-storage\parameters\single-vm.parameters.json" />
+    <None Include="scenarios\multi-vm-n-nic-m-storage\parameters\vms-multiple-nics-dataDisks-extensions.parameters.json" />
+    <None Include="scenarios\multi-vm-n-nic-m-storage\parameters\vms-single-nic-extensions.parameters.json" />
+    <None Include="scenarios\multi-vm-n-nic-m-storage\parameters\vms-single-nic.parameters.json" />
+    <None Include="scenarios\networkSecurityGroups\azuredeploy.json" />
+    <None Include="scenarios\networkSecurityGroups\parameters\3-nsgs-on-3-subnets.parameters.json" />
+    <None Include="scenarios\networkSecurityGroups\parameters\multiple-nsgs-on-subnets-nics.parameters.json" />
+    <None Include="scenarios\userDefinedRoutes\azuredeploy.json" />
+    <None Include="scenarios\userDefinedRoutes\parameters\multiple-routes-on-subnets.parameters.json" />
+    <None Include="scenarios\virtualMachine-extensions\azuredeploy.json" />
+    <None Include="scenarios\virtualMachine-extensions\parameters\multiple-extensions-on-vms.parameters.json" />
+    <None Include="scenarios\vnet-n-subnet\azuredeploy.json" />
+    <None Include="scenarios\vnet-n-subnet\parameters\vnet-3-tier-mgmt-gw.parameters.json" />
+    <None Include="scenarios\vnet-n-subnet\parameters\vnet-multiple-subnet-dns.parameters.json" />
+    <None Include="scenarios\vnet-n-subnet\parameters\vnet-multiple-subnet.parameters.json" />
+    <None Include="scenarios\vpn-gateway-vpn-connection\azuredeploy.json" />
+    <None Include="scenarios\vpn-gateway-vpn-connection\parameters\er.parameters.json" />
+    <None Include="scenarios\vpn-gateway-vpn-connection\parameters\vpn.parameters.json" />
     <None Include="scripts\apache.sh" />
     <None Include="scripts\iisaspnet.ps1" />
     <None Include="scripts\iisaspnet.ps1.zip" />
@@ -51,35 +71,35 @@
     <None Include="templates\buildingBlocks\dmz\mappers\routeTableSettings-routes.json" />
     <None Include="templates\buildingBlocks\dmz\mappers\routeTableSettings.json" />
     <None Include="templates\buildingBlocks\dmz\mappers\virtualMachineSettings.json" />
+<<<<<<< HEAD
     <None Include="templates\buildingBlocks\dmz\scenarios\internal-dmz-new-subnets.parameters.json" />
     <None Include="templates\buildingBlocks\dmz\scenarios\internal-dmz-existing-subnets.parameters.json" />
     <None Include="templates\buildingBlocks\dmz\scenarios\public-dmz-existing-subnets.parameters.json" />
     <None Include="templates\buildingBlocks\dmz\scenarios\public-dmz-new-subnets.parameters.json" />
+=======
+>>>>>>> master
     <None Include="templates\buildingBlocks\loadBalancer-backend-n-vm\azuredeploy.json" />
-    <None Include="templates\buildingBlocks\loadBalancer-backend-n-vm\scenarios\internal-loadBalancer.parameters.json" />
-    <None Include="templates\buildingBlocks\loadBalancer-backend-n-vm\scenarios\internal-loadBalancer-multi-backends.parameters.json" />
-    <None Include="templates\buildingBlocks\loadBalancer-backend-n-vm\scenarios\public-loadBalancer.parameters.json" />
     <None Include="templates\buildingBlocks\multi-vm-n-nic-m-storage\azuredeploy.json" />
-    <None Include="templates\buildingBlocks\multi-vm-n-nic-m-storage\scenarios\single-vm.parameters.json" />
-    <None Include="templates\buildingBlocks\multi-vm-n-nic-m-storage\scenarios\vms-single-nic.parameters.json" />
-    <None Include="templates\buildingBlocks\multi-vm-n-nic-m-storage\scenarios\vms-single-nic-extensions.parameters.json" />
-    <None Include="templates\buildingBlocks\multi-vm-n-nic-m-storage\scenarios\vms-multiple-nics-dataDisks-extensions.parameters.json" />
     <None Include="templates\buildingBlocks\networkSecurityGroups\azuredeploy.json" />
+<<<<<<< HEAD
     <None Include="templates\buildingBlocks\networkSecurityGroups\scenarios\3-nsgs-on-3-subnets.parameters.json" />
     <None Include="templates\buildingBlocks\networkSecurityGroups\scenarios\multiple-nsgs-on-subnets-nics.parameters.json" />
+=======
+    <None Include="templates\buildingBlocks\dmz\azuredeploy.json" />
+>>>>>>> master
     <None Include="templates\buildingBlocks\userDefinedRoutes\azuredeploy.json" />
-    <None Include="templates\buildingBlocks\userDefinedRoutes\scenarios\multiple-routes-on-subnets.parameters.json" />
     <None Include="templates\buildingBlocks\virtualMachine-extensions\azuredeploy.json" />
+<<<<<<< HEAD
     <None Include="templates\buildingBlocks\virtualMachine-extensions\scenarios\multiple-extensions-multiple-vms.parameters.json" />
     <None Include="templates\buildingBlocks\virtualMachine-extensions\scenarios\multiple-extensions-single-vm - Copy.parameters.json" />
     <None Include="templates\buildingBlocks\virtualMachine-extensions\scenarios\single-extension-multiple-vms.parameters.json" />
     <None Include="templates\buildingBlocks\vnet-n-subnet\scenarios\vnet-3-tier-mgmt-gw.parameters.json" />
     <None Include="templates\buildingBlocks\vnet-n-subnet\scenarios\vnet-multiple-subnet.parameters.json" />
     <None Include="templates\buildingBlocks\vnet-n-subnet\scenarios\vnet-multiple-subnet-dns.parameters.json" />
+=======
+>>>>>>> master
     <None Include="templates\buildingBlocks\vnet-n-subnet\azuredeploy.json" />
     <None Include="templates\buildingBlocks\vpn-gateway-vpn-connection\azuredeploy.json" />
-    <None Include="templates\buildingBlocks\vpn-gateway-vpn-connection\scenarios\er.parameters.json" />
-    <None Include="templates\buildingBlocks\vpn-gateway-vpn-connection\scenarios\vpn.parameters.json" />
     <None Include="templates\resources\common\collector-internal.json" />
     <None Include="templates\resources\common\collector-nop.json" />
     <None Include="templates\resources\common\collector.json" />
@@ -105,7 +125,7 @@
     <None Include="templates\resources\Microsoft.Compute\virtualMachines\extensions\vm-extension-settings-helper.json" />
     <None Include="templates\resources\Microsoft.Compute\virtualMachines\extensions\vm-extension-settings.json" />
     <None Include="templates\resources\Microsoft.Compute\virtualMachines\extensions\virtualMachine-extensions-one.json" />
-    <None Include="templates\resources\Microsoft.Compute\virtualMachines\extensions\virtualMachines-extensions-nop.json" />
+    <None Include="templates\resources\Microsoft.Compute\virtualMachines\extensions\virtualMachine-extensions-nop.json" />
     <None Include="templates\resources\Microsoft.Compute\virtualMachines\extensions\windows\enable-default-gateway-multi-nic\enable-default-gateway.ps1" />
     <None Include="templates\resources\Microsoft.Compute\virtualMachines\n-vm-m-storage.json" />
     <None Include="templates\resources\Microsoft.Compute\virtualMachines\n-vm-n-nic.json" />

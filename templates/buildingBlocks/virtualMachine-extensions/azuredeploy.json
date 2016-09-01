@@ -8,9 +8,6 @@
         "parentTemplateUniqueString": "bbExt"
       }
     },
-    "virtualNetworkSettings": {
-      "type": "object"
-    },
     "virtualMachinesExtensionSettings": {
       "type": "array",
       "metadata": {
@@ -19,7 +16,7 @@
     }
   },
   "variables": {
-    "templateUniqueString": "[uniqueString(concat(string(parameters('deploymentContext')), string(parameters('virtualNetworkSettings')), string(parameters('virtualMachinesExtensionSettings'))))]",
+    "templateUniqueString": "[uniqueString(concat(string(parameters('deploymentContext')), string(parameters('virtualMachinesExtensionSettings'))))]",
     "extTemplate": "[uri(deployment().properties.templateLink.uri, '../../resources/Microsoft.Compute/virtualMachines/extensions/virtualMachines-extensions.json')]"
   },
   "resources": [
@@ -41,9 +38,6 @@
             "value": {
               "parentTemplateUniqueString": "[concat(variables('templateUniqueString'), '-OnVMSet', copyIndex())]"
             }
-          },
-          "virtualNetworkSettings": {
-            "value": "[parameters('virtualNetworkSettings')]"
           },
           "virtualMachinesExtensionSettings": {
             "value": "[parameters('virtualMachinesExtensionSettings')[copyIndex()]]"

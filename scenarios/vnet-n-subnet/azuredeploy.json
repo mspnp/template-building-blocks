@@ -1,0 +1,36 @@
+﻿{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "templateParameterUri": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Template parameters file to use with the building block template."
+      }
+    }
+  },
+  "variables": {
+    "baseUri": "https://raw.githubusercontent.com/mspnp/template-building-blocks/master/templates",
+    "templateParts": "[split(parameters('templateParameterUri'),'/')]",
+    "templateDescription": "[split(variables('templateParts')[sub(length(variables('templateParts')), 1)], '.')[0]]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-02-01",
+      "name": "[concat('deploy-', variables('templateDescription'))]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('baseUri'), '/buildingBlocks/vnet-n-subnet/azuredeploy.json')]"
+        },
+        "parametersLink": {
+          "uri": "[parameters('templateParameterUri')]"
+        }
+      }
+    }
+  ],
+  "outputs": {
+  }
+}

@@ -41,7 +41,21 @@
               "version": "latest"
             },
             "extensions": [
-
+              {
+                "name": "enable-iptables-routes",
+                "publisher": "Microsoft.OSTCExtensions",
+                "type": "CustomScriptForLinux",
+                "typeHandlerVersion": "1.5",
+                "autoUpgradeMinorVersion": true,
+                "settingsConfigMapperUri": "https://raw.githubusercontent.com/mspnp/template-building-blocks/master/templates/resources/Microsoft.Compute/virtualMachines/extensions/vm-extension-passthrough-settings-mapper.json",
+                "settingsConfig": {
+                  "fileUris": [
+                    "https://pnparmtest.blob.core.windows.net/roshar/templates/resources/Microsoft.Compute/virtualMachines/extensions/linux/enable-iptables-routes/enable-iptables-routes.sh"
+                  ],
+                  "commandToExecute": "bash enable-iptables-routes.sh public 10.0.0.254"
+                },
+                "protectedSettingsConfig": { }
+              }
             ]
           }
         },
@@ -63,7 +77,7 @@
     "virtualNetworkSettings": {
       "value": {
         "name": "bb-dev-vnet",
-        "resourceGroup": "rs-bb22-rg"
+        "resourceGroup": "rs-bb44-rg"
       }
     }
   }

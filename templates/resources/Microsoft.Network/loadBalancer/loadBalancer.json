@@ -62,7 +62,7 @@
           "context": {
             "value": {
               "loadBalancerName": "[variables('internalLoadBalancer').name]",
-              "vetName": "[parameters('virtualNetworkSettings').name]"
+              "virtualNetworkSettings": "[parameters('virtualNetworkSettings')]"
             }
           },
           "mapperTemplateUri": { "value": "[uri(deployment().properties.templateLink.uri, 'lb-frontendIPConfiguration-settings.json')]" }
