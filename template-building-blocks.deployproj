@@ -71,33 +71,12 @@
     <None Include="templates\buildingBlocks\dmz\mappers\routeTableSettings-routes.json" />
     <None Include="templates\buildingBlocks\dmz\mappers\routeTableSettings.json" />
     <None Include="templates\buildingBlocks\dmz\mappers\virtualMachineSettings.json" />
-<<<<<<< HEAD
-    <None Include="templates\buildingBlocks\dmz\scenarios\internal-dmz-new-subnets.parameters.json" />
-    <None Include="templates\buildingBlocks\dmz\scenarios\internal-dmz-existing-subnets.parameters.json" />
-    <None Include="templates\buildingBlocks\dmz\scenarios\public-dmz-existing-subnets.parameters.json" />
-    <None Include="templates\buildingBlocks\dmz\scenarios\public-dmz-new-subnets.parameters.json" />
-=======
->>>>>>> master
     <None Include="templates\buildingBlocks\loadBalancer-backend-n-vm\azuredeploy.json" />
     <None Include="templates\buildingBlocks\multi-vm-n-nic-m-storage\azuredeploy.json" />
     <None Include="templates\buildingBlocks\networkSecurityGroups\azuredeploy.json" />
-<<<<<<< HEAD
-    <None Include="templates\buildingBlocks\networkSecurityGroups\scenarios\3-nsgs-on-3-subnets.parameters.json" />
-    <None Include="templates\buildingBlocks\networkSecurityGroups\scenarios\multiple-nsgs-on-subnets-nics.parameters.json" />
-=======
     <None Include="templates\buildingBlocks\dmz\azuredeploy.json" />
->>>>>>> master
     <None Include="templates\buildingBlocks\userDefinedRoutes\azuredeploy.json" />
     <None Include="templates\buildingBlocks\virtualMachine-extensions\azuredeploy.json" />
-<<<<<<< HEAD
-    <None Include="templates\buildingBlocks\virtualMachine-extensions\scenarios\multiple-extensions-multiple-vms.parameters.json" />
-    <None Include="templates\buildingBlocks\virtualMachine-extensions\scenarios\multiple-extensions-single-vm - Copy.parameters.json" />
-    <None Include="templates\buildingBlocks\virtualMachine-extensions\scenarios\single-extension-multiple-vms.parameters.json" />
-    <None Include="templates\buildingBlocks\vnet-n-subnet\scenarios\vnet-3-tier-mgmt-gw.parameters.json" />
-    <None Include="templates\buildingBlocks\vnet-n-subnet\scenarios\vnet-multiple-subnet.parameters.json" />
-    <None Include="templates\buildingBlocks\vnet-n-subnet\scenarios\vnet-multiple-subnet-dns.parameters.json" />
-=======
->>>>>>> master
     <None Include="templates\buildingBlocks\vnet-n-subnet\azuredeploy.json" />
     <None Include="templates\buildingBlocks\vpn-gateway-vpn-connection\azuredeploy.json" />
     <None Include="templates\resources\common\collector-internal.json" />
