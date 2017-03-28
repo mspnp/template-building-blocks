@@ -1,9 +1,9 @@
 # vnet-n-subnet
 
-You can use the vnet-n-subnet building block to deploy an [Azure virtual network (VNet)](https://azure.microsoft.com/en-us/documentation/articles/virtual-networks-overview/). This building block deploys only a virtual network, without any connected resources. The main difference between using this building block and the [Virtual Networks](https://azure.microsoft.com/en-us/documentation/articles/resource-groups-networking/#virtual-network) resource in the Network Resource Provider is that you cannot specify NSGs and UDRs in this block. These resources have a building block of their own, and do not require redefining a virtual network when created or modified. You can find these blocks here: 
+You can use the vnet-n-subnet building block to deploy an [Azure virtual network (VNet)](https://azure.microsoft.com/en-us/documentation/articles/virtual-networks-overview/). This building block deploys a virtual network with no additional resources. Use this building block to deploy a VNet with no Network Security Groups (NSGs) or User Defined Routes (UDRs). If you want to deploy a VNet with that includes NSGs or UDRs, use the following buildling blocks: 
 
-- [Network Security Groups](https://github.com/mspnp/template-building-blocks/tree/master/scenarios/networkSecurityGroups)
-- [User Defined Routes](https://github.com/mspnp/template-building-blocks/tree/master/scenarios/userDefinedRoutes)  
+- [Network Security Groups](https://github.com/mspnp/template-building-blocks/tree/master/templates/buildingBlocks/networkSecurityGroups)
+- [User Defined Routes](https://github.com/mspnp/template-building-blocks/tree/master/templates/buildingBlocks/userDefinedRoutes)
 
 **Note** We chose to have separate building block for NSGs and UDRs so that these can be applied individually, without redefining the entire virtual network. Most deployments use extensions that require access to the Internet during deployment. By separating these blocks, you can deploy the VNet and your VMs, and then tighten security with NSGs and UDRs.
 
@@ -12,45 +12,47 @@ You can use the vnet-n-subnet building block to deploy an [Azure virtual network
 You only need to specify one parameter in this building block, named **virtualNetworkSettings**. This parameter is an object that contains the following properties:
 
 - **name**  
-   Required. Name of the virtual network you will create, as seen in the example below.  
-	```json
-	"name": "bb-dev-vnet"
-	```
+  _Value_. _Required_.
+  Name of the VNet. Example:  
+  ```json
+  "name": "bb-dev-vnet"
+  ```
 - **addressPrefixes**  
-  Required. Defines the CIDR address blocks for the entire VNet. Supports multiple CIDR prefixes.  
+  _Array of values_. _Requires at least one value._ Defines the CIDR address blocks for the entire VNet. Supports multiple CIDR prefixes. Example:
   ```json
   "addressPrefixes": [ "10.0.0.0/16" ]
   ```
 
 - **subnets**  
-Required. The subnets property requires at least one subnet defined for the VNet. Multiple subnets are supported, as long as they all fit within the address range you specified in the addressPrefixes property. Each subnet requires an entry with the following properties:
-   - **name** - Required. Name of the subnet.
-   - **addressPrefix** - Required. CIDR address block for the subnet (must be valid within the VNet address space definition).  
-   ```json
-   "subnets": [
-     {
-       "name": "privateSub", 
-       "addressPrefix": "10.0.0.0/24"
-     }, 
-     {
-       "name": "publicSub", 
-       "addressPrefix": "10.0.1.0/24"
-     }
-   ]
-   ```
+_Array of objects_. _Requires at least one object_. Defines the subnets within the VNet. Subnets are defined by the following object:
+  - **name** - _Value_. _Required._ Name of the subnet.
+  - **addressPrefix** - _Value_. _Required_. CIDR address block for the subnet (must be valid within the VNet address space definition).
+  Example:
+  ```json
+  "subnets": [
+    {
+      "name": "privateSub", 
+      "addressPrefix": "10.0.0.0/24"
+    }, 
+    {
+      "name": "publicSub", 
+      "addressPrefix": "10.0.1.0/24"
+    }
+  ]
+  ```
 - **dnsServers**  
-  Required. Defines one or more custom DNS Server address for the VNet. 
+  _Array of values_. _Requires at least one object_. Defines one or more custom DNS Server address for the VNet. Example:
   ```json
   "dnsServers": ["10.0.0.220","10.0.1.233"]
   ```
-  **Note** Leave the **dnsServers** property blank, as shown below, to use Azure internal name resolution. 
+  **Note** Leave the array empty to use Azure internal name resolution. Example:
   ```json 
   "dnsServers": [ ] 
   ```
 
-## Sample parameters file
+## Sample parameter file
 
-The following parameters file will create a VNet with subnets suitable for a three-tiered architecture, a management subnet, and a gateway subnet:
+The following parameter file will create a VNet with subnets suitable for a three-tiered architecture, a management subnet, and a gateway subnet:
 
 ```json
 {
@@ -101,67 +103,75 @@ You can deploy a building block by using the Azure portal, PowerShell, or Azure 
 
 Note that the building block deployment process will require you store your parameters file in a location with a publicly available URI, which you provide during deployment.
 
-[![Click to deploy template on Azure](https://camo.githubusercontent.com/9285dd3998997a0835869065bb15e5d500475034/687474703a2f2f617a7572656465706c6f792e6e65742f6465706c6f79627574746f6e2e706e67 "Click to deploy template on Azure")](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmspnp%2Ftemplate-building-blocks%2Fmaster%2Fscenarios%2Fvnet-n-subnet%2Fazuredeploy.json)  
-
-1. Click the above deployment button, the Azure portal will be opened.
-1. In the deployment's **TEMPLATEPARAMETERURI** parameter, specify the public URI where your parameters file is located. 
-2. Specify or create the Resource Group where you want the VNet deployed to.
-3. Click the **Create** button.
+1. Click the button below:<br><a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmspnp%2Ftemplate-building-blocks%2Fv1.0.0%2Fscenarios%2Fvnet-n-subnet%2Fazuredeploy.json" target="_blank"><img src = "http://azuredeploy.net/deploybutton.png"/></a>
+2. Wait for the Azure Portal to open.
+3. In the `Basics` section:
+  - Select your `Subscription` from the drop-down list.
+  - For the `Resource group`, you can either create a new resource group or use an existing resource group.
+  - Select the region where you'd like to deploy the VNet in the `Location` drop-down list.
+4. In the `Settings` section, enter a URI to a valid parameter file. There are several [example parameter files](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/vnet-n-subnet/parameters) in Github. Note that if you want to use one of these parameter files the URI must be the path to the `raw` file in Github. 
+5. Review the terms and conditions, then click the **I agree to the terms and conditions stated above** checkbox.
+6. Click the **Purchase** button.
+7. Wait for the deployment to complete.
 
 ### PowerShell
 
-You can use the **New-AzureRmResourceGroupDeployment** to deploy the building block template using a parameter file located at a publicly available URI.
+To deploy the building block template using a parameter file hosted at a publicly available URI, follow these steps:
 
-1. Upload a parameters file to a location with a publicly available URI.
-2. If you do not have an existing resource group, run the **New-AzureRmResourceGroup** cmdlet as shown below.
-```PowerShell
-New-AzureRmResourceGroup -Location <Target Azure Region> -Name <Resource Group Name> 
-```
-3. Run the **New-AzureRmResourceGroupDeployment** cmdlet as shown below.
-```PowerShell
-New-AzureRmResourceGroupDeployment -ResourceGroupName <Resource Group Name>
-  -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/master/scenarios/vnet-n-subnet/azuredeploy.json 
-  -templateParameterUriFromTemplate <URI of parameters file>
-```
+1. Upload your parameter file to a location with a publicly available URI.
+2. Log in to Azure using your selected subscription:
+  ```Powershell
+  Login-AzureRmAccount -SubscriptionId <your subscription ID>
+  ```
+3. If you do not have an existing resource group, run the **New-AzureRmResourceGroup** cmdlet to create one as shown below:
+  ```PowerShell
+  New-AzureRmResourceGroup -Location <Target Azure Region> -Name <Resource Group Name> 
+  ```
+4. Run the **New-AzureRmResourceGroupDeployment** cmdlet as shown below.
+  ```PowerShell
+  New-AzureRmResourceGroupDeployment -ResourceGroupName <Resource Group Name> -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vnet-n-subnet/azuredeploy.json -templateParameterUriFromTemplate <URI of parameter file>
+  ```
 
 **Example**  
-The cmdlet below creates a resource group named **app1-rg** in the **westus** location, and then deploys vnet-n-subnet building block using a parameter file hosted in Azure blob storage.
+The cmdlet below creates a resource group named **app1-rg** in the **westus** region, then deploys the [vnet-multiple-subnet-dns](https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vnet-n-subnet/parameters/vnet-multiple-subnet-dns.parameters.json) parameter file from the [scenarios folder](https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vnet-n-subnet/parameters/vnet-multiple-subnet-dns.parameters.json) in Github.
 
 ```PowerShell
-New-AzureRmResourceGroup -Location westus -Name app1-rg 
-New-AzureRmResourceGroupDeployment -ResourceGroupName app1-rg -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/master/scenarios/vnet-n-subnet/azuredeploy.json   -templateParameterUriFromTemplate http://buildingblocksample.blob.core.windows.net/building-block-params/vnet.parameters.json
+Login-AzureRmAccount -SubscriptionId <your subscription ID>
+New-AzureRmResourceGroup -Location westus -Name app1-rg
+New-AzureRmResourceGroupDeployment -ResourceGroupName app1-rg -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vnet-n-subnet/azuredeploy.json -templateParameterUriFromTemplate https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vnet-n-subnet/parameters/vnet-multiple-subnet-dns.parameters.json
 ```
 
 ### Azure CLI
 
-To deploy the building block using a parameters file available from a URI:
+Before you begin, install the latest version of the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli).
 
-1. Upload a parameters file to a location with a publicly available URL.
-2. If you do not have an existing resource group, create a new one using the following command:
-```AzureCLI
-  azure group create -n <Resource Group Name> -l <Target Azure Region>
-```
+To deploy the building block template using a parameter file hosted at a publicly available URI, follow these steps:
 
-  
-3. Run the command shown below to deploy the VNet
-```AzureCLI
-azure config mode arm
-azure group deployment create <Resource Group Name>
-  --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/master/scenarios/vnet-n-subnet/azuredeploy.json 
-  -p "{\"templateParameterUri\":{\"value\":\"<parameters File Public URI>\"}}"
-```
+1. Upload your parameter file to a location with a publicly available URI.
+2. Log in to Azure using your selected subscripton:
+  ```AzureCLI
+  az login
+  ```
+3. Set your selected subscription:
+  ```AzureCLI
+  az account set --subscription <your subscripton ID>
+  ```
+4. If you do not have an existing resource group, create a new one using the following command:
+  ```AzureCLI
+  az group create -l <Target Azure Region> -n <Resource Group Name> 
+  ```
+5. Run the command shown below to deploy the VNet
+  ```AzureCLI
+  az group deployment create -g <Resource Group Name>
+  --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vnet-n-subnet/azuredeploy.json 
+  --parameters "{\"templateParameterUri\":{\"value\":\"<parameter file public URI>\"}}"
+  ```
 
 **Example**  
-The command below creates a resource group named **app1-rg** in the **westus** location, and then deploys a vnet-n-subnet building block using a parameter file hosted in Azure blob storage.
+The command below creates a resource group named **app1-rg** in the **westus** region, then deploys the [vnet-multiple-subnet-dns](https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vnet-n-subnet/parameters/vnet-multiple-subnet-dns.parameters.json) parameter file from the [scenarios folder](https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vnet-n-subnet/parameters/vnet-multiple-subnet-dns.parameters.json) in Github.
 
 ```AzureCLI
-azure group create -n "app1-rg" -l "West US"
-azure config mode arm
-azure group deployment create app1-rg --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/master/scenarios/vnet-n-subnet/azuredeploy.json -p "{\"templateParameterUri\":{\"value\":\"http://buildingblocksample.blob.core.windows.net/building-block-params/vnet.parameters.json\"}}"
+az login
+az group create -l "westus" -n "app1-rg"
+az group deployment create -g app1-rg --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vnet-n-subnet/azuredeploy.json --parameters "{\"templateParameterUri\":{\"value\":\"https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vnet-n-subnet/parameters/vnet-multiple-subnet-dns.parameters.json\"}}"
 ```
-
-## Extending the building block
-
-You can extend existing building blocks, and create your own building blocks. Each building block is created using a set of templates. The flowchart below represents the different templates used to create the load balancer building block.
-
-![DMZ template flowchart](./flowchart-vnet.png)
