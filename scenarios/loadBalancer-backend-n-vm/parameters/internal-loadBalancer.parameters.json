@@ -88,18 +88,12 @@
           "useExistingAvailabilitySet": "No",
           "name": "bb-dev-biz-lb-as"
         }
-      },
-      "metadata": {
-        "description": "Settings for Virtual Machines"
       }
     },
     "virtualNetworkSettings": {
       "value": {
         "name": "bb-dev-vnet",
         "resourceGroup": "bb-dev-rg"
-      },
-      "metadata": {
-        "description": "Infrastructure Settings"
       }
     },
     "buildingBlockSettings": {
@@ -107,9 +101,6 @@
         "storageAccountsCount": 2,
         "vmCount": 5,
         "vmStartIndex": 1
-      },
-      "metadata": {
-        "description": "Settings specific to the building block"
       }
     }
   }

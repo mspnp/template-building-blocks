@@ -83,13 +83,13 @@
         "extensions": [
           {
             "name": "iis-config-ext",
-            "settingsConfigMapperUri": "https://raw.githubusercontent.com/mspnp/template-building-blocks/master/templates/resources/Microsoft.Compute/virtualMachines/extensions/vm-extension-passthrough-settings-mapper.json",
+            "settingsConfigMapperUri": "https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/templates/resources/Microsoft.Compute/virtualMachines/extensions/vm-extension-passthrough-settings-mapper.json",
             "publisher": "Microsoft.Powershell",
             "type": "DSC",
             "typeHandlerVersion": "2.20",
             "autoUpgradeMinorVersion": true,
             "settingsConfig": {
-              "modulesUrl": "https://raw.githubusercontent.com/mspnp/reference-architectures/master/ra-multi-vm-extend/guidance-compute-multi-vm/extensions/windows/iisaspnet.ps1.zip",
+              "modulesUrl": "https://raw.githubusercontent.com/mspnp/reference-architectures/v1.0.0/ra-multi-vm-extend/guidance-compute-multi-vm/extensions/windows/iisaspnet.ps1.zip",
               "configurationFunction": "iisaspnet.ps1\\iisaspnet"
             },
             "protectedSettingsConfig": { }

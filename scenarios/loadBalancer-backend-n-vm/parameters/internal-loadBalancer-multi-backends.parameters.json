@@ -34,6 +34,7 @@
             "protocol": "Tcp",
             "backendPoolName": "lb-bep2",
             "frontendIPConfigurationName": "lbfe1",
+            "enableFloatingIP": false,
             "probeName": "lbp2"
           }
         ],
@@ -82,7 +83,7 @@
             "backendPort": 9042,
             "natRuleType": "Single",
             "protocol": "Tcp",
-            "vmIndex": 1,
+            "vmIndex": 0,
             "nicIndex": 0
           },
           {
@@ -91,7 +92,7 @@
             "frontendPort": 25,
             "natRuleType": "FloatingIp",
             "protocol": "Tcp",
-            "vmIndex": 2,
+            "vmIndex": 1,
             "nicIndex": 0
           }
         ]
