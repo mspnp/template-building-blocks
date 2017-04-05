@@ -4,7 +4,7 @@ The multi-vm-n-nic-m-storage template building block deploys [virtual machines (
 
 If you don't have a VNet set up, you can use the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/tree/master/scenarios/vnet-n-subnet) building block to create one.
 
-In addition to defining the OS and Storage configuration of newly created VMs, this block allows you to create multiple [network interfaces (NICs)](https://azure.microsoft.com/en-us/documentation/articles/resource-groups-networking/#nic) and configure [VM extensions](https://azure.microsoft.com/en-us/documentation/articles/virtual-machines-windows-extensions-features/) for your VMs. It also allows you to create a new availability set for you machines, or use an existing one.
+In addition to defining the OS and Storage configuration of newly created VMs, this block allows you to create multiple [network interfaces (NICs)](https://docs.microsoft.com/azure/virtual-network/resource-groups-networking#nic) and configure [VM extensions](https://docs.microsoft.com/azure/virtual-machines/windows/extensions-features) for your VMs. It also allows you to create a new availability set for you machines, or use an existing one.
 
 ## Parameters
 
@@ -78,7 +78,7 @@ The **virtualMachinesSettings** parameter specifies properties for the VMs. It c
   Specifies the OS image for the VM. The operating system is specified by the following object:  
     - **publisher**  
     _Value_. _Required_.  
-    Publisher of the OS. Note that valid strings for this value as well as the next three values can be obtained using [Azure CLI](https://docs.microsoft.com/azure/virtual-machines/virtual-machines-linux-cli-ps-findimage) or [PowerShell](https://msdn.microsoft.com/en-us/library/azure/dn495275.aspx).  
+    Publisher of the OS. Note that valid strings for this value as well as the next three values can be obtained using [Azure CLI](https://docs.microsoft.com/azure/virtual-machines/virtual-machines-linux-cli-ps-findimage) or [PowerShell](https://msdn.microsoft.com/library/azure/dn495275.aspx).  
     - **offer**  
     _Value_. _Required_.  
     OS offer.  
@@ -197,9 +197,7 @@ Note that this building block deployment process requires a parameter file store
   - Select your `Subscription` from the drop-down list.
   - For the `Resource group`, you can either create a new resource group or use an existing resource group.
   - Select the region where you'd like to deploy the VNet in the `Location` drop-down list.
-4. In the `Settings` section, enter a URI to a valid parameter file. There are several [example parameter files](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/multi-vm-n-nic-m-storage/parameters) in Github. Note that if you want to use one of these parameter files the URI must be the path to the `raw` file in Github.  
-  > These parameter files require pre-existing VNets and subnets and the deployment will fail if they do not exist. You will need to inspect the parameters to determine these requirements.  
-
+4. In the `Settings` section, enter a URI to a valid parameter file. There are several [example parameter files](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/multi-vm-n-nic-m-storage/parameters) in Github. Note that if you want to use one of these parameter files the URI must be the path to the `raw` file in Github. These parameter files require pre-existing VNets and subnets and the deployment will fail if they do not exist. You will need to inspect the parameters to determine these requirements.  
 5. Review the terms and conditions, then click the **I agree to the terms and conditions stated above** checkbox.  
 6. Click the **Purchase** button.  
 7. Wait for the deployment to complete.  
@@ -217,13 +215,14 @@ To deploy the building block template using a parameter file hosted at a publicl
   ```PowerShell
   New-AzureRmResourceGroup -Location <Target Azure Region> -Name <Resource Group Name> 
   ```
-4. Run the `New-AzureRmResourceGroupDeployment` cmdlet as shown below.  
+4. Deploy a VNet. For more information see the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/vnet-n-subnet/README.md) building block template.  
+5. Run the `New-AzureRmResourceGroupDeployment` cmdlet as shown below:  
   ```PowerShell
   New-AzureRmResourceGroupDeployment -ResourceGroupName <Resource Group Name> -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/dmz/azuredeploy.json -templateParameterUriFromTemplate <URI of parameter file>
   ```
 
 **Example**  
-The cmdlet below creates a resource group named **bb-dev-rg** in the **westus** region, then deploys the [single-vm](https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/multi-vm-n-nic-m-storage/parameters/single-vm.parameters.json) parameter file from the [scenarios folder](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/multi-vm-n-nic-m-storage) in Github.
+The cmdlet below deploys the [single-vm](https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/multi-vm-n-nic-m-storage/parameters/single-vm.parameters.json) parameter file from the [scenarios folder](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/multi-vm-n-nic-m-storage) in Github.
 
 > Note that this deployment requires an existing VNet named **bb-dev-vnet** in the **bb-dev-rg** resource group. **bb-dev-vnet** also requires a subnet named **management**.
 
@@ -252,7 +251,8 @@ To deploy the building block template using a parameter file hosted at a publicl
   ```AzureCLI
   az group create -l <Target Azure Region> -n <Resource Group Name> 
   ```
-5. Run the command shown below to deploy the VNet
+5. Deploy a VNet. For more information see the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/vnet-n-subnet/README.md) building block template.  
+6. Run the command shown below:
   ```AzureCLI
   az group deployment create -g <Resource Group Name>
   --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/multi-vm-n-nic-m-storage/azuredeploy.json
@@ -260,14 +260,11 @@ To deploy the building block template using a parameter file hosted at a publicl
   ```
 
 **Example**  
-The command below creates a resource group named **bb-dev-rg** in the **westus** region, then deploys the [single-vm](https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/multi-vm-n-nic-m-storage/parameters/single-vm.parameters.json) parameter file from the [scenarios folder](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/multi-vm-n-nic-m-storage) in Github.
+The command below deploys the [single-vm](https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/multi-vm-n-nic-m-storage/parameters/single-vm.parameters.json) parameter file from the [scenarios folder](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/multi-vm-n-nic-m-storage) in Github.
 
 > Note that this deployment requires an existing VNet named **bb-dev-vnet** in the **bb-dev-rg** resource group. **bb-dev-vnet** also requires a subnet named **management**.
 
-
 ```AzureCLI
-az login
-az group create -l "westus" -n "bb-dev-rg"
 az group deployment create -g bb-dev-rg --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/multi-vm-n-nic-m-storage/azuredeploy.json --parameters "{\"templateParameterUri\":{\"value\":\"https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/multi-vm-n-nic-m-storage/parameters/single-vm.parameters.json\"}}"
 ```
 
