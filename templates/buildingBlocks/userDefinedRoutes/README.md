@@ -18,8 +18,8 @@ The **virtualNetworkSettings** parameter specifies the VNet and resource group a
 _Value_. _Required_.  
 Name of the VNet that these UDRs apply to.  
 - **resourceGroup**  
-_Value_. _Required_.
-Name of the resource group that the UDR belongs to.
+_Value_. _Required_.  
+Name of the resource group that the UDR belongs to.  
 
 ### routeTableSettings
 
@@ -40,12 +40,12 @@ Specifies one or more route definitions. A route definition is specified using t
   - **addressPrefix**  
   _Value_. _Required_.  
   The destination CIDR block that the route applies to.
-  - **nextHopType**
+  - **nextHopType**  
   _Value_. _Required_.  
   The type of Azure resource that the packet should be sent to.  Valid values are available in the **next hop type** row of the **route resource** table in [user-defined routes and IP forwarding](https://docs.microsoft.com/azure/virtual-network/virtual-networks-udr-overview#ip-forwarding).
-  - **nextHopIpAddress**
-  _Value_. _Required if **nextHopType** is `Virtual Appliance`, otherwise not used_.
-  The IP address that packets are fowarded to.
+  - **nextHopIpAddress**  
+  _Value_. _Required if **nextHopType** is `Virtual Appliance`, otherwise not used_.  
+  The IP address that packets are fowarded to.  
 
 ## Deployment
 
@@ -61,8 +61,7 @@ Note that this building block deployment process requires a parameter file store
   - Select your `Subscription` from the drop-down list.
   - For the `Resource group`, you can either create a new resource group or use an existing resource group.
   - Select the region where you'd like to deploy the VNet in the `Location` drop-down list.  
-4. In the `Settings` section, enter a URI to a valid parameter file. There are several [example parameter files](https://github.com/mspnp/template-building-blocks/tree/master/scenarios/userDefinedRoutes/parameters) in Github. Note that if you want to use one of these parameter files the URI must be the path to the `raw` file in Github.
-  > These parameter files require pre-existing VNets and subnets and the deployment will fail if they do not exist. You will need to inspect the parameters to determine these requirements.  
+4. In the `Settings` section, enter a URI to a valid parameter file. There are several [example parameter files](https://github.com/mspnp/template-building-blocks/tree/master/scenarios/userDefinedRoutes/parameters) in Github. Note that if you want to use one of these parameter files the URI must be the path to the `raw` file in Github.  These parameter files require pre-existing VNets and subnets and the deployment will fail if they do not exist. You will need to inspect the parameters to determine these requirements.  
 5. Review the terms and conditions, then click the **I agree to the terms and conditions stated above** checkbox.  
 6. Click the **Purchase** button.  
 7. Wait for the deployment to complete.
@@ -87,7 +86,7 @@ To deploy the building block template using a parameter file hosted at a publicl
   ```
 
 **Example**  
-The cmdlet below creates a resource group named **bb-dev-rg** in the **westus** region, then deploys the [multiple-routes-on-subnets](https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/userDefinedRoutes/parameters/multiple-routes-on-subnets.json) parameter file from the [scenarios folder](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/userDefinedRoutes) in Github.
+The cmdlet below deploys the [multiple-routes-on-subnets](https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/userDefinedRoutes/parameters/multiple-routes-on-subnets.json) parameter file from the [scenarios folder](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/userDefinedRoutes) in Github.
 
 > Note that this deployment requires an existing VNet named **bb-dev-vnet** in the **bb-dev-rg** resource group. **bb-dev-vnet** also requires subnets named **web**, **biz**, and **data**.
 
@@ -129,8 +128,5 @@ The command below creates a resource group named **bb-dev-rg** in the **westus**
 
 ```AzureCLI
 az login
-az group create -l "westus" -n "bb-dev-rg"
 az group deployment create -g bb-dev-rg --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/userDefinedRoutes/azuredeploy.json --parameters "{\"templateParameterUri\":{\"value\":\"https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/userDefinedRoutes/parameters/multiple-routes-on-subnets.parameters.json\"}}"
 ```
-
-> The parameter files in the scenarios folder include hard-coded administrator usernames and passwords. It is **strongly** recommended that you immediately change the administrator password on the NVA VMs when the deployment is complete.
