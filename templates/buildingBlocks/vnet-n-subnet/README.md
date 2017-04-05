@@ -8,7 +8,7 @@ Use the vnet-n-subnet building block template to deploy an [Azure virtual networ
 
 ## Parameters
 
-There is one parameter in this building block template named **virtualNetworkSettings** . It contains the following properties:
+There is one parameter in this building block template named **virtualNetworkSettings**. It contains the following properties:
 
 - **name**  
 _Value_. _Required_.  
