@@ -141,8 +141,8 @@ To deploy the building block template using a parameter file hosted at a publicl
   ```AzureCLI
   az group create -l <Target Azure Region> -n <Resource Group Name> 
   ```
-4. Deploy a VNet. For more information see the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/vnet-n-subnet/README.md) building block template.  
-5. Run the command shown below to deploy the VNet
+5. Deploy a VNet. For more information see the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/vnet-n-subnet/README.md) building block template.  
+6. Run the command shown below to deploy the VNet
   ```AzureCLI
   az group deployment create -g <Resource Group Name>
   --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/networkSecurityGroups/azuredeploy.json
