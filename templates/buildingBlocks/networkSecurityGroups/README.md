@@ -1,6 +1,6 @@
 # networkSecurityGroups
 
-Use the **networkSecurityGroups** building block template to deploy one or more [Network Security Groups (NSG)][virtual-networks-nsg]. The one ore more NSGs are then associated to a subnet on an existing [Azure virtual network (VNet)](https://docs.microsoft.com/azure/virtual-network/virtual-networks-overview). 
+Use the **networkSecurityGroups** building block template to deploy one or more [Network Security Groups (NSG)][virtual-networks-nsg]. The one or more NSGs are with a subnet on an existing [Azure virtual network (VNet)](https://docs.microsoft.com/azure/virtual-network/virtual-networks-overview). 
 
 NSGs are deployed independently of the VNet, so this building block template requires a pre-existing resource group and VNet. Use the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/vnet-n-subnet) building block to create these resources if they don't already exist.
 
@@ -16,7 +16,7 @@ The **virtualNetworkSettings** parameter specifies the VNet and resource group a
 
 - **name**  
 _Value_. _Required_.  
-Name of the VNet that the NSG applies to.   
+Name of the VNet that the NSG applies to.  
 
 - **resourceGroup**  
 _Value_. _Required_.  
@@ -31,25 +31,25 @@ _Value_. _Required_.
 Name of the NSG.  
 - **subnets**  
 _Array of values_. _Required_.  
-Specifies the subnet names that the NSG rules apply to.
+Specifies the subnet names that the NSG rules apply to.  
 - **networkInterfaces**  
-_Array of values_. _Required_.
-Specifies one or more virtual network interface cards (NICs) that the NSG rules apply to. Leave empty to apply NSG rules all NICs on the subnet.
+_Array of values_. _Required_.  
+Specifies one or more virtual network interface cards (NICs) that the NSG rules apply to. Leave empty to apply NSG rules all NICs on the subnet.  
 - **securityRules**  
 _Array of objects_. _Required_.  
-Specifies one or more security rules.  Security rules are specified using the following object:
+Specifies one or more security rules.  Security rules are specified using the following object:  
   - **name**  
-  _Value_. _Required_.
+  _Value_. _Required_.  
   Name of the rule.  
-  - **direction**
+  - **direction**  
   _Value_. _Required_.  
   Valid values: `Inbound` | `Outbound`  
   Direction of traffic to match for the rule.  
   - **priority**  
-  _Value_. _Required_.
+  _Value_. _Required_.  
   Valid values: integers between 100 and 4096  
   Specifies priority of the rule. Rules are applied in priority order. Once a rule is applied, rule processing terminates.  
-  - **sourceAddressPrefix**
+  - **sourceAddressPrefix**  
   _Value_. _Required_.  
   Valid values: Single IP address (i.e. 10.10.10.10), CIDR Block (i.e. 192.168.1.0/24), [default tag][virtual-networks-nsg] to specify a category of IP addresses(VIRTUAL_NETWORK, AZURE_LOADBALANCER, or INTERNET), or * (for all addresses)  
   Source address prefix or tag to match for the rule.  
@@ -57,22 +57,22 @@ Specifies one or more security rules.  Security rules are specified using the fo
   _Value_. _Required_.  
   Valid values: Single IP address (i.e. 10.10.10.10), CIDR Block (i.e. 192.168.1.0/24), [default tag][virtual-networks-nsg] to specify a category of IP addresses(VIRTUAL_NETWORK, AZURE_LOADBALANCER, or INTERNET), or * (for all addresses)  
   Required. Destination address prefix or tag to match for the rule.  
-  - **sourcePortRange**
+  - **sourcePortRange**  
   _Value_. _Required_.  
   Valid values: Single port number from 1 to 65535, port range (i.e. 1-65635), or * (for all ports) 
   Source port range to match for the rule.  
   - **destinationPortRange**  
   _Value_. _Required_.  
   Allowable values: Single port number from 1 to 65535, port range (i.e. 1-65635), or * (for all ports) 
-  Destination port range to match for the rule.   
+  Destination port range to match for the rule.  
   - **access**  
-  _Value_. _Required_.
-  Valid values: `Allow` | `Deny`
-  Allow or deny access if this rule applies.
+  _Value_. _Required_.  
+  Valid values: `Allow` | `Deny`  
+  Allow or deny access if this rule applies.  
   - **protocol**  
   _Value_. _Required_.  
-  Valid values: `TCP` | `UDP` | `*` (all protocols)
-  Specifies type of protocol evaluated for the rule.
+  Valid values: `TCP` | `UDP` | `*` (all protocols)  
+  Specifies type of protocol evaluated for the rule.  
 
 ## Deployment
 
@@ -88,7 +88,7 @@ Note that this building block deployment process requires a parameter file store
   - Select your `Subscription` from the drop-down list.
   - For the `Resource group`, you can either create a new resource group or use an existing resource group.
   - Select the region where you'd like to deploy the VNet in the `Location` drop-down list.  
-4. In the `Settings` section, enter a URI to a valid parameter file. There are several [example parameter files](https://github.com/mspnp/template-building-blocks/tree/master/scenarios/networkSecurityGroups/parameters) in Github. Note that if you want to use one of these parameter files the URI must be the path to the `raw` file in Github.
+4. In the `Settings` section, enter a URI to a valid parameter file. There are several [example parameter files](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/networkSecurityGroups/parameters) in Github. Note that if you want to use one of these parameter files the URI must be the path to the `raw` file in Github.
   > These parameter files require pre-existing VNets and subnets and the deployment will fail if they do not exist. You will need to inspect the parameters to determine these requirements.  
 5. Review the terms and conditions, then click the **I agree to the terms and conditions stated above** checkbox.  
 6. Click the **Purchase** button.  
