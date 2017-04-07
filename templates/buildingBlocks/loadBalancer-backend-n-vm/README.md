@@ -1,8 +1,8 @@
 # loadBalancer-backend-n-vm
 
-Use the loadBalancer-backend-n-vm building block template to deploy an [Azure Load Balancer](https://docs.microsoft.com/azure/load-balancer/load-balancer-overview). This template can also be used to deploy one or more VMs into an availability set .
+Use the loadBalancer-backend-n-vm building block template to deploy an [Azure Load Balancer](https://docs.microsoft.com/azure/load-balancer/load-balancer-overview). This template can also be used to deploy one or more VMs into an availability set.
 
-This building block template supports both public and internal load balancers. You can specify custom balancer rules, frontend and backend IP pools, [probes](https://docs.microsoft.com/azure/load-balancer/load-balancer-custom-probe-overview), and NAT rules.     
+This building block template supports both public and internal load balancers. You can specify custom load balancer rules, frontend and backend IP pools, [probes](https://docs.microsoft.com/azure/load-balancer/load-balancer-custom-probe-overview), and NAT rules.     
 
 
 ## Parameters
@@ -60,8 +60,8 @@ Specifies configuration settings for one or more traffic handling rules. The tra
   Name of the frontend IP pool. See **inboundNatRules** for more information.  
   - **enableFloatingIP**  
   _Value_. _Required_.  
-  Valid values: `true` | `false`
-  Set to `true` to enable the **backendPort** to be reused for other load balancing rules.      
+  Valid values: `true` | `false`  
+  Set to `true` to enable the **backendPort** to be reused for other load balancing rules.  
   - **probeName**  
   _Value_. _Required_.  
   Specifies the name of a health probe used to determine the health of a backend VM. See **probes** for more information.  
@@ -125,7 +125,7 @@ Specifies configuration setting for one or more NAT rules used by the load balan
 
 ### virtualMachinesSettings
 
-The **virtualMachinesSettings** parameter specifies properties for the VMs. For more information on the properties in this section, see the **virtualMachinesSettings** parameter section of the [multi-vm-n-nic-m-storage document](https://github.com/mspnp/template-building-blocks/blob/master/templates/buildingBlocks/multi-vm-n-nic-m-storage/README.md).
+The **virtualMachinesSettings** parameter specifies properties for the VMs. For more information on the properties in this section, see the **virtualMachinesSettings** parameter section of the [multi-vm-n-nic-m-storage document](https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/multi-vm-n-nic-m-storage/README.md).
 
 ### virtualNetworkSettings
 
@@ -150,7 +150,7 @@ _Value_. _Required_.
 Number of VMs to create.  
 - **vmStartIndex**  
 _Value_. _Required_.  
-The starting index of the value that will be added to the **namePrefix** and **computerNamePrefix** names for the VM.
+The starting index of the value that will be added to the **namePrefix** and **computerNamePrefix** names for the VM.  
 
 > Note that if there are fewer storage accounts created than VMs, the building block distributes the VMs across the storage accounts as evenly as possible. For example, if you create 2 storage accounts, and 6 VMs, 3 VMs will be deployed to each storage account. 
 
@@ -168,7 +168,7 @@ Note that this building block deployment process requires a parameter file store
   - Select your `Subscription` from the drop-down list.
   - For the `Resource group`, you can either create a new resource group or use an existing resource group.
   - Select the region where you'd like to deploy the VNet in the `Location` drop-down list.
-4. In the `Settings` section, enter a URI to a valid parameter file. There are several [example parameter files](https://github.com/mspnp/template-building-blocks/tree/master/scenarios/loadBalancer-backend-n-vm/parameters) in Github. Note that if you want to use one of these parameter files the URI must be the path to the `raw` file in Github. These parameter files require pre-existing VNets and subnets and the deployment will fail if they do not exist. You will need to inspect the parameters to determine these requirements.  
+4. In the `Settings` section, enter a URI to a valid parameter file. There are several [example parameter files](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/loadBalancer-backend-n-vm/parameters) in Github. Note that if you want to use one of these parameter files the URI must be the path to the `raw` file in Github. These parameter files require pre-existing VNets and subnets and the deployment will fail if they do not exist. You will need to inspect the parameters to determine these requirements.  
 
 5. Review the terms and conditions, then click the **I agree to the terms and conditions stated above** checkbox.  
 6. Click the **Purchase** button.  
@@ -187,7 +187,7 @@ To deploy the building block template using a parameter file hosted at a publicl
   ```PowerShell
   New-AzureRmResourceGroup -Location <Target Azure Region> -Name <Resource Group Name> 
   ```
-4. Deploy a VNet. For more information see the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/blob/master/templates/buildingBlocks/vnet-n-subnet/README.md) building block template.  
+4. Deploy a VNet. For more information see the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/vnet-n-subnet/README.md) building block template.  
 5. Run the `New-AzureRmResourceGroupDeployment` cmdlet as shown below.  
   ```PowerShell
   New-AzureRmResourceGroupDeployment -ResourceGroupName <Resource Group Name> -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/loadBalancer-backend-n-vm/azuredeploy.json -templateParameterUriFromTemplate <URI of parameter file>
@@ -199,7 +199,7 @@ The cmdlet below deploys the [internal-loadBalancer-multi-backends](https://raw.
 > Note that this deployment requires an existing VNet named **bb-dev-vnet** in the **bb-dev-rg** resource group. **bb-dev-vnet** also requires a subnet named **biz**.
 
 ```PowerShell
-New-AzureRmResourceGroupDeployment -ResourceGroupName bb-dev-rg -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/loadBalancer-backend-n-vm/azuredeploy.json -templateParameterUriFromTemplate https://raw.githubusercontent.com/mspnp/template-building-blocks/master/scenarios/loadBalancer-backend-n-vm/parameters/internal-loadBalancer-multi-backends.parameters.json 
+New-AzureRmResourceGroupDeployment -ResourceGroupName bb-dev-rg -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/loadBalancer-backend-n-vm/azuredeploy.json -templateParameterUriFromTemplate https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/loadBalancer-backend-n-vm/parameters/internal-loadBalancer-multi-backends.parameters.json 
 ```
 
 > The parameter files in the scenarios folder include hard-coded administrator usernames and passwords. It is **strongly** recommended that you immediately change the administrator password on the NVA VMs when the deployment is complete.
@@ -223,7 +223,7 @@ To deploy the building block template using a parameter file hosted at a publicl
   ```AzureCLI
   az group create -l <Target Azure Region> -n <Resource Group Name> 
   ```
-4. Deploy a VNet. For more information see the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/blob/master/templates/buildingBlocks/vnet-n-subnet/README.md) building block template.  
+4. Deploy a VNet. For more information see the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/vnet-n-subnet/README.md) building block template.  
 5. Run the command shown below to deploy the VNet
   ```AzureCLI
   az group deployment create -g <Resource Group Name>
