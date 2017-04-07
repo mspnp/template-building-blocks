@@ -119,7 +119,7 @@ To deploy the building block template using a parameter file hosted at a publicl
   ```
 
 **Example**  
-The cmdlet below deploys the [3-nsgs-on-3-subnets](https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vpn-gateway-vpn-connection/parameters/vpn.parameters.json) parameter file from the [scenarios folder](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/vpn-gateway-vpn-connection) in Github.
+The cmdlet below deploys the [vpn](https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vpn-gateway-vpn-connection/parameters/vpn.parameters.json) parameter file from the [scenarios folder](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/vpn-gateway-vpn-connection) in Github.
 
 > Note that this deployment requires an existing VNet named **bb-dev-vnet** in a resource group named **bb-vpn-rg**. It also requires a virtual network gateway named **bb-hybrid-vpn-vgw**
 
@@ -154,7 +154,7 @@ To deploy the building block template using a parameter file hosted at a publicl
   ```
 
 **Example**  
-The command below deploys the [3-nsgs-on-3-subnets](https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vpn-gateway-vpn-connection/parameters/vpn.parameters.json) parameter file from the [scenarios folder](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/vpn-gateway-vpn-connection) in Github.
+The command below deploys the [vpn](https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vpn-gateway-vpn-connection/parameters/vpn.parameters.json) parameter file from the [scenarios folder](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/vpn-gateway-vpn-connection) in Github.
 
 > Note that this deployment requires an existing VNet named **bb-dev-vnet** in a resource group named **bb-vpn-rg**. It also requires a virtual network gateway named **bb-hybrid-vpn-vgw**
 
