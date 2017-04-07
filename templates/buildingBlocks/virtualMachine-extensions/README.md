@@ -1,167 +1,50 @@
 # virtualMachine-extensions
 
-You can use the virtualMachine-extensions template building block to deploy one or more [virtual machine extensions](https://azure.microsoft.com/en-us/documentation/articles/virtual-machines-windows-extensions-features/) to an Azure virtual machine.
+Use the **virtualMachine-extensions** template building block to deploy one or more [virtual machine extensions](https://docs.microsoft.com/azure/virtual-machines/windows/extensions-features) to an Azure virtual machine.
 
-Extensions can also be configured when creating VMs when using the [multi-vm-n-nic-m-storage](https://github.com/mspnp/template-building-blocks/tree/master/scenarios/multi-vm-n-nic-m-storage) building block, using the same **extensions** parameter structure used in this block.
+Extensions can also be configured when using the [multi-vm-n-nic-m-storage](https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/multi-vm-n-nic-m-storage/README.md) building block, using the same **extensions** parameter structure used in this block.
 
 
 ## Parameters
 
-You only need to specify one parameter in this building block, named **virtualMachinesExtensionSettings**.
+The **virtualMachine-extensions** building block template contains one parameter named **virtualMachinesExtensionSettings**.
  
 ### virtualMachinesExtensionSettings
-The virtualMachinesExtensionSettings parameter is an array of virtualMachinesExtensionSetting objects that can install and configure one or more extensions on virtual machines in your Azure network:
+
+The **virtualMachinesExtensionSettings** parameter specifies the extensions to be installed on VMs. It contains the following properties:
 
 - **vms**  
-Required. The vms property is an array of one or more VM names. Defines which VMs extension will be installed on. 
-  ```json
-  "vms": [ "bb-dev-vm1", "bb-dev-vm2" ]
-  ```
+_Array of values_. _Required_.  
+Specifies an array of names of pre-existing VMs that the extensions will be installed on.    
 - **extensions**  
-Required. The extensions property is an array of one or more extension definition object. Each definition contains the following properties:
-  - **name** - Required. Defines the display name of this extension. 
-  - **publisher** - Required. Extension publisher name. 
-  - **type** - Required. Extension type.
-  - **typeHandlerVersion** - Required. Extensions version to use.
-  - **autoUpgradeMinorVersion** - Required. Sets if the extension is allowed to upgrade automatically. (true / false)
-  - **settingsConfigMapperUri** - Required. URL of template used during the depoyment process. Should always be "https://raw.githubusercontent.com/mspnp/template-building-blocks/master/templates/resources/Microsoft.Compute/virtualMachines/extensions/vm-extension-passthrough-settings-mapper.json" 
-  - **settingsConfig** - Required. Object containing extension specific settings. Can be empty.   
-  - **protectedSettingsConfig** - Required. Object containing extension specific settings that need to be encrypted. Can be empty.
-  
-  ```json
-  "extensions": [
-    {
-      "name": "IaaSAntimalware",
-      "publisher": "Microsoft.Azure.Security",
-      "type": "IaaSAntimalware",
-      "typeHandlerVersion": "1.3",
-      "autoUpgradeMinorVersion": true,
-      "settingsConfigMapperUri": "https://raw.githubusercontent.com/mspnp/template-building-blocks/master/templates/resources/Microsoft.Compute/virtualMachines/extensions/vm-extension-passthrough-settings-mapper.json",
-      "settingsConfig": {
-        "AntimalwareEnabled": true,
-        "RealtimeProtectionEnabled": "false",
-        "ScheduledScanSettings": {
-          "isEnabled": "false",
-          "day": "7",
-          "time": "120",
-          "scanType": "Quick"
-        },
-        "Exclusions": {
-          "Extensions": ".gif",
-          "Paths": "c:\\test",
-          "Processes": "test.exe"
-        }
-      },
-      "protectedSettingsConfig": { }
-    },
-    {
-      "name": "malware",
-      "publisher": "Symantec",
-      "type": "SymantecEndpointProtection",
-      "typeHandlerVersion": "12.1",
-      "autoUpgradeMinorVersion": true,
-      "settingsConfigMapperUri": "https://raw.githubusercontent.com/mspnp/template-building-blocks/master/templates/resources/Microsoft.Compute/virtualMachines/extensions/vm-extension-passthrough-settings-mapper.json",
-      "settingsConfig": {
-      },
-      "protectedSettingsConfig": { }
-    }
-  ]
-  ```
-
-## Example parameters file
-
-The following parameters file assumes we have three VMs in our resource group named **bb-dev-vm1**, **bb-dev-vm2**, and **bb-dev-vm3**. The parameters will install and configure both the IaaSAntimalware and the Symantic extensions on **bb-dev-vm1** and **bb-dev-vm2**, while only IaaSAntimalware is set up on **bb-dev-vm3**:
- 
-```json
-{
-  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "virtualMachinesExtensionSettings": {
-      "value": [
-        {
-          "vms": [ "bb-dev-vm1", "bb-dev-vm2" ],
-          "extensions": [
-            {
-              "name": "IaaSAntimalware",
-              "publisher": "Microsoft.Azure.Security",
-              "type": "IaaSAntimalware",
-              "typeHandlerVersion": "1.3",
-              "autoUpgradeMinorVersion": true,
-              "settingsConfigMapperUri": "https://raw.githubusercontent.com/mspnp/template-building-blocks/master/templates/resources/Microsoft.Compute/virtualMachines/extensions/vm-extension-passthrough-settings-mapper.json",
-              "settingsConfig": {
-                "AntimalwareEnabled": true,
-                "RealtimeProtectionEnabled": "false",
-                "ScheduledScanSettings": {
-                  "isEnabled": "false",
-                  "day": "7",
-                  "time": "120",
-                  "scanType": "Quick"
-                },
-                "Exclusions": {
-                  "Extensions": ".gif",
-                  "Paths": "c:\\test",
-                  "Processes": "test.exe"
-                }
-              },
-              "protectedSettingsConfig": { }
-            },
-            {
-              "name": "malware",
-              "publisher": "Symantec",
-              "type": "SymantecEndpointProtection",
-              "typeHandlerVersion": "12.1",
-              "autoUpgradeMinorVersion": true,
-              "settingsConfigMapperUri": "https://raw.githubusercontent.com/mspnp/template-building-blocks/master/templates/resources/Microsoft.Compute/virtualMachines/extensions/vm-extension-passthrough-settings-mapper.json",
-              "settingsConfig": {
-              },
-              "protectedSettingsConfig": { }
-            }
-          ]
-        },
-        {
-          "vms": [ "bb-dev-vm3" ],
-          "extensions": [
-            {
-              "name": "IaaSAntimalware",
-              "publisher": "Microsoft.Azure.Security",
-              "type": "IaaSAntimalware",
-              "typeHandlerVersion": "1.3",
-              "autoUpgradeMinorVersion": true,
-              "settingsConfigMapperUri": "https://raw.githubusercontent.com/mspnp/template-building-blocks/master/templates/resources/Microsoft.Compute/virtualMachines/extensions/vm-extension-passthrough-settings-mapper.json",
-              "settingsConfig": {
-                "AntimalwareEnabled": true,
-                "RealtimeProtectionEnabled": "false",
-                "ScheduledScanSettings": {
-                  "isEnabled": "false",
-                  "day": "7",
-                  "time": "120",
-                  "scanType": "Quick"
-                },
-                "Exclusions": {
-                  "Extensions": ".gif",
-                  "Paths": "c:\\test",
-                  "Processes": "test.exe"
-                }
-              },
-              "protectedSettingsConfig": { }
-            }
-          ]
-        }
-      ]
-    }
-  }
-}
-
-
-```
-
-
-
-<!--
-Image goes here
- -->
-
+_Array of objects_. _Required_.  
+Specifies one or more extension definitions. Each extension definition is specified using the following object:  
+  - **name**  
+  _Value_. _Required_.  
+  Defines the display name of this extension.  
+  - **publisher**
+  _Value_. _Required_.  
+  Extension publisher name.  
+  - **type**  
+  _Value_. _Required_.  
+  Extension type.  
+  - **typeHandlerVersion**  
+  _Value_. _Required_.  
+  Version of extension to use.  
+  - **autoUpgradeMinorVersion**
+  _Value_. _Required_.  
+  Valid values: `true` | `false`  
+  Set to `true` if the extension can upgrade automatically. Otherwise `false`.  
+  - **settingsConfigMapperUri**  
+  _Value_. _Required_.  
+  Valid value:  `https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/templates/resources/Microsoft.Compute/virtualMachines/extensions/vm-extension-passthrough-settings-mapper.json`  
+  URL of template used during deployment process.  
+  - **settingsConfig**  
+  _Object_. _Required_.  
+  Specifies extension specific settings.  Set to an empty object for no extension specific settings.  
+  - **protectedSettingsConfig**  
+  _Object_. _Required_.  
+  Specifies extension specific settings that are encrypted during deployment. Set to an empty object for no extension specific settings.  
 
 ## Deployment
 
@@ -169,57 +52,83 @@ You can deploy a building block by using the Azure portal, PowerShell, or Azure 
 
 ### Azure portal
 
-Note that the building block deployment process will require you store your parameters file in a location with a publicly available URI, which you provide during deployment.
+You can deploy this building block template using the Azure portal, PowerShell, or Azure CLI.
 
-[![Click to deploy template on Azure](https://camo.githubusercontent.com/9285dd3998997a0835869065bb15e5d500475034/687474703a2f2f617a7572656465706c6f792e6e65742f6465706c6f79627574746f6e2e706e67 "Click to deploy template on Azure")](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmspnp%2Ftemplate-building-blocks%2Fmaster%2Fscenarios%2FvirtualMachine-extensions%2Fazuredeploy.json)  
+### Azure portal
 
-1. Click the above deployment button, the Azure portal will be opened.
-1. In the deployment's **TEMPLATEPARAMETERURI** parameter, specify the public URI where your parameters file is located. 
-2. Specify or create the Resource Group where you want the VNet deployed to.
-3. Click the **Create** button.
+Note that this building block deployment process requires a parameter file stored in a location with a publicly available URI.
+
+1. Right click the button below and select the option to open the link in a new tab or a new window:<br><a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmspnp%2Ftemplate-building-blocks%2Fv1.0.0%2Fscenarios%2FvirtualMachine-extensions%2Fazuredeploy.json"><img src = "http://azuredeploy.net/deploybutton.png"/></a>
+2. Wait for the Azure Portal to open.  
+3. In the `Basics` section:
+  - Select your `Subscription` from the drop-down list.
+  - For the `Resource group`, you can either create a new resource group or use an existing resource group.
+  - Select the region where you'd like to deploy the VNet in the `Location` drop-down list.  
+4. In the `Settings` section, enter a URI to a valid parameter file. There are several [example parameter files](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/virtualMachine-extensions/parameters) in Github. Note that if you want to use one of these parameter files the URI must be the path to the `raw` file in Github. These parameter files require pre-existing VNets and subnets and the deployment will fail if they do not exist. You will need to inspect the parameters to determine these requirements.  
+5. Review the terms and conditions, then click the **I agree to the terms and conditions stated above** checkbox.  
+6. Click the **Purchase** button.  
+7. Wait for the deployment to complete.
 
 ### PowerShell
 
-You can use the **New-AzureRmResourceGroupDeployment** to deploy the building block template using a parameter file located at a publicly available URI.
+To deploy the building block template using a parameter file hosted at a publicly available URI, follow these steps:
 
-1. Upload a parameters file to a location with a publicly available URI.
-2. Run the **New-AzureRmResourceGroupDeployment** cmdlet as shown below.
-```PowerShell
-New-AzureRmResourceGroupDeployment -ResourceGroupName <Resource Group Name>
-  -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/master/scenarios/virtualMachine-extensions/azuredeploy.json 
-  -templateParameterUriFromTemplate <URI of parameters file>
-```
+1. Upload your parameter file to a location with a publicly available URI.
+2. Log in to Azure using your selected subscription:
+  ```Powershell
+  Login-AzureRmAccount -SubscriptionId <your subscription ID>
+  ```
+3. If you do not have an existing resource group, run the `New-AzureRmResourceGroup` cmdlet to create one as shown below:
+  ```PowerShell
+  New-AzureRmResourceGroup -Location <Target Azure Region> -Name <Resource Group Name> 
+  ```
+4. Deploy a VNet. For more information see the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/vnet-n-subnet/README.md) building block template.  
+5. Run the `New-AzureRmResourceGroupDeployment` cmdlet as shown below.  
+  ```PowerShell
+  New-AzureRmResourceGroupDeployment -ResourceGroupName <Resource Group Name> -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/virtualMachine-extensions/azuredeploy.json -templateParameterUriFromTemplate <URI of parameter file>
+  ```
 
 **Example**  
-The cmdlet below deploys a virtualMachine-extensions building block to the **app1-rg** resource group using a parameter file hosted in Azure blob storage.
+The cmdlet below deploys the [multiple-extensions-multiple-vms](https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/virtualMachine-extensions/parameters/multiple-extensions-multiple-vms.parameters.json) parameter file from the [scenarios folder](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/virtualMachine-extensions) in Github.
+
+> Note that this deployment requires two existing VMs, one named **bb-dev-biz-vm1** and one named **bb-dev-biz-vm2**.
 
 ```PowerShell
-New-AzureRmResourceGroupDeployment -ResourceGroupName app1-rg -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/master/scenarios/virtualMachine-extensions/azuredeploy.json -templateParameterUriFromTemplate http://buildingblocksample.blob.core.windows.net/building-block-params/vmext.parameters.json
-```
+New-AzureRmResourceGroupDeployment -ResourceGroupName bb-dev-rg -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/virtualMachine-extensions/azuredeploy.json -templateParameterUriFromTemplate https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/virtualMachine-extensions/parameters/multiple-extensions-multiple-vms.parameters.json
 
 ### Azure CLI
 
-To deploy the building block using a parameters file available from a URI:
+Before you begin, install the latest version of the [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli).
 
-1. Upload a parameters file to a location with a publicly available URL.
-2. Run the command shown below to deploy the VNet
-```AzureCLI
-azure config mode arm
-azure group deployment create <Resource Group Name>
-  --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/master/scenarios/virtualMachine-extensions/azuredeploy.json 
-  -p "{\"templateParameterUri\":{\"value\":\"<parameters File Public URI>\"}}"
-```
+To deploy the building block template using a parameter file hosted at a publicly available URI, follow these steps:
+
+1. Upload your parameter file to a location with a publicly available URI.  
+2. Log in to Azure using your selected subscripton:  
+  ```AzureCLI
+  az login
+  ```
+3. Set your selected subscription:
+  ```AzureCLI
+  az account set --subscription <your subscripton ID>
+  ```
+4. If you do not have an existing resource group, create a new one using the following command:
+  ```AzureCLI
+  az group create -l <Target Azure Region> -n <Resource Group Name> 
+  ```
+5. Deploy a VNet. For more information see the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/vnet-n-subnet/README.md) building block template.  
+6. Run the command shown below:
+  ```AzureCLI
+  az group deployment create -g <Resource Group Name>
+  --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/virtualMachine-extensions/azuredeploy.json
+  --parameters "{\"templateParameterUri\":{\"value\":\"<parameter file public URI>\"}}"
+  ```
 
 **Example**  
-The command below deploys a virtualMachine-extensions building block to the **app1-rg** resource group using a parameter file hosted in Azure blob storage.
+The command below deploys the [vpn](https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/virtualMachine-extensions/parameters/multiple-extensions-multiple-vms.parameters.json) parameter file from the [scenarios folder](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/virtualMachine-extensions) in Github.
+
+> Note that this deployment requires two existing VMs, one named **bb-dev-biz-vm1** and one named **bb-dev-biz-vm2**.
 
 ```AzureCLI
-azure config mode arm
-azure group deployment create app1-rg --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/master/scenarios/virtualMachine-extensions/azuredeploy.json -p "{\"templateParameterUri\":{\"value\":\"http://buildingblocksample.blob.core.windows.net/building-block-params/vmext.parameters.json\"}}"
+az login
+az group deployment create -g bb-dev-rg --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/virtualMachine-extensions/azuredeploy.json --parameters "{\"templateParameterUri\":{\"value\":\"https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/virtualMachine-extensions/parameters/multiple-extensions-multiple-vms.parameters.json\"}}"
 ```
-
-## Extending the building block
-
-You can extend existing building blocks, and create your own building blocks. Each building block is created using a set of templates. The flowchart below represents the different templates used to create the VM extensions building block.
-
-![DMZ template flowchart](./flowchart-extensions.png)
