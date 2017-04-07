@@ -19,10 +19,10 @@ The endpoint object contains values that configure the DMZ endpoint. DMZ endpoin
   - **hasPublicEndpoint**  
   _Value_. _Required_.  
   Valid values: `yes` | `no`  
-  Specifies if DMZ faces the public internet or not. If `yes`, a public IP will be assigned to the load balancer used by the NVAs.
+  Specifies if DMZ faces the public internet or not. If `yes`, a public IP will be assigned to the load balancer used by the NVAs.  
   - **domainNameLabel**  
   _Value_. _Required_.  
-  Specifies the DNS domain name label for the public IP. Creates a mapping from _domainnamelabel.location_.cloudapp.azure.com to the public IP address in Azure DNS servers.
+  Specifies the DNS domain name label for the public IP. Creates a mapping from _domainnamelabel.location_.cloudapp.azure.com to the public IP address in Azure DNS servers.  
   - **internalLoadBalancerSettings**  
   _Object_. _Required_.  
   If **hasPublicEndpoint** is set to `no`, this object specifies the private IP address assigned to the internal load balancer. Set to an empty object if  **hasPublicEndpoint** is set to `yes`. The internal load balancer settings are specified by the following object:  
@@ -47,7 +47,7 @@ Specifies the configuration information for the load balancer and VMs that perfo
     Protocol used for the load balancing rule.  
     - **healthProbe**  
     _Value_. _Required_.  
-    Name of the health probe object from the **healthProbes** array below that will be used by the load balancer to monitor health of the VMs.
+    Name of the health probe object from the **healthProbes** array below that will be used by the load balancer to monitor health of the VMs.  
   - **healthProbes**  
   _Array of objects_. _At least one required_.  
   Specifies the configuration information for a health probe used by the load balancer to determine the health of a VM. The health probe configuration information is specified by the following object:  
