@@ -1,14 +1,14 @@
 # multi-vm-n-nic-m-storage
 
-The multi-vm-n-nic-m-storage template building block deploys [virtual machines (VMs)](https://docs.microsoft.com/azure/virtual-machines/) to an [Azure virtual network (VNet)](https://docs.microsoft.com/azure/virtual-network/). 
+The multi-vm-n-nic-m-storage template building block deploys [virtual machines (VMs)](https://docs.microsoft.com/azure/virtual-machines/) to an existing [Azure virtual network (VNet)](https://docs.microsoft.com/azure/virtual-network/). 
 
-If you don't have a VNet set up, you can use the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/tree/master/scenarios/vnet-n-subnet) building block to create one.
+If you don't have a VNet deployed, use the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/tree/master/scenarios/vnet-n-subnet) building block to create one.
 
 In addition to defining the OS and Storage configuration of newly created VMs, this block allows you to create multiple [network interfaces (NICs)](https://docs.microsoft.com/azure/virtual-network/resource-groups-networking#nic) and configure [VM extensions](https://docs.microsoft.com/azure/virtual-machines/windows/extensions-features) for your VMs. It also allows you to create a new availability set for you machines, or use an existing one.
 
 ## Parameters
 
- This building block includes three parameters: **virtualMachinesSettings**, **virtualNetworkSettings**, and **buildingBlockSettings**. 
+This building block includes three parameters: **virtualMachinesSettings**, **virtualNetworkSettings**, and **buildingBlockSettings**. 
 
 ### virtualMachinesSettings
 
@@ -29,13 +29,13 @@ The **virtualMachinesSettings** parameter specifies properties for the VMs. It c
   Specifies the operating system to install.  
 - **adminUsername**  
    _Value._ _Required_.  
-  Administrator user name for the VM operating system (OS).  
+  Administrator user name for the VM operating system (OS). Note that if you use this template in a production environment, you should store these parameter files in a secure location to prevent leakage of the administrator username.
 - **adminPassword**  
   _Value._ _Required if **osAuthenticationType** is **password**, optional if **ssh**_.  
-  Administrator password for the VM OS.  
+  Administrator password for the VM OS.  Note that if you use this template in a production environment, you should store these parameter files in a secure location to prevent leakage of the administrator password.
 - **sshPublicKey**  
   _Value._ _Required if **osAuthenticationType** is **ssh**, optional if **password**_.  
-  SSH key for the VM OS Administrator account.  
+  SSH key for the VM OS Administrator account. Note that if you use this template in a production environment, you should store these parameter files in a secure location to prevent leakage of the SSH key.
 - **osAuthenticationType**  
   _Value_. _Required_.  
   Valid values: `password` | `ssh`  
@@ -72,7 +72,6 @@ The **virtualMachinesSettings** parameter specifies properties for the VMs. It c
     _Value_. _Required_.  
     Valid values: `true` | `false`  
     Set to `true` if this is the primary NIC for the VM, otherwise `false`.  
-
 - **imageReference**  
   _Object_. _Required_.  
   Specifies the OS image for the VM. The operating system is specified by the following object:  
@@ -87,8 +86,7 @@ The **virtualMachinesSettings** parameter specifies properties for the VMs. It c
     OS Product SKU.  
     - **version**  
     _Value_. _Required_.  
-    OS Version. Set this to `latest` to use the latest version of the OS.
-
+    OS Version. Set this to `latest` to use the latest version of the OS.  
 - **dataDisks**  
 _Object_. _Required_.  
 Specifies the number and other properties for data disks created for the VMs.  The data disk properties are specified using the following object:  
@@ -109,14 +107,12 @@ Specifies the number and other properties for data disks created for the VMs.  T
     _Value_. _Required_.  
     Valid value: `Empty`  
     Specifes the type of data disk created. Only `Empty` disks are currently supported.  
-
 - **osDisk**  
 _Object_. _Required_.  
 Specifies properties for OS disks created for the VMs. The OS disk properties are specified using the following object:  
   - **caching**  
   Valid values: `Read` | `ReadWrite` | `None`  
-  Specifies cache settings for the data disk. `Read` sets write through caching, `ReadWrite` sets write back caching, and `None` sets no caching.  
-  
+  Specifies cache settings for the data disk. `Read` sets write through caching, `ReadWrite` sets write back caching, and `None` sets no caching.    
 - **extensions**  
   _Array of objects_. _At least one required_.  
   Specifies configuration information for [VM Extensions](https://docs.microsoft.com/azure/virtual-machines/virtual-machines-linux-extensions-features).  The VM extension configuration is specified using the following object:  
@@ -197,10 +193,11 @@ Note that this building block deployment process requires a parameter file store
   - Select your `Subscription` from the drop-down list.
   - For the `Resource group`, you can either create a new resource group or use an existing resource group.
   - Select the region where you'd like to deploy the VNet in the `Location` drop-down list.
-4. In the `Settings` section, enter a URI to a valid parameter file. There are several [example parameter files](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/multi-vm-n-nic-m-storage/parameters) in Github. Note that if you want to use one of these parameter files the URI must be the path to the `raw` file in Github. These parameter files require pre-existing VNets and subnets and the deployment will fail if they do not exist. You will need to inspect the parameters to determine these requirements.  
-5. Review the terms and conditions, then click the **I agree to the terms and conditions stated above** checkbox.  
-6. Click the **Purchase** button.  
-7. Wait for the deployment to complete.  
+4. Deploy a VNet. For more information see the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/vnet-n-subnet/README.md) building block template.
+5. In the `Settings` section, enter a URI to a valid parameter file. There are several [example parameter files](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/multi-vm-n-nic-m-storage/parameters) in Github. Note that if you want to use one of these parameter files the URI must be the path to the `raw` file in Github. These parameter files require pre-existing VNets and subnets and the deployment will fail if they do not exist. You will need to inspect the parameters to determine these requirements.  
+6. Review the terms and conditions, then click the **I agree to the terms and conditions stated above** checkbox.  
+7. Click the **Purchase** button.  
+8. Wait for the deployment to complete.  
 
 ### PowerShell
 
@@ -251,8 +248,9 @@ To deploy the building block template using a parameter file hosted at a publicl
   ```AzureCLI
   az group create -l <Target Azure Region> -n <Resource Group Name> 
   ```
-5. Deploy a VNet. For more information see the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/vnet-n-subnet/README.md) building block template.  
-6. Run the command shown below:
+5. Deploy a VNet. For more information see the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/vnet-n-subnet/README.md) building block template.
+6. Deploy a VNet. For more information see the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/vnet-n-subnet/README.md) building block template.  
+7. Run the command shown below:
   ```AzureCLI
   az group deployment create -g <Resource Group Name>
   --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/multi-vm-n-nic-m-storage/azuredeploy.json
