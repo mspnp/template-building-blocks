@@ -2,7 +2,7 @@
 
 Use the vpn-gateway-vpn-connection building block to deploy a [VPN Gateway](https://azure.microsoft.com/en-us/documentation/articles/vpn-gateway-about-vpngateways/) to an existing [Azure virtual network (VNet)](https://azure.microsoft.com/en-us/documentation/articles/resource-groups-networking/#virtual-network). The template creates a virtual network gateway, an associated public IP address, and configures the settings related to your local network gateway.
 
-> **Note** that this building block template requires a pre-existing VNet with a subnet named `GatewaySubnet`. If your infrastructure does not have a VNet with these requirements, use the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/blob/master/templates/buildingBlocks/vnet-n-subnet/README.md) building block template to create one.
+> **Note** that this building block template requires a pre-existing VNet with a subnet named `GatewaySubnet`. If your infrastructure does not have a VNet with these requirements, use the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/vnet-n-subnet/README.md) building block template to create one.
 
 ## Parameters
 
@@ -94,7 +94,7 @@ Note that this building block deployment process requires a parameter file store
   - Select your `Subscription` from the drop-down list.
   - For the `Resource group`, you can either create a new resource group or use an existing resource group.
   - Select the region where you'd like to deploy the VNet in the `Location` drop-down list.  
-4. In the `Settings` section, enter a URI to a valid parameter file. There are several [example parameter files](https://github.com/mspnp/template-building-blocks/tree/master/scenarios/vpn-gateway-vpn-connection/parameters) in Github. Note that if you want to use one of these parameter files the URI must be the path to the `raw` file in Github. These parameter files require pre-existing VNets and subnets and the deployment will fail if they do not exist. You will need to inspect the parameters to determine these requirements.  
+4. In the `Settings` section, enter a URI to a valid parameter file. There are several [example parameter files](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/vpn-gateway-vpn-connection/parameters) in Github. Note that if you want to use one of these parameter files the URI must be the path to the `raw` file in Github. These parameter files require pre-existing VNets and subnets and the deployment will fail if they do not exist. You will need to inspect the parameters to determine these requirements.  
 5. Review the terms and conditions, then click the **I agree to the terms and conditions stated above** checkbox.  
 6. Click the **Purchase** button.  
 7. Wait for the deployment to complete.
