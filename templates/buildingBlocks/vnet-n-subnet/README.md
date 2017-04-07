@@ -1,6 +1,6 @@
 # vnet-n-subnet
 
-Use the vnet-n-subnet building block template to deploy an [Azure virtual network (VNet)](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-overview). This building block deploys a virtual network with no additional resources. To deploy a VNet with that includes Network Security Groups (NSGs) or User Defined Routes (UDRs), use the following buildling blocks: 
+Use the vnet-n-subnet building block template to deploy an [Azure virtual network (VNet)](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-overview). This building block deploys a virtual network with no additional resources. To deploy a VNet with that includes Network Security Groups (NSGs) or User Defined Routes (UDRs), use the following building blocks: 
 
 - [Network Security Groups](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/templates/buildingBlocks/networkSecurityGroups)
 - [User Defined Routes](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/templates/buildingBlocks/userDefinedRoutes)
@@ -15,10 +15,10 @@ _Value_. _Required_.
 Name of the VNet.
 - **addressPrefixes**  
 _Array of values_. _Required_.  
-Defines the CIDR address blocks for the entire VNet. Supports multiple CIDR prefixes.  
+Specifies the CIDR address blocks for the entire VNet. Supports multiple CIDR prefixes.  
 - **subnets**  
 _Array of objects_. _Required_.  
-Defines the subnets within the VNet. Subnets are defined by the following object:
+Specifies the subnets within the VNet. Subnets are specified by the following object:
   - **name**  
    _Value_. _Required._  
    Name of the subnet.  
