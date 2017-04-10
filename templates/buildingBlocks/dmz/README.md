@@ -1,6 +1,6 @@
 # DMZ
 
-Use the DMZ template building block template to create a DMZ capable of allowing access to specific network resources while keeping the rest of the network safely isolated from external users. This building block tempalte can be used to secure traffic between Azure and an on-premises datacenter or between Azure and the Internet. 
+Use the DMZ template building block template to create a perimeter network, also known as a DMZ. A DMZ allows access to specific network resources while keeping the rest of the network safely isolated from external users. This building block tempalte can be used to deploy resources that secure traffic between Azure and an on-premises datacenter or between Azure and the Internet. 
 
 ## Parameters
 
@@ -15,11 +15,11 @@ _Value_. _Required_.
 The name prefix applied to all VMs, appliances, and availability sets created by this template.   
 - **endpoint**  
 _Object_. _Required_.  
-The endpoint object contains values that configure the DMZ endpoint. DMZ endpoints are defined by the following object:
+The endpoint object contains values that configure the DMZ endpoint. DMZ endpoints are specified using the following object:
   - **hasPublicEndpoint**  
   _Value_. _Required_.  
   Valid values: `yes` | `no`  
-  Specifies if DMZ faces the public internet or not. If `yes`, a public IP will be assigned to the load balancer used by the NVAs.  
+  Specifies if the DMZ includes a connection public internet. If `yes`, a public IP will be assigned to the load balancer used by the NVAs.  
   - **domainNameLabel**  
   _Value_. _Required_.  
   Specifies the DNS domain name label for the public IP. Creates a mapping from _domainnamelabel.location_.cloudapp.azure.com to the public IP address in Azure DNS servers.  
@@ -238,8 +238,8 @@ To deploy the building block template using a parameter file hosted at a publicl
   ```AzureCLI
   az group create -l <Target Azure Region> -n <Resource Group Name> 
   ```
-4. Deploy a VNet. For more information see the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/vnet-n-subnet/README.md) building block template.  
-5. Run the `az group deployment create` command as shown below:
+5. Deploy a VNet. For more information see the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/vnet-n-subnet/README.md) building block template.  
+6. Run the `az group deployment create` command as shown below:
   ```AzureCLI
   az group deployment create -g <Resource Group Name>
   --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/dmz/azuredeploy.json 
