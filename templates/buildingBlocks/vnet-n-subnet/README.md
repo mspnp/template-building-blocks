@@ -35,7 +35,7 @@ You can deploy a building block template using the Azure portal, PowerShell, or 
 
 ### Azure portal
 
-Note that the building block deployment process will require you store your parameters file in a location with a publicly available URI, which you provide during deployment.
+Note that deploying via Azure Portal requires your parameter file to have a publicly available URI.
 
 1. Right click the button below and select the option to open the link in a new tab or a new window:<br><a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmspnp%2Ftemplate-building-blocks%2Fv1.0.0%2Fscenarios%2Fvnet-n-subnet%2Fazuredeploy.json" target="_blank"><img src = "http://azuredeploy.net/deploybutton.png"/></a>
 2. Wait for the Azure Portal to open.
@@ -53,15 +53,15 @@ Note that the building block deployment process will require you store your para
 To deploy the building block template using a parameter file hosted at a publicly available URI, follow these steps:
 
 1. Upload your parameter file to a location with a publicly available URI.
-2. Log in to Azure using your selected subscription:
+2. Log in to Azure using your selected subscription:  
   ```Powershell
   Login-AzureRmAccount -SubscriptionId <your subscription ID>
   ```
-3. If you do not have an existing resource group, run the **New-AzureRmResourceGroup** cmdlet to create one as shown below:
+3. If you do not have an existing resource group, run the **New-AzureRmResourceGroup** cmdlet to create one as shown below:  
   ```PowerShell
   New-AzureRmResourceGroup -Location <Target Azure Region> -Name <Resource Group Name> 
   ```
-4. Run the **New-AzureRmResourceGroupDeployment** cmdlet as shown below.
+4. Run the **New-AzureRmResourceGroupDeployment** cmdlet as shown below:  
   ```PowerShell
   New-AzureRmResourceGroupDeployment -ResourceGroupName <Resource Group Name> -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vnet-n-subnet/azuredeploy.json -templateParameterUriFromTemplate <URI of parameter file>
   ```
@@ -82,19 +82,19 @@ Before you begin, install the latest version of the [Azure CLI](https://docs.mic
 To deploy the building block template using a parameter file hosted at a publicly available URI, follow these steps:
 
 1. Upload your parameter file to a location with a publicly available URI.
-2. Log in to Azure using your selected subscripton:
+2. Log in to Azure using your selected subscripton:  
   ```AzureCLI
   az login
   ```
-3. Set your selected subscription:
+3. Set your selected subscription:  
   ```AzureCLI
   az account set --subscription <your subscripton ID>
   ```
-4. If you do not have an existing resource group, create a new one using the following command:
+4. If you do not have an existing resource group, create a new one using the following command:  
   ```AzureCLI
   az group create -l <Target Azure Region> -n <Resource Group Name> 
   ```
-5. Run the command shown below to deploy the VNet
+5. Run the command below to deploy the VNet:  
   ```AzureCLI
   az group deployment create -g <Resource Group Name>
   --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vnet-n-subnet/azuredeploy.json 
