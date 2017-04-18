@@ -1,4 +1,8 @@
-# multi-vm-n-nic-m-storage
+---
+title: Windows and Linux VMs
+---
+
+# Windows and Linux VMs
 
 The multi-vm-n-nic-m-storage template building block deploys [virtual machines (VMs)](https://docs.microsoft.com/azure/virtual-machines/) to an existing [Azure virtual network (VNet)](https://docs.microsoft.com/azure/virtual-network/). 
 

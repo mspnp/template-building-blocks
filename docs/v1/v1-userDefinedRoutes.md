@@ -1,6 +1,10 @@
-# userDefinedRoutes
+---
+title: User Defined Routes
+---
 
-Use the userDefinedRoutes template building block to deploy one or more [User Defined Routes (UDRs)](https://docs.microsoft.com/azure/virtual-network/virtual-networks-udr-overview) to an [Azure virtual network (VNet)](https://docs.microsoft.com/azure/virtual-network/virtual-networks-overview). 
+# User Defined Routes
+
+Use the **userDefinedRoutes** template building block to deploy one or more [User Defined Routes (UDRs)](https://docs.microsoft.com/azure/virtual-network/virtual-networks-udr-overview) to an [Azure virtual network (VNet)](https://docs.microsoft.com/azure/virtual-network/virtual-networks-overview). 
 
 UDRs are deployed independently of the VNet, so this building block template requires a pre-existing resource group and VNet. Use the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/vnet-n-subnet) building block to create these resources if they don't already exist.
 

@@ -1,4 +1,8 @@
-# loadBalancer-backend-n-vm
+---
+title: Load Balancer
+---
+
+# Load Balancer
 
 Use the loadBalancer-backend-n-vm building block template to deploy an [Azure Load Balancer](https://docs.microsoft.com/azure/load-balancer/load-balancer-overview). This template can also be used to deploy one or more VMs into an availability set.
 

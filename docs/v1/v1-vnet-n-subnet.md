@@ -1,4 +1,8 @@
-# vnet-n-subnet
+---
+title: Virtual Network
+---
+
+# Virtual Network
 
 Use the vnet-n-subnet building block template to deploy an [Azure virtual network (VNet)](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-overview). This building block deploys a virtual network with no additional resources. To deploy a VNet with that includes Network Security Groups (NSGs) or User Defined Routes (UDRs), use the following building blocks: 
 

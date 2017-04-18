@@ -1,3 +1,7 @@
+---
+title: Virtual Machine Extensions
+---
+
 # virtualMachine-extensions
 
 Use the **virtualMachine-extensions** template building block to deploy one or more [virtual machine extensions](https://docs.microsoft.com/azure/virtual-machines/windows/extensions-features) to an Azure virtual machine.

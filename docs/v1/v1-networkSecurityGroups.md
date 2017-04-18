@@ -1,4 +1,8 @@
-# networkSecurityGroups
+---
+title: Network Security Groups
+---
+
+# Network Security Groups
 
 Use the **networkSecurityGroups** building block template to deploy one or more [Network Security Groups (NSG)][virtual-networks-nsg]. The one or more NSGs are with a subnet on an existing [Azure virtual network (VNet)](https://docs.microsoft.com/azure/virtual-network/virtual-networks-overview). 
 

@@ -1,4 +1,8 @@
-# vpn-gateway-vpn-connection
+---
+title: VPN
+---
+
+# VPN
 
 Use the vpn-gateway-vpn-connection building block to deploy a [VPN Gateway](https://azure.microsoft.com/en-us/documentation/articles/vpn-gateway-about-vpngateways/) to an existing [Azure virtual network (VNet)](https://azure.microsoft.com/en-us/documentation/articles/resource-groups-networking/#virtual-network). The template creates a virtual network gateway, an associated public IP address, and configures the settings related to your local network gateway.
 
