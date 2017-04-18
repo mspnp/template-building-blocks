@@ -1,0 +1,259 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>petertaylor9999.github.io by petertaylor9999</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=832f80dc336c48600a6d5ad79e9d5f216d2b7335">
+    <!--<link rel="stylesheet" href="/assets/css/overrides.css">-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <style>
+        .rotate{
+            -moz-transition: all 0.5s linear;
+            -webkit-transition: all 0.5s linear;
+            transition: all 0.5s linear;
+        }
+
+        .rotate.down{
+            -ms-transform:rotate(90deg);
+            -moz-transform:rotate(90deg);
+            -webkit-transform:rotate(90deg);
+            transform:rotate(90deg);
+        }
+
+        .tocLink{
+            cursor: pointer;
+        }        
+        .wrapper1 { width: 860px; margin: 0; }
+
+        blockquote {
+            font-size: 12px
+        }
+
+    </style>
+  </head>
+  <body>
+    <div class="wrapper1">
+      <header>
+          <h1>Template Building Blocks</h1>
+          <div id="toc"><div class="list-group list-group-root well toc">
+  
+  <!--<div class="list-group toc">-->
+    <div class="list-group-item tocLink" link="http://localhost:4000">Introduction</div>
+    <a href="#toc1" class="list-group-item tocNode" data-toggle="collapse"><span class="glyphicon glyphicon-chevron-right rotate"></span> Building Blocks Version 1</a>
+    <div id="toc1" class="collapse list-group">
+      <div class="list-group-item tocLink" link="http://localhost:4000/v1/v1-dmz.html">DMZ</div>
+      <div class="list-group-item tocLink" link="http://github.com/pages/petertaylor9999/petertaylor9999.github.io/v1/v1-loadBalancer-backend-n-vm.html">Load Balancer</div>
+      <div class="list-group-item tocLink" link="http://github.com/pages/petertaylor9999/petertaylor9999.github.io/v1-multi-vm-n-nic-m-storage.html">Linux and Windows VMs</div>
+      <div class="list-group-item tocLink" link="http://github.com/pages/petertaylor9999/petertaylor9999.github.io/v1-networkSecurityGroups.html">Network Security Groups</div>
+      <div class="list-group-item tocLink" link="http://github.com/pages/petertaylor9999/petertaylor9999.github.io/v1-virtualMachine-extensions.html">Virtual Machine Extensions</div>
+      <div class="list-group-item tocLink" link="http://github.com/pages/petertaylor9999/petertaylor9999.github.io/v1-vnet-n-subnet.html">Virtual Network</div>
+      <div class="list-group-item tocLink" link="http://github.com/pages/petertaylor9999/petertaylor9999.github.io/v1-vpn-gateway-vpn-connection.html">VPN</div>
+    </div>
+    
+    <a href="#toc2" class="list-group-item tocNode" data-toggle="collapse"><span class="glyphicon glyphicon-chevron-right rotate"></span> Building Blocks Version 2</a>
+    <div id="toc2" class="collapse list-group">
+      <!--<div class="list-group-item tocLink" link="http://github.com/pages/petertaylor9999/petertaylor9999.github.io/v1-dmz.html">DMZ</div>-->
+    </div>
+    
+  <!--</div> -->
+
+</div></div>
+        <!--<h1>petertaylor9999.github.io</h1>
+        <p></p>-->
+
+        <!--
+          <p class="view"><a href="http://github.com/petertaylor9999/petertaylor9999.github.io">View the Project on GitHub <small></small></a></p>
+          
+        -->
+
+        <!---->
+
+        <!---->
+      </header>
+      <section id="content">
+
+      <h1 id="virtualmachine-extensions">virtualMachine-extensions</h1>
+
+<p>Use the <strong>virtualMachine-extensions</strong> template building block to deploy one or more <a href="https://docs.microsoft.com/azure/virtual-machines/windows/extensions-features">virtual machine extensions</a> to an Azure virtual machine.</p>
+
+<p>Extensions can also be configured when using the <a href="https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/multi-vm-n-nic-m-storage/README.md">multi-vm-n-nic-m-storage</a> building block, using the same <strong>extensions</strong> parameter structure used in this block.</p>
+
+<h2 id="parameters">Parameters</h2>
+
+<p>The <strong>virtualMachine-extensions</strong> building block template contains one parameter named <strong>virtualMachinesExtensionSettings</strong>.</p>
+
+<h3 id="virtualmachinesextensionsettings">virtualMachinesExtensionSettings</h3>
+
+<p>The <strong>virtualMachinesExtensionSettings</strong> parameter specifies the extensions to be installed on VMs. It contains the following properties:</p>
+
+<ul>
+  <li><strong>vms</strong><br />
+<em>Array of values</em>. <em>Required</em>.<br />
+Specifies an array of names of pre-existing VMs that the extensions will be installed on.</li>
+  <li><strong>extensions</strong><br />
+<em>Array of objects</em>. <em>Required</em>.<br />
+Specifies one or more extension definitions. Each extension definition is specified using the following object:
+    <ul>
+      <li><strong>name</strong><br />
+<em>Value</em>. <em>Required</em>.<br />
+Defines the display name of this extension.</li>
+      <li><strong>publisher</strong>
+<em>Value</em>. <em>Required</em>.<br />
+Extension publisher name.</li>
+      <li><strong>type</strong><br />
+<em>Value</em>. <em>Required</em>.<br />
+Extension type.</li>
+      <li><strong>typeHandlerVersion</strong><br />
+<em>Value</em>. <em>Required</em>.<br />
+Version of extension to use.</li>
+      <li><strong>autoUpgradeMinorVersion</strong>
+<em>Value</em>. <em>Required</em>.<br />
+Valid values: <code class="highlighter-rouge">true</code> | <code class="highlighter-rouge">false</code><br />
+Set to <code class="highlighter-rouge">true</code> if the extension can upgrade automatically. Otherwise <code class="highlighter-rouge">false</code>.</li>
+      <li><strong>settingsConfigMapperUri</strong><br />
+<em>Value</em>. <em>Required</em>.<br />
+Valid value:  <code class="highlighter-rouge">https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/templates/resources/Microsoft.Compute/virtualMachines/extensions/vm-extension-passthrough-settings-mapper.json</code><br />
+URL of template used during deployment process.</li>
+      <li><strong>settingsConfig</strong><br />
+<em>Object</em>. <em>Required</em>.<br />
+Specifies extension specific settings.  Set to an empty object for no extension specific settings.</li>
+      <li><strong>protectedSettingsConfig</strong><br />
+<em>Object</em>. <em>Required</em>.<br />
+Specifies extension specific settings that are encrypted during deployment. Set to an empty object for no extension specific settings.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="deployment">Deployment</h2>
+
+<p>You can deploy a building block by using the Azure portal, PowerShell, or Azure CLI. The examples below show how to deploy the building block using the sample parameters file above.</p>
+
+<h3 id="azure-portal">Azure portal</h3>
+
+<p>You can deploy this building block template using the Azure portal, PowerShell, or Azure CLI.</p>
+
+<h3 id="azure-portal-1">Azure portal</h3>
+
+<p>Note that this building block deployment process requires a parameter file stored in a location with a publicly available URI.</p>
+
+<ol>
+  <li>Right click the button below and select the option to open the link in a new tab or a new window:<br /><a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmspnp%2Ftemplate-building-blocks%2Fv1.0.0%2Fscenarios%2FvirtualMachine-extensions%2Fazuredeploy.json"><img src="http://azuredeploy.net/deploybutton.png" /></a></li>
+  <li>Wait for the Azure Portal to open.</li>
+  <li>In the <code class="highlighter-rouge">Basics</code> section:
+    <ul>
+      <li>Select your <code class="highlighter-rouge">Subscription</code> from the drop-down list.</li>
+      <li>For the <code class="highlighter-rouge">Resource group</code>, you can either create a new resource group or use an existing resource group.</li>
+      <li>Select the region where you’d like to deploy the VNet in the <code class="highlighter-rouge">Location</code> drop-down list.</li>
+    </ul>
+  </li>
+  <li>In the <code class="highlighter-rouge">Settings</code> section, enter a URI to a valid parameter file. There are several <a href="https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/virtualMachine-extensions/parameters">example parameter files</a> in Github. Note that if you want to use one of these parameter files the URI must be the path to the <code class="highlighter-rouge">raw</code> file in Github. These parameter files require pre-existing VNets and subnets and the deployment will fail if they do not exist. You will need to inspect the parameters to determine these requirements.</li>
+  <li>Review the terms and conditions, then click the <strong>I agree to the terms and conditions stated above</strong> checkbox.</li>
+  <li>Click the <strong>Purchase</strong> button.</li>
+  <li>Wait for the deployment to complete.</li>
+</ol>
+
+<h3 id="powershell">PowerShell</h3>
+
+<p>To deploy the building block template using a parameter file hosted at a publicly available URI, follow these steps:</p>
+
+<ol>
+  <li>Upload your parameter file to a location with a publicly available URI.</li>
+  <li>Log in to Azure using your selected subscription:
+    <pre><code class="language-Powershell">  Login-AzureRmAccount -SubscriptionId &lt;your subscription ID&gt;
+</code></pre>
+  </li>
+  <li>If you do not have an existing resource group, run the <code class="highlighter-rouge">New-AzureRmResourceGroup</code> cmdlet to create one as shown below:
+    <pre><code class="language-PowerShell">  New-AzureRmResourceGroup -Location &lt;Target Azure Region&gt; -Name &lt;Resource Group Name&gt; 
+</code></pre>
+  </li>
+  <li>Deploy a VNet. For more information see the <a href="https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/vnet-n-subnet/README.md">vnet-n-subnet</a> building block template.</li>
+  <li>Run the <code class="highlighter-rouge">New-AzureRmResourceGroupDeployment</code> cmdlet as shown below.
+    <pre><code class="language-PowerShell">  New-AzureRmResourceGroupDeployment -ResourceGroupName &lt;Resource Group Name&gt; -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/virtualMachine-extensions/azuredeploy.json -templateParameterUriFromTemplate &lt;URI of parameter file&gt;
+</code></pre>
+  </li>
+</ol>
+
+<p><strong>Example</strong><br />
+The cmdlet below deploys the <a href="https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/virtualMachine-extensions/parameters/multiple-extensions-multiple-vms.parameters.json">multiple-extensions-multiple-vms</a> parameter file from the <a href="https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/virtualMachine-extensions">scenarios folder</a> in Github.</p>
+
+<blockquote>
+  <p>Note that this deployment requires two existing VMs, one named <strong>bb-dev-biz-vm1</strong> and one named <strong>bb-dev-biz-vm2</strong>.</p>
+</blockquote>
+
+<pre><code class="language-PowerShell">New-AzureRmResourceGroupDeployment -ResourceGroupName bb-dev-rg -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/virtualMachine-extensions/azuredeploy.json -templateParameterUriFromTemplate https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/virtualMachine-extensions/parameters/multiple-extensions-multiple-vms.parameters.json
+
+### Azure CLI
+
+Before you begin, install the latest version of the [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli).
+
+To deploy the building block template using a parameter file hosted at a publicly available URI, follow these steps:
+
+1. Upload your parameter file to a location with a publicly available URI.  
+2. Log in to Azure using your selected subscripton:  
+  ```AzureCLI
+  az login
+</code></pre>
+<ol>
+  <li>Set your selected subscription:
+    <pre><code class="language-AzureCLI">  az account set --subscription &lt;your subscripton ID&gt;
+</code></pre>
+  </li>
+  <li>If you do not have an existing resource group, create a new one using the following command:
+    <pre><code class="language-AzureCLI">  az group create -l &lt;Target Azure Region&gt; -n &lt;Resource Group Name&gt; 
+</code></pre>
+  </li>
+  <li>Deploy a VNet. For more information see the <a href="https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/vnet-n-subnet/README.md">vnet-n-subnet</a> building block template.</li>
+  <li>Run the command shown below:
+    <pre><code class="language-AzureCLI">  az group deployment create -g &lt;Resource Group Name&gt;
+  --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/virtualMachine-extensions/azuredeploy.json
+  --parameters "{\"templateParameterUri\":{\"value\":\"&lt;parameter file public URI&gt;\"}}"
+</code></pre>
+  </li>
+</ol>
+
+<p><strong>Example</strong><br />
+The command below deploys the <a href="https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/virtualMachine-extensions/parameters/multiple-extensions-multiple-vms.parameters.json">vpn</a> parameter file from the <a href="https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/virtualMachine-extensions">scenarios folder</a> in Github.</p>
+
+<blockquote>
+  <p>Note that this deployment requires two existing VMs, one named <strong>bb-dev-biz-vm1</strong> and one named <strong>bb-dev-biz-vm2</strong>.</p>
+</blockquote>
+
+<pre><code class="language-AzureCLI">az login
+az group deployment create -g bb-dev-rg --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/virtualMachine-extensions/azuredeploy.json --parameters "{\"templateParameterUri\":{\"value\":\"https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/virtualMachine-extensions/parameters/multiple-extensions-multiple-vms.parameters.json\"}}"
+</code></pre>
+
+
+      </section>
+      <footer>
+        
+        <p>This project is maintained by <a href="http://github.com/petertaylor9999">petertaylor9999</a></p>
+        
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+
+  
+    <script>
+        $(document).ready(function (){
+            $(".tocNode").click(function(){ 
+                $(this).children("span").toggleClass("down");
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function (){
+        $(".tocLink").click(function(){
+            $("section[id='content']").load($(this).attr("link") + " section[id='content']");
+            });
+        });
+    </script>
+  </body>
+</html>

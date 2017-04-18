@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>petertaylor9999.github.io by petertaylor9999</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=832f80dc336c48600a6d5ad79e9d5f216d2b7335">
+    <!--<link rel="stylesheet" href="/assets/css/overrides.css">-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <style>
+        .rotate{
+            -moz-transition: all 0.5s linear;
+            -webkit-transition: all 0.5s linear;
+            transition: all 0.5s linear;
+        }
+
+        .rotate.down{
+            -ms-transform:rotate(90deg);
+            -moz-transform:rotate(90deg);
+            -webkit-transform:rotate(90deg);
+            transform:rotate(90deg);
+        }
+
+        .tocLink{
+            cursor: pointer;
+        }        
+        .wrapper1 { width: 860px; margin: 0; }
+
+        blockquote {
+            font-size: 12px
+        }
+
+    </style>
+  </head>
+  <body>
+    <div class="wrapper1">
+      <header>
+          <h1>Template Building Blocks</h1>
+          <div id="toc"><div class="list-group list-group-root well toc">
+  
+  <!--<div class="list-group toc">-->
+    <div class="list-group-item tocLink" link="http://localhost:4000">Introduction</div>
+    <a href="#toc1" class="list-group-item tocNode" data-toggle="collapse"><span class="glyphicon glyphicon-chevron-right rotate"></span> Building Blocks Version 1</a>
+    <div id="toc1" class="collapse list-group">
+      <div class="list-group-item tocLink" link="http://localhost:4000/v1/v1-dmz.html">DMZ</div>
+      <div class="list-group-item tocLink" link="http://github.com/pages/petertaylor9999/petertaylor9999.github.io/v1/v1-loadBalancer-backend-n-vm.html">Load Balancer</div>
+      <div class="list-group-item tocLink" link="http://github.com/pages/petertaylor9999/petertaylor9999.github.io/v1-multi-vm-n-nic-m-storage.html">Linux and Windows VMs</div>
+      <div class="list-group-item tocLink" link="http://github.com/pages/petertaylor9999/petertaylor9999.github.io/v1-networkSecurityGroups.html">Network Security Groups</div>
+      <div class="list-group-item tocLink" link="http://github.com/pages/petertaylor9999/petertaylor9999.github.io/v1-virtualMachine-extensions.html">Virtual Machine Extensions</div>
+      <div class="list-group-item tocLink" link="http://github.com/pages/petertaylor9999/petertaylor9999.github.io/v1-vnet-n-subnet.html">Virtual Network</div>
+      <div class="list-group-item tocLink" link="http://github.com/pages/petertaylor9999/petertaylor9999.github.io/v1-vpn-gateway-vpn-connection.html">VPN</div>
+    </div>
+    
+    <a href="#toc2" class="list-group-item tocNode" data-toggle="collapse"><span class="glyphicon glyphicon-chevron-right rotate"></span> Building Blocks Version 2</a>
+    <div id="toc2" class="collapse list-group">
+      <!--<div class="list-group-item tocLink" link="http://github.com/pages/petertaylor9999/petertaylor9999.github.io/v1-dmz.html">DMZ</div>-->
+    </div>
+    
+  <!--</div> -->
+
+</div></div>
+        <!--<h1>petertaylor9999.github.io</h1>
+        <p></p>-->
+
+        <!--
+          <p class="view"><a href="http://github.com/petertaylor9999/petertaylor9999.github.io">View the Project on GitHub <small></small></a></p>
+          
+        -->
+
+        <!---->
+
+        <!---->
+      </header>
+      <section id="content">
+
+      <h1 id="introduction">Introduction</h1>
+
+<p>he AzureCAT - patterns &amp; practices (PnP) Template Building Blocks project provides a series of Azure Resource Manager templates you can use to deploy a collection of resources that, together, make up a building block for larger solutions.</p>
+
+<p>These are the same templates used in the <a href="http://aka.ms/architecture">Reference architectures</a> guidance provided by the PnP team, and are summarized below.</p>
+
+
+      </section>
+      <footer>
+        
+        <p>This project is maintained by <a href="http://github.com/petertaylor9999">petertaylor9999</a></p>
+        
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+
+  
+    <script>
+        $(document).ready(function (){
+            $(".tocNode").click(function(){ 
+                $(this).children("span").toggleClass("down");
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function (){
+        $(".tocLink").click(function(){
+            $("section[id='content']").load($(this).attr("link") + " section[id='content']");
+            });
+        });
+    </script>
+  </body>
+</html>
