@@ -55,11 +55,11 @@ Specifies one or more security rules.  Security rules are specified using the fo
   Specifies priority of the rule. Rules are applied in priority order. Once a rule is applied, rule processing terminates.  
   - **sourceAddressPrefix**  
   _Value_. _Required_.  
-  Valid values: Single IP address (i.e. 10.10.10.10), CIDR Block (i.e. 192.168.1.0/24), [default tag][virtual-networks-nsg] to specify a category of IP addresses(VIRTUAL_NETWORK, AZURE_LOADBALANCER, or INTERNET), or * (for all addresses)  
+  Valid values: Single IP address (i.e. 10.10.10.10), CIDR Block (i.e. 192.168.1.0/24), a [default tag][virtual-networks-nsg] to specify a category of IP addresses(VIRTUAL_NETWORK, AZURE_LOADBALANCER, or INTERNET), or * (for all addresses)  
   Source address prefix or tag to match for the rule.  
   - **destinationAddressPrefix**  
   _Value_. _Required_.  
-  Valid values: Single IP address (i.e. 10.10.10.10), CIDR Block (i.e. 192.168.1.0/24), [default tag][virtual-networks-nsg] to specify a category of IP addresses(VIRTUAL_NETWORK, AZURE_LOADBALANCER, or INTERNET), or * (for all addresses)  
+  Valid values: Single IP address (i.e. 10.10.10.10), CIDR Block (i.e. 192.168.1.0/24), a [default tag][virtual-networks-nsg] to specify a category of IP addresses(VIRTUAL_NETWORK, AZURE_LOADBALANCER, or INTERNET), or * (for all addresses)  
   Required. Destination address prefix or tag to match for the rule.  
   - **sourcePortRange**  
   _Value_. _Required_.  
@@ -80,13 +80,13 @@ Specifies one or more security rules.  Security rules are specified using the fo
 
 ## Deployment
 
-YYou can deploy this building block using the Azure portal, PowerShell, or Azure CLI.
+You can deploy this building block using the Azure portal, PowerShell, or Azure CLI.
 
 ### Azure portal
 
 Note that this building block deployment process requires a parameter file stored in a location with a publicly available URI.
 
-1. Right click the button below and select the option to open the link in a new tab or a new window:<br><a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmspnp%2Ftemplate-building-blocks%2Fv1.0.0%2Fscenarios%2FnetworkSecurityGroups%2Fazuredeploy.json"><img src = "http://azuredeploy.net/deploybutton.png"/></a>
+1. Click the button below:<br><a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmspnp%2Ftemplate-building-blocks%2Fv1.0.0%2Fscenarios%2FnetworkSecurityGroups%2Fazuredeploy.json" target='_blank'><img src = "http://azuredeploy.net/deploybutton.png"/></a>
 2. Wait for the Azure Portal to open.  
 3. In the `Basics` section:
   - Select your `Subscription` from the drop-down list.
@@ -104,25 +104,25 @@ To deploy the building block template using a parameter file hosted at a publicl
 
 1. Upload your parameter file to a location with a publicly available URI.
 2. Log in to Azure using your selected subscription:
-  ```Powershell
-  Login-AzureRmAccount -SubscriptionId <your subscription ID>
-  ```
+```powershell
+Login-AzureRmAccount -SubscriptionId <your subscription ID>
+```
 3. If you do not have an existing resource group, run the `New-AzureRmResourceGroup` cmdlet to create one as shown below:
-  ```PowerShell
-  New-AzureRmResourceGroup -Location <Target Azure Region> -Name <Resource Group Name> 
-  ```
+```powershell
+New-AzureRmResourceGroup -Location <Target Azure Region> -Name <Resource Group Name> 
+```
 4. Deploy a VNet. For more information see the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/vnet-n-subnet/README.md) building block template.  
 5. Run the `New-AzureRmResourceGroupDeployment` cmdlet as shown below.  
-  ```PowerShell
-  New-AzureRmResourceGroupDeployment -ResourceGroupName <Resource Group Name> -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/networkSecurityGroups/azuredeploy.json -templateParameterUriFromTemplate <URI of parameter file>
-  ```
+```powershell
+New-AzureRmResourceGroupDeployment -ResourceGroupName <Resource Group Name> -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/networkSecurityGroups/azuredeploy.json -templateParameterUriFromTemplate <URI of parameter file>
+```
 
 **Example**  
 The cmdlet below deploys the [3-nsgs-on-3-subnets](https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/networkSecurityGroups/parameters/3-nsgs-on-3-subnets.parameters.json) parameter file from the [scenarios folder](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/networkSecurityGroups) in Github.
 
 > Note that this deployment requires an existing VNet named **bb-dev-vnet** in a resource group named **bb-dev-rg**. **bb-dev-vnet** also requires subnets named **web**, **biz**, and **data**.
 
-```PowerShell
+```powershell
 New-AzureRmResourceGroupDeployment -ResourceGroupName bb-dev-rg -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/networkSecurityGroups/azuredeploy.json -templateParameterUriFromTemplate https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/networkSecurityGroups/parameters/3-nsgs-on-3-subnets.parameters.json
 ```
 
@@ -134,31 +134,29 @@ To deploy the building block template using a parameter file hosted at a publicl
 
 1. Upload your parameter file to a location with a publicly available URI.  
 2. Log in to Azure using your selected subscripton:  
-  ```AzureCLI
-  az login
-  ```
+```batch
+az login
+```
 3. Set your selected subscription:
-  ```AzureCLI
-  az account set --subscription <your subscripton ID>
-  ```
+```batch
+az account set --subscription <your subscripton ID>
+```
 4. If you do not have an existing resource group, create a new one using the following command:
-  ```AzureCLI
-  az group create -l <Target Azure Region> -n <Resource Group Name> 
-  ```
+```batch
+az group create -l <Target Azure Region> -n <Resource Group Name> 
+```
 5. Deploy a VNet. For more information see the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/vnet-n-subnet/README.md) building block template.  
 6. Run the command shown below:
-  ```AzureCLI
-  az group deployment create -g <Resource Group Name>
-  --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/networkSecurityGroups/azuredeploy.json
-  --parameters "{\"templateParameterUri\":{\"value\":\"<parameter file public URI>\"}}"
-  ```
+```batch
+az group deployment create -g <Resource Group Name> --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/networkSecurityGroups/azuredeploy.json --parameters "{\"templateParameterUri\":{\"value\":\"<parameter file public URI>\"}}"
+```
 
 **Example**  
 The command below deploys the [3-nsgs-on-3-subnets](https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/networkSecurityGroups/parameters/multiple-routes-on-subnets.parameters.json) parameter file from the [scenarios folder](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/networkSecurityGroups) in Github.
 
 > Note that this deployment requires an existing VNet named **bb-dev-vnet** in the **bb-dev-rg** resource group. **bb-dev-vnet** also requires subnets named **web**, **biz**, and **data**.
 
-```AzureCLI
+```batch
 az login
 az group deployment create -g bb-dev-rg --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/networkSecurityGroups/azuredeploy.json --parameters "{\"templateParameterUri\":{\"value\":\"https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/networkSecurityGroups/parameters/3-nsgs-on-3-subnets.parameters.json\"}}"
 ```

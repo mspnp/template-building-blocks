@@ -180,8 +180,7 @@ You can deploy a building block by using the Azure portal, PowerShell, or Azure 
 
 To deploy this building block template using a parameter file at a publicly hosted URI, follow these steps:
 
-1. Right click the button below and select the option to open the link in a new tab or a new window:
-<br><a href=https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmspnp%2Ftemplate-building-blocks%2Fv1.0.0%2Fscenarios%2Fdmz%2Fazuredeploy.json><img src = "http://azuredeploy.net/deploybutton.png"/></a>
+1. Click the button below:<br><a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmspnp%2Ftemplate-building-blocks%2Fv1.0.0%2Fscenarios%2Fdmz%2Fazuredeploy.json" target="_blank"><img src = "http://azuredeploy.net/deploybutton.png"/></a>
 2. Wait for the Azure Portal to open.
 3. In the `Basics` section:
   - Select your `Subscription` from the drop-down list.
@@ -198,18 +197,18 @@ To deploy this building block template using a parameter file hosted at a public
 
 1. Upload your parameter file to a location with a publicly available URI.
 2. Log in to Azure using your selected subscription:
-  ```Powershell
-  Login-AzureRmAccount -SubscriptionId <your subscription ID>
-  ```
+```powershell
+Login-AzureRmAccount -SubscriptionId <your subscription ID>
+```
 3. If you do not have an existing resource group, run the **New-AzureRmResourceGroup** cmdlet to create one as shown below:
-  ```PowerShell
-  New-AzureRmResourceGroup -Location <Target Azure Region> -Name <Resource Group Name> 
-  ```
+```powershell
+New-AzureRmResourceGroup -Location <Target Azure Region> -Name <Resource Group Name> 
+```
 4. Deploy a VNet. For more information see the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/vnet-n-subnet/README.md) building block template.  
 5. Run the **New-AzureRmResourceGroupDeployment** cmdlet as shown below:  
-  ```PowerShell
-  New-AzureRmResourceGroupDeployment -ResourceGroupName <Resource Group Name> -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/dmz/azuredeploy.json -templateParameterUriFromTemplate <URI of parameter file>
-  ```
+```powershell
+New-AzureRmResourceGroupDeployment -ResourceGroupName <Resource Group Name> -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/dmz/azuredeploy.json -templateParameterUriFromTemplate <URI of parameter file>
+```
 
 #### Example
 
@@ -217,9 +216,10 @@ The cmdlet below creates deploys the [internal-dmz-new-subnets](https://raw.gith
 
 Note that this scenario requires an existing resource group named `bb-dev-rg`, and a VNet named `bb-dev-vnet` with a `10.0.0.0/22` address space. The VNet must have one subnet with a `10.0.1.0/24` address space, one with a `10.0.2.0/24` address space, and one named `GatewaySubnet` with any address space.
 
-```PowerShell
+```powershell
 New-AzureRmResourceGroupDeployment -ResourceGroupName bb-dev-rg -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/dmz/azuredeploy.json   -templateParameterUriFromTemplate https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/dmz/parameters/internal-dmz-new-subnets.parameters.json
 ```
+
 > The parameter files in the scenarios folder include hard-coded administrator usernames and passwords. It is **strongly** recommended that you immediately change the administrator password on the NVA VMs when the deployment is complete.
 
 ### Azure CLI
@@ -230,24 +230,23 @@ To deploy the building block template using a parameter file hosted at a publicl
 
 1. Upload your parameter file to a location with a publicly available URI.
 2. Log in to Azure using your selected subscripton:
-  ```AzureCLI
-  az login
-  ```
+```batch
+az login
+```
 3. Set your selected subscription:
-  ```AzureCLI
-  az account set --subscription <your subscripton ID>
-  ```
+```batch
+az account set --subscription <your subscripton ID>
+```
 4. If you do not have an existing resource group, create a new one using the following command:
-  ```AzureCLI
-  az group create -l <Target Azure Region> -n <Resource Group Name> 
-  ```
+```batch
+az group create -l <Target Azure Region> -n <Resource Group Name> 
+```
 5. Deploy a VNet. For more information see the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/vnet-n-subnet/README.md) building block template.  
 6. Run the `az group deployment create` command as shown below:
-  ```AzureCLI
-  az group deployment create -g <Resource Group Name>
-  --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/dmz/azuredeploy.json 
-  --parameters "{\"templateParameterUri\":{\"value\":\"<parameter file public URI>\"}}"
-  ```
+```batch
+az group deployment create -g <Resource Group Name> --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/dmz/azuredeploy.json 
+ --parameters "{\"templateParameterUri\":{\"value\":\"<parameter file public URI>\"}}"
+```
 
 #### Example
 
@@ -255,7 +254,7 @@ The cmdlet below deploys the [internal-dmz-new-subnets](https://raw.githubuserco
 
 Note that this scenario requires an existing resource group named `bb-dev-rg`, and a VNet named `bb-dev-vnet` with a `10.0.0.0/22` address space. The VNet must have one subnet with a `10.0.1.0/24` address space, one with a `10.0.2.0/24` address space, and one named `GatewaySubnet` with any address space.
 
-```AzureCLI
+```batch
 az login
 az group deployment create -g bb-dev-rg --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/dmz/azuredeploy.json --parameters "{\"templateParameterUri\":{\"value\":\"https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/dmz/parameters/internal-dmz-new-subnets.parameters.json\"}}"
 ```

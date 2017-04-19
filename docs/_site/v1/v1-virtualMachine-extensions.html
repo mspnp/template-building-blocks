@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>mspnp.github.io by mspnp</title>
 
-    <link rel="stylesheet" href="/assets/css/style.css?v=246ae133bd000f25a6a809ff7abad5660c4bcccb">
+    <link rel="stylesheet" href="/assets/css/style.css?v=cd52c1ed7315c4bb85659829e9bc2ab9a6d1068d">
     <!--<link rel="stylesheet" href="/assets/css/overrides.css">-->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <meta name="viewport" content="width=device-width">
@@ -106,7 +106,7 @@ Specifies one or more extension definitions. Each extension definition is specif
       <li><strong>name</strong><br />
 <em>Value</em>. <em>Required</em>.<br />
 Defines the display name of this extension.</li>
-      <li><strong>publisher</strong>
+      <li><strong>publisher</strong><br />
 <em>Value</em>. <em>Required</em>.<br />
 Extension publisher name.</li>
       <li><strong>type</strong><br />
@@ -115,7 +115,7 @@ Extension type.</li>
       <li><strong>typeHandlerVersion</strong><br />
 <em>Value</em>. <em>Required</em>.<br />
 Version of extension to use.</li>
-      <li><strong>autoUpgradeMinorVersion</strong>
+      <li><strong>autoUpgradeMinorVersion</strong><br />
 <em>Value</em>. <em>Required</em>.<br />
 Valid values: <code class="highlighter-rouge">true</code> | <code class="highlighter-rouge">false</code><br />
 Set to <code class="highlighter-rouge">true</code> if the extension can upgrade automatically. Otherwise <code class="highlighter-rouge">false</code>.</li>
@@ -135,18 +135,14 @@ Specifies extension specific settings that are encrypted during deployment. Set 
 
 <h2 id="deployment">Deployment</h2>
 
-<p>You can deploy a building block by using the Azure portal, PowerShell, or Azure CLI. The examples below show how to deploy the building block using the sample parameters file above.</p>
+<p>You can deploy a building block using Azure portal, PowerShell, or Azure CLI.</p>
 
 <h3 id="azure-portal">Azure portal</h3>
-
-<p>You can deploy this building block template using the Azure portal, PowerShell, or Azure CLI.</p>
-
-<h3 id="azure-portal-1">Azure portal</h3>
 
 <p>Note that this building block deployment process requires a parameter file stored in a location with a publicly available URI.</p>
 
 <ol>
-  <li>Right click the button below and select the option to open the link in a new tab or a new window:<br /><a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmspnp%2Ftemplate-building-blocks%2Fv1.0.0%2Fscenarios%2FvirtualMachine-extensions%2Fazuredeploy.json"><img src="http://azuredeploy.net/deploybutton.png" /></a></li>
+  <li>Click the button below:<br /><a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmspnp%2Ftemplate-building-blocks%2Fv1.0.0%2Fscenarios%2FvirtualMachine-extensions%2Fazuredeploy.json" target="_blank"><img src="http://azuredeploy.net/deploybutton.png" /></a></li>
   <li>Wait for the Azure Portal to open.</li>
   <li>In the <code class="highlighter-rouge">Basics</code> section:
     <ul>
@@ -168,17 +164,20 @@ Specifies extension specific settings that are encrypted during deployment. Set 
 <ol>
   <li>Upload your parameter file to a location with a publicly available URI.</li>
   <li>Log in to Azure using your selected subscription:
-    <pre><code class="language-Powershell">  Login-AzureRmAccount -SubscriptionId &lt;your subscription ID&gt;
+    <div class="language-powershell highlighter-rouge"><pre class="highlight"><code>Login-AzureRmAccount -SubscriptionId &lt;your subscription ID&gt;
 </code></pre>
+    </div>
   </li>
   <li>If you do not have an existing resource group, run the <code class="highlighter-rouge">New-AzureRmResourceGroup</code> cmdlet to create one as shown below:
-    <pre><code class="language-PowerShell">  New-AzureRmResourceGroup -Location &lt;Target Azure Region&gt; -Name &lt;Resource Group Name&gt; 
+    <div class="language-powershell highlighter-rouge"><pre class="highlight"><code>New-AzureRmResourceGroup -Location &lt;Target Azure Region&gt; -Name &lt;Resource <span class="nb">Group </span>Name&gt; 
 </code></pre>
+    </div>
   </li>
   <li>Deploy a VNet. For more information see the <a href="https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/vnet-n-subnet/README.md">vnet-n-subnet</a> building block template.</li>
   <li>Run the <code class="highlighter-rouge">New-AzureRmResourceGroupDeployment</code> cmdlet as shown below.
-    <pre><code class="language-PowerShell">  New-AzureRmResourceGroupDeployment -ResourceGroupName &lt;Resource Group Name&gt; -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/virtualMachine-extensions/azuredeploy.json -templateParameterUriFromTemplate &lt;URI of parameter file&gt;
+    <div class="language-powershell highlighter-rouge"><pre class="highlight"><code>New-AzureRmResourceGroupDeployment -ResourceGroupName &lt;Resource <span class="nb">Group </span>Name&gt; -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/virtualMachine-extensions/azuredeploy.json -templateParameterUriFromTemplate &lt;URI of parameter file&gt;
 </code></pre>
+    </div>
   </li>
 </ol>
 
@@ -189,45 +188,46 @@ The cmdlet below deploys the <a href="https://raw.githubusercontent.com/mspnp/te
   <p>Note that this deployment requires two existing VMs, one named <strong>bb-dev-biz-vm1</strong> and one named <strong>bb-dev-biz-vm2</strong>.</p>
 </blockquote>
 
-<pre><code class="language-PowerShell">New-AzureRmResourceGroupDeployment -ResourceGroupName bb-dev-rg -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/virtualMachine-extensions/azuredeploy.json -templateParameterUriFromTemplate https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/virtualMachine-extensions/parameters/multiple-extensions-multiple-vms.parameters.json
-
-### Azure CLI
-
-Before you begin, install the latest version of the [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli).
-
-To deploy the building block template using a parameter file hosted at a publicly available URI, follow these steps:
-
-1. Upload your parameter file to a location with a publicly available URI.  
-2. Log in to Azure using your selected subscripton:  
-  ```AzureCLI
-  az login
+<div class="language-powershell highlighter-rouge"><pre class="highlight"><code>New-AzureRmResourceGroupDeployment -ResourceGroupName bb-dev-rg -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/virtualMachine-extensions/azuredeploy.json -templateParameterUriFromTemplate https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/virtualMachine-extensions/parameters/multiple-extensions-multiple-vms.parameters.json
 </code></pre>
+</div>
+
+<h3 id="azure-cli">Azure CLI</h3>
+
+<p>Before you begin, install the latest version of the <a href="https://docs.microsoft.com/cli/azure/install-azure-cli">Azure CLI</a>.</p>
+
+<p>To deploy the building block template using a parameter file hosted at a publicly available URI, follow these steps:</p>
+
 <ol>
+  <li>Upload your parameter file to a location with a publicly available URI.</li>
+  <li>Log in to Azure using your selected subscripton:
+    <pre><code class="language-batch">az login
+</code></pre>
+  </li>
   <li>Set your selected subscription:
-    <pre><code class="language-AzureCLI">  az account set --subscription &lt;your subscripton ID&gt;
+    <pre><code class="language-batch">az account set --subscription &lt;your subscripton ID&gt;
 </code></pre>
   </li>
   <li>If you do not have an existing resource group, create a new one using the following command:
-    <pre><code class="language-AzureCLI">  az group create -l &lt;Target Azure Region&gt; -n &lt;Resource Group Name&gt; 
+    <pre><code class="language-batch">az group create -l &lt;Target Azure Region&gt; -n &lt;Resource Group Name&gt; 
 </code></pre>
   </li>
   <li>Deploy a VNet. For more information see the <a href="https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/vnet-n-subnet/README.md">vnet-n-subnet</a> building block template.</li>
   <li>Run the command shown below:
-    <pre><code class="language-AzureCLI">  az group deployment create -g &lt;Resource Group Name&gt;
-  --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/virtualMachine-extensions/azuredeploy.json
-  --parameters "{\"templateParameterUri\":{\"value\":\"&lt;parameter file public URI&gt;\"}}"
+    <pre><code class="language-batch">az group deployment create -g &lt;Resource Group Name&gt; --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/virtualMachine-extensions/azuredeploy.json --parameters "{\"templateParameterUri\":{\"value\":\"&lt;parameter file public URI&gt;\"}}"
 </code></pre>
   </li>
 </ol>
 
-<p><strong>Example</strong><br />
-The command below deploys the <a href="https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/virtualMachine-extensions/parameters/multiple-extensions-multiple-vms.parameters.json">vpn</a> parameter file from the <a href="https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/virtualMachine-extensions">scenarios folder</a> in Github.</p>
+<p><strong>Example</strong></p>
+
+<p>The command below deploys the <a href="https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/virtualMachine-extensions/parameters/multiple-extensions-multiple-vms.parameters.json">vpn</a> parameter file from the <a href="https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/virtualMachine-extensions">scenarios folder</a> in Github.</p>
 
 <blockquote>
   <p>Note that this deployment requires two existing VMs, one named <strong>bb-dev-biz-vm1</strong> and one named <strong>bb-dev-biz-vm2</strong>.</p>
 </blockquote>
 
-<pre><code class="language-AzureCLI">az login
+<pre><code class="language-batch">az login
 az group deployment create -g bb-dev-rg --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/virtualMachine-extensions/azuredeploy.json --parameters "{\"templateParameterUri\":{\"value\":\"https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/virtualMachine-extensions/parameters/multiple-extensions-multiple-vms.parameters.json\"}}"
 </code></pre>
 

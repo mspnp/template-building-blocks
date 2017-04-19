@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>mspnp.github.io by mspnp</title>
 
-    <link rel="stylesheet" href="/assets/css/style.css?v=246ae133bd000f25a6a809ff7abad5660c4bcccb">
+    <link rel="stylesheet" href="/assets/css/style.css?v=cd52c1ed7315c4bb85659829e9bc2ab9a6d1068d">
     <!--<link rel="stylesheet" href="/assets/css/overrides.css">-->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <meta name="viewport" content="width=device-width">
@@ -298,8 +298,7 @@ Specifies the name of the existing Azure Resource Group that the DMZ belongs to.
 <p>To deploy this building block template using a parameter file at a publicly hosted URI, follow these steps:</p>
 
 <ol>
-  <li>Right click the button below and select the option to open the link in a new tab or a new window:
-<br />&lt;a href=https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmspnp%2Ftemplate-building-blocks%2Fv1.0.0%2Fscenarios%2Fdmz%2Fazuredeploy.json&gt;<img src="http://azuredeploy.net/deploybutton.png" />&lt;/a&gt;</li>
+  <li>Click the button below:<br /><a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmspnp%2Ftemplate-building-blocks%2Fv1.0.0%2Fscenarios%2Fdmz%2Fazuredeploy.json" target="_blank"><img src="http://azuredeploy.net/deploybutton.png" /></a></li>
   <li>Wait for the Azure Portal to open.</li>
   <li>In the <code class="highlighter-rouge">Basics</code> section:
     <ul>
@@ -321,17 +320,20 @@ Specifies the name of the existing Azure Resource Group that the DMZ belongs to.
 <ol>
   <li>Upload your parameter file to a location with a publicly available URI.</li>
   <li>Log in to Azure using your selected subscription:
-    <pre><code class="language-Powershell">  Login-AzureRmAccount -SubscriptionId &lt;your subscription ID&gt;
+    <div class="language-powershell highlighter-rouge"><pre class="highlight"><code>Login-AzureRmAccount -SubscriptionId &lt;your subscription ID&gt;
 </code></pre>
+    </div>
   </li>
   <li>If you do not have an existing resource group, run the <strong>New-AzureRmResourceGroup</strong> cmdlet to create one as shown below:
-    <pre><code class="language-PowerShell">  New-AzureRmResourceGroup -Location &lt;Target Azure Region&gt; -Name &lt;Resource Group Name&gt; 
+    <div class="language-powershell highlighter-rouge"><pre class="highlight"><code>New-AzureRmResourceGroup -Location &lt;Target Azure Region&gt; -Name &lt;Resource <span class="nb">Group </span>Name&gt; 
 </code></pre>
+    </div>
   </li>
   <li>Deploy a VNet. For more information see the <a href="https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/vnet-n-subnet/README.md">vnet-n-subnet</a> building block template.</li>
   <li>Run the <strong>New-AzureRmResourceGroupDeployment</strong> cmdlet as shown below:
-    <pre><code class="language-PowerShell">  New-AzureRmResourceGroupDeployment -ResourceGroupName &lt;Resource Group Name&gt; -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/dmz/azuredeploy.json -templateParameterUriFromTemplate &lt;URI of parameter file&gt;
+    <div class="language-powershell highlighter-rouge"><pre class="highlight"><code>New-AzureRmResourceGroupDeployment -ResourceGroupName &lt;Resource <span class="nb">Group </span>Name&gt; -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/dmz/azuredeploy.json -templateParameterUriFromTemplate &lt;URI of parameter file&gt;
 </code></pre>
+    </div>
   </li>
 </ol>
 
@@ -341,8 +343,10 @@ Specifies the name of the existing Azure Resource Group that the DMZ belongs to.
 
 <p>Note that this scenario requires an existing resource group named <code class="highlighter-rouge">bb-dev-rg</code>, and a VNet named <code class="highlighter-rouge">bb-dev-vnet</code> with a <code class="highlighter-rouge">10.0.0.0/22</code> address space. The VNet must have one subnet with a <code class="highlighter-rouge">10.0.1.0/24</code> address space, one with a <code class="highlighter-rouge">10.0.2.0/24</code> address space, and one named <code class="highlighter-rouge">GatewaySubnet</code> with any address space.</p>
 
-<pre><code class="language-PowerShell">New-AzureRmResourceGroupDeployment -ResourceGroupName bb-dev-rg -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/dmz/azuredeploy.json   -templateParameterUriFromTemplate https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/dmz/parameters/internal-dmz-new-subnets.parameters.json
+<div class="language-powershell highlighter-rouge"><pre class="highlight"><code>New-AzureRmResourceGroupDeployment -ResourceGroupName bb-dev-rg -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/dmz/azuredeploy.json   -templateParameterUriFromTemplate https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/dmz/parameters/internal-dmz-new-subnets.parameters.json
 </code></pre>
+</div>
+
 <blockquote>
   <p>The parameter files in the scenarios folder include hard-coded administrator usernames and passwords. It is <strong>strongly</strong> recommended that you immediately change the administrator password on the NVA VMs when the deployment is complete.</p>
 </blockquote>
@@ -356,22 +360,21 @@ Specifies the name of the existing Azure Resource Group that the DMZ belongs to.
 <ol>
   <li>Upload your parameter file to a location with a publicly available URI.</li>
   <li>Log in to Azure using your selected subscripton:
-    <pre><code class="language-AzureCLI">  az login
+    <pre><code class="language-batch">az login
 </code></pre>
   </li>
   <li>Set your selected subscription:
-    <pre><code class="language-AzureCLI">  az account set --subscription &lt;your subscripton ID&gt;
+    <pre><code class="language-batch">az account set --subscription &lt;your subscripton ID&gt;
 </code></pre>
   </li>
   <li>If you do not have an existing resource group, create a new one using the following command:
-    <pre><code class="language-AzureCLI">  az group create -l &lt;Target Azure Region&gt; -n &lt;Resource Group Name&gt; 
+    <pre><code class="language-batch">az group create -l &lt;Target Azure Region&gt; -n &lt;Resource Group Name&gt; 
 </code></pre>
   </li>
   <li>Deploy a VNet. For more information see the <a href="https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/vnet-n-subnet/README.md">vnet-n-subnet</a> building block template.</li>
   <li>Run the <code class="highlighter-rouge">az group deployment create</code> command as shown below:
-    <pre><code class="language-AzureCLI">  az group deployment create -g &lt;Resource Group Name&gt;
-  --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/dmz/azuredeploy.json 
-  --parameters "{\"templateParameterUri\":{\"value\":\"&lt;parameter file public URI&gt;\"}}"
+    <pre><code class="language-batch">az group deployment create -g &lt;Resource Group Name&gt; --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/dmz/azuredeploy.json 
+ --parameters "{\"templateParameterUri\":{\"value\":\"&lt;parameter file public URI&gt;\"}}"
 </code></pre>
   </li>
 </ol>
@@ -382,7 +385,7 @@ Specifies the name of the existing Azure Resource Group that the DMZ belongs to.
 
 <p>Note that this scenario requires an existing resource group named <code class="highlighter-rouge">bb-dev-rg</code>, and a VNet named <code class="highlighter-rouge">bb-dev-vnet</code> with a <code class="highlighter-rouge">10.0.0.0/22</code> address space. The VNet must have one subnet with a <code class="highlighter-rouge">10.0.1.0/24</code> address space, one with a <code class="highlighter-rouge">10.0.2.0/24</code> address space, and one named <code class="highlighter-rouge">GatewaySubnet</code> with any address space.</p>
 
-<pre><code class="language-AzureCLI">az login
+<pre><code class="language-batch">az login
 az group deployment create -g bb-dev-rg --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/dmz/azuredeploy.json --parameters "{\"templateParameterUri\":{\"value\":\"https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/dmz/parameters/internal-dmz-new-subnets.parameters.json\"}}"
 </code></pre>
 

@@ -4,13 +4,13 @@ title: VPN
 
 # VPN
 
-Use the vpn-gateway-vpn-connection building block to deploy a [VPN Gateway](https://azure.microsoft.com/en-us/documentation/articles/vpn-gateway-about-vpngateways/) to an existing [Azure virtual network (VNet)](https://azure.microsoft.com/en-us/documentation/articles/resource-groups-networking/#virtual-network). The template creates a virtual network gateway, an associated public IP address, and configures the settings related to your local network gateway.
+Use the vpn-gateway-vpn-connection building block template to deploy a [VPN Gateway](https://azure.microsoft.com/en-us/documentation/articles/vpn-gateway-about-vpngateways/) to an existing [Azure virtual network (VNet)](https://azure.microsoft.com/en-us/documentation/articles/resource-groups-networking/#virtual-network). The template creates a virtual network gateway and an associated public IP address, then configures the settings related to your local network gateway.
 
 > **Note** that this building block template requires a pre-existing VNet with a subnet named `GatewaySubnet`. If your infrastructure does not have a VNet with these requirements, use the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/vnet-n-subnet/README.md) building block template to create one.
 
 ## Parameters
 
-There are three parameters in this building block template: **virtualNetworkSettings**, **virtualNetworkGatewaySettings**, **connectionSettings**.
+There are three parameters in this building block template: **virtualNetworkSettings**, **virtualNetworkGatewaySettings**, and **connectionSettings**.
  
 ### virtualNetworkSettings
 
@@ -78,7 +78,7 @@ Specifies configuration of the local network gateway used by the VPN connection.
   _Array of values_. _Required_.  
   List of CIDR blocks reserved for the local netwwork gateway.  
    **expressRouteCircuit**  
-   _Object_. _Required if using ExpressRoute, otherwise set to empty object_.  
+   _Object_. _Required if using ExpressRoute, otherwise set to an empty object_.  
    Specifies configuration information for ExpressRoute connections. The configuration information is specified using the following object:  
     - **name**  
     _Value_. _Required_.  
@@ -86,13 +86,13 @@ Specifies configuration of the local network gateway used by the VPN connection.
 
 ## Deployment
 
-You can deploy this building block template using the Azure portal, PowerShell, or Azure CLI.
+You can deploy this building block template using Azure portal, PowerShell, or Azure CLI.
 
 ### Azure portal
 
 Note that this building block deployment process requires a parameter file stored in a location with a publicly available URI.
 
-1. Right click the button below and select the option to open the link in a new tab or a new window:<br><a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmspnp%2Ftemplate-building-blocks%2Fv1.0.0%2Fscenarios%2Fvpn-gateway-vpn-connection%2Fazuredeploy.json"><img src = "http://azuredeploy.net/deploybutton.png"/></a>
+1. Click the button below:<br><a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmspnp%2Ftemplate-building-blocks%2Fv1.0.0%2Fscenarios%2Fvpn-gateway-vpn-connection%2Fazuredeploy.json" target="_blank"><img src = "http://azuredeploy.net/deploybutton.png"/></a>
 2. Wait for the Azure Portal to open.  
 3. In the `Basics` section:
   - Select your `Subscription` from the drop-down list.
@@ -109,27 +109,29 @@ To deploy the building block template using a parameter file hosted at a publicl
 
 1. Upload your parameter file to a location with a publicly available URI.
 2. Log in to Azure using your selected subscription:
-  ```Powershell
-  Login-AzureRmAccount -SubscriptionId <your subscription ID>
-  ```
+```powershell
+Login-AzureRmAccount -SubscriptionId <your subscription ID>
+```
 3. If you do not have an existing resource group, run the `New-AzureRmResourceGroup` cmdlet to create one as shown below:
-  ```PowerShell
-  New-AzureRmResourceGroup -Location <Target Azure Region> -Name <Resource Group Name> 
-  ```
+```powershell
+New-AzureRmResourceGroup -Location <Target Azure Region> -Name <Resource Group Name> 
+```
 4. Deploy a VNet. For more information see the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/vnet-n-subnet/README.md) building block template.  
 5. Run the `New-AzureRmResourceGroupDeployment` cmdlet as shown below.  
-  ```PowerShell
-  New-AzureRmResourceGroupDeployment -ResourceGroupName <Resource Group Name> -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vpn-gateway-vpn-connection/azuredeploy.json -templateParameterUriFromTemplate <URI of parameter file>
-  ```
+```powershell
+New-AzureRmResourceGroupDeployment -ResourceGroupName <Resource Group Name> -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vpn-gateway-vpn-connection/azuredeploy.json -templateParameterUriFromTemplate <URI of parameter file>
+```
 
-**Example**  
+**Example**
+
 The cmdlet below deploys the [vpn](https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vpn-gateway-vpn-connection/parameters/vpn.parameters.json) parameter file from the [scenarios folder](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/vpn-gateway-vpn-connection) in Github.
 
 > Note that this deployment requires an existing VNet named **bb-dev-vnet** in a resource group named **bb-vpn-rg**. It also requires a virtual network gateway named **bb-hybrid-vpn-vgw**
 
-```PowerShell
+```powershell
 New-AzureRmResourceGroupDeployment -ResourceGroupName bb-dev-rg -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vpn-gateway-vpn-connection/azuredeploy.json -templateParameterUriFromTemplate https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vpn-gateway-vpn-connection/parameters/vpn.parameters.json
 ```
+
 ### Azure CLI
 
 Before you begin, install the latest version of the [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli).
@@ -138,31 +140,30 @@ To deploy the building block template using a parameter file hosted at a publicl
 
 1. Upload your parameter file to a location with a publicly available URI.  
 2. Log in to Azure using your selected subscripton:  
-  ```AzureCLI
-  az login
-  ```
+```batch
+az login
+```
 3. Set your selected subscription:
-  ```AzureCLI
-  az account set --subscription <your subscripton ID>
-  ```
+```batch
+az account set --subscription <your subscripton ID>
+```
 4. If you do not have an existing resource group, create a new one using the following command:
-  ```AzureCLI
-  az group create -l <Target Azure Region> -n <Resource Group Name> 
-  ```
+```batch
+az group create -l <Target Azure Region> -n <Resource Group Name> 
+```
 5. Deploy a VNet. For more information see the [vnet-n-subnet](https://github.com/mspnp/template-building-blocks/blob/v1.0.0/templates/buildingBlocks/vnet-n-subnet/README.md) building block template.  
 6. Run the command shown below:
-  ```AzureCLI
-  az group deployment create -g <Resource Group Name>
-  --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vpn-gateway-vpn-connection/azuredeploy.json
-  --parameters "{\"templateParameterUri\":{\"value\":\"<parameter file public URI>\"}}"
-  ```
+```batch
+az group deployment create -g <Resource Group Name> --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vpn-gateway-vpn-connection/azuredeploy.json --parameters "{\"templateParameterUri\":{\"value\":\"<parameter file public URI>\"}}"
+```
 
-**Example**  
+**Example**
+
 The command below deploys the [vpn](https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vpn-gateway-vpn-connection/parameters/vpn.parameters.json) parameter file from the [scenarios folder](https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/vpn-gateway-vpn-connection) in Github.
 
 > Note that this deployment requires an existing VNet named **bb-dev-vnet** in a resource group named **bb-vpn-rg**. It also requires a virtual network gateway named **bb-hybrid-vpn-vgw**
 
-```AzureCLI
+```batch
 az login
 az group deployment create -g bb-dev-rg --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vpn-gateway-vpn-connection/azuredeploy.json --parameters "{\"templateParameterUri\":{\"value\":\"https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vpn-gateway-vpn-connection/parameters/vpn.parameters.json\"}}"
 ```

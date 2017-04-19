@@ -1,3 +1,4 @@
 theme: jekyll-theme-minimal
 markdown: kramdown
 repository: mspnp/mspnp.github.io
+highlighter: rouge

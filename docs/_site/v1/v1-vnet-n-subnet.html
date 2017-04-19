@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>mspnp.github.io by mspnp</title>
 
-    <link rel="stylesheet" href="/assets/css/style.css?v=246ae133bd000f25a6a809ff7abad5660c4bcccb">
+    <link rel="stylesheet" href="/assets/css/style.css?v=cd52c1ed7315c4bb85659829e9bc2ab9a6d1068d">
     <!--<link rel="stylesheet" href="/assets/css/overrides.css">-->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <meta name="viewport" content="width=device-width">
@@ -114,20 +114,20 @@ CIDR address block for the subnet (must be valid within the VNet address space d
     </ul>
   </li>
   <li><strong>dnsServers</strong><br />
-<em>Array of values</em>. <em>Required</em>.<br />
-Defines one or more custom DNS Server address for the VNet. Leave the array empty to use Azure internal name resolution.</li>
+<em>Array of values</em>. <em>Optional</em>.<br />
+Specifies one or more custom DNS Server address for the VNet. Leave the array empty to use Azure internal name resolution.</li>
 </ul>
 
 <h2 id="deployment">Deployment</h2>
 
-<p>You can deploy a building block template using the Azure portal, PowerShell, or Azure CLI.</p>
+<p>You can deploy a building block template using Azure portal, PowerShell, or Azure CLI.</p>
 
 <h3 id="azure-portal">Azure portal</h3>
 
 <p>Note that deploying via Azure Portal requires your parameter file to have a publicly available URI.</p>
 
 <ol>
-  <li>Right click the button below and select the option to open the link in a new tab or a new window:<br /><a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmspnp%2Ftemplate-building-blocks%2Fv1.0.0%2Fscenarios%2Fvnet-n-subnet%2Fazuredeploy.json" target="_blank"><img src="http://azuredeploy.net/deploybutton.png" /></a></li>
+  <li>Click the button below:<br /><a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmspnp%2Ftemplate-building-blocks%2Fv1.0.0%2Fscenarios%2Fvnet-n-subnet%2Fazuredeploy.json" target="_blank"><img src="http://azuredeploy.net/deploybutton.png" /></a></li>
   <li>Wait for the Azure Portal to open.</li>
   <li>In the <code class="highlighter-rouge">Basics</code> section:
     <ul>
@@ -149,26 +149,30 @@ Defines one or more custom DNS Server address for the VNet. Leave the array empt
 <ol>
   <li>Upload your parameter file to a location with a publicly available URI.</li>
   <li>Log in to Azure using your selected subscription:
-    <pre><code class="language-Powershell">  Login-AzureRmAccount -SubscriptionId &lt;your subscription ID&gt;
+    <div class="language-powershell highlighter-rouge"><pre class="highlight"><code>Login-AzureRmAccount -SubscriptionId &lt;your subscription ID&gt;
 </code></pre>
+    </div>
   </li>
   <li>If you do not have an existing resource group, run the <strong>New-AzureRmResourceGroup</strong> cmdlet to create one as shown below:
-    <pre><code class="language-PowerShell">  New-AzureRmResourceGroup -Location &lt;Target Azure Region&gt; -Name &lt;Resource Group Name&gt; 
+    <div class="language-powershell highlighter-rouge"><pre class="highlight"><code>New-AzureRmResourceGroup -Location &lt;Target Azure Region&gt; -Name &lt;Resource <span class="nb">Group </span>Name&gt; 
 </code></pre>
+    </div>
   </li>
   <li>Run the <strong>New-AzureRmResourceGroupDeployment</strong> cmdlet as shown below:
-    <pre><code class="language-PowerShell">  New-AzureRmResourceGroupDeployment -ResourceGroupName &lt;Resource Group Name&gt; -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vnet-n-subnet/azuredeploy.json -templateParameterUriFromTemplate &lt;URI of parameter file&gt;
+    <div class="language-powershell highlighter-rouge"><pre class="highlight"><code>New-AzureRmResourceGroupDeployment -ResourceGroupName &lt;Resource <span class="nb">Group </span>Name&gt; -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vnet-n-subnet/azuredeploy.json -templateParameterUriFromTemplate &lt;URI of parameter file&gt;
 </code></pre>
+    </div>
   </li>
 </ol>
 
 <p><strong>Example</strong><br />
 The cmdlet below creates a resource group named <strong>app1-rg</strong> in the <strong>westus</strong> region, then deploys the <a href="https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vnet-n-subnet/parameters/vnet-multiple-subnet-dns.parameters.json">vnet-multiple-subnet-dns</a> parameter file from the <a href="https://github.com/mspnp/template-building-blocks/tree/v1.0.0/scenarios/vnet-n-subnet">scenarios folder</a> in Github.</p>
 
-<pre><code class="language-PowerShell">Login-AzureRmAccount -SubscriptionId &lt;your subscription ID&gt;
+<div class="language-powershell highlighter-rouge"><pre class="highlight"><code>Login-AzureRmAccount -SubscriptionId &lt;your subscription ID&gt;
 New-AzureRmResourceGroup -Location westus -Name app1-rg
 New-AzureRmResourceGroupDeployment -ResourceGroupName app1-rg -TemplateUri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vnet-n-subnet/azuredeploy.json -templateParameterUriFromTemplate https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vnet-n-subnet/parameters/vnet-multiple-subnet-dns.parameters.json
 </code></pre>
+</div>
 
 <h3 id="azure-cli">Azure CLI</h3>
 
@@ -179,21 +183,19 @@ New-AzureRmResourceGroupDeployment -ResourceGroupName app1-rg -TemplateUri https
 <ol>
   <li>Upload your parameter file to a location with a publicly available URI.</li>
   <li>Log in to Azure using your selected subscripton:
-    <pre><code class="language-AzureCLI">  az login
+    <pre><code class="language-batch">az login
 </code></pre>
   </li>
   <li>Set your selected subscription:
-    <pre><code class="language-AzureCLI">  az account set --subscription &lt;your subscripton ID&gt;
+    <pre><code class="language-batch">az account set --subscription &lt;your subscripton ID&gt;
 </code></pre>
   </li>
   <li>If you do not have an existing resource group, create a new one using the following command:
-    <pre><code class="language-AzureCLI">  az group create -l &lt;Target Azure Region&gt; -n &lt;Resource Group Name&gt; 
+    <pre><code class="language-batch">az group create -l &lt;Target Azure Region&gt; -n &lt;Resource Group Name&gt; 
 </code></pre>
   </li>
   <li>Run the command below to deploy the VNet:
-    <pre><code class="language-AzureCLI">  az group deployment create -g &lt;Resource Group Name&gt;
-  --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vnet-n-subnet/azuredeploy.json 
-  --parameters "{\"templateParameterUri\":{\"value\":\"&lt;parameter file public URI&gt;\"}}"
+    <pre><code class="language-batch">az group deployment create -g &lt;Resource Group Name&gt; --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vnet-n-subnet/azuredeploy.json --parameters "{\"templateParameterUri\":{\"value\":\"&lt;parameter file public URI&gt;\"}}"
 </code></pre>
   </li>
 </ol>
@@ -201,7 +203,7 @@ New-AzureRmResourceGroupDeployment -ResourceGroupName app1-rg -TemplateUri https
 <p><strong>Example</strong><br />
 The command below creates a resource group named <strong>app1-rg</strong> in the <strong>westus</strong> region, then deploys the <a href="https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vnet-n-subnet/parameters/vnet-multiple-subnet-dns.parameters.json">vnet-multiple-subnet-dns</a> parameter file from the <a href="https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vnet-n-subnet/parameters/vnet-multiple-subnet-dns.parameters.json">scenarios folder</a> in Github.</p>
 
-<pre><code class="language-AzureCLI">az login
+<pre><code class="language-batch">az login
 az group create -l "westus" -n "app1-rg"
 az group deployment create -g app1-rg --template-uri https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vnet-n-subnet/azuredeploy.json --parameters "{\"templateParameterUri\":{\"value\":\"https://raw.githubusercontent.com/mspnp/template-building-blocks/v1.0.0/scenarios/vnet-n-subnet/parameters/vnet-multiple-subnet-dns.parameters.json\"}}"
 </code></pre>
