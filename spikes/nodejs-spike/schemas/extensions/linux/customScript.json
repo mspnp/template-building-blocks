@@ -1,0 +1,83 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/extensions/linux/customScript.json#",
+    "type": "object",
+    "allOf": [
+        {
+            "properties": {
+                "publisher": {
+                    "type": "string",
+                    "enum": [
+                        "Microsoft.Azure.Extensions"
+                    ]
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "CustomScript"
+                    ]
+                },
+                "typeHandlerVersion": {
+                    "type": "string",
+                    "enum": [
+                        "2.0"
+                    ]
+                }
+            }
+        },
+        {
+            "oneOf": [
+                {
+                    "properties": {
+                        "settings": {
+                            "type": "object",
+                            "allOf":[
+                                {
+                                    "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/extensions/types.json#/definitions/settingsFileUris"
+                                },
+                                {
+                                    "properties": {
+                                        "commandToExecute": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ],
+                            "required": [
+                                "commandToExecute"
+                            ]
+                        },
+                        "protectedSettings": {
+                            "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/extensions/types.json#/definitions/protectedSettingsStorageAccount"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "settings": {
+                            "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/extensions/types.json#/definitions/settingsFileUris"
+                        },
+                        "protectedSettings": {
+                            "type": "object",
+                            "allOf": [
+                                {
+                                    "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/extensions/types.json#/definitions/protectedSettingsStorageAccount"
+                                },
+                                {
+                                    "properties": {
+                                        "commandToExecute": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ],
+                            "required": [
+                                "commandToExecute"
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

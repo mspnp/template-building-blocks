@@ -1,0 +1,20 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "loadBalancers": {
+            "type": "object"
+        }
+    },
+    "variables": {
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/loadBalancers",
+            "apiVersion": "2017-03-01",
+            "name": "[parameters('loadBalancers').name]",
+            "location": "[resourceGroup().location]",
+            "properties": "[parameters('loadBalancers').properties]"
+        }
+    ]
+}

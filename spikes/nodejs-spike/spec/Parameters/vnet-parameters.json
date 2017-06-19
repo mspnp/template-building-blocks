@@ -1,0 +1,92 @@
+{
+    "$schema": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/settings.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualNetworkSettings": [
+            {
+                "name": "my-virtual-network",
+                "addressPrefixes": [
+                    "10.0.0.0/16"
+                ],
+                "subnets": [
+                    {
+                        "name": "web",
+                        "addressPrefix": "10.0.1.0/24"
+                    },
+                    {
+                        "name": "biz",
+                        "addressPrefix": "10.0.2.0/24"
+                    },
+                    {
+                        "name": "GatewaySubnet",
+                        "addressPrefix": "10.0.0.0/27"
+                    }
+                ],
+                "dnsServers": [],
+                "virtualNetworkPeerings": [
+                    {
+                        "remoteVirtualNetwork": {
+                        "name": "my-other-virtual-network"
+                        },
+                        "allowForwardedTraffic": true,
+                        "allowGatewayTransit": true,
+                        "useRemoteGateways": false
+                    },
+                    {
+                        "remoteVirtualNetwork": {
+                            "name": "my-third-virtual-network"
+                        },
+                        "allowForwardedTraffic": true,
+                        "allowGatewayTransit": true,
+                        "useRemoteGateways": false
+                    }
+                ],
+                "tags": {
+                    "tag1": "value1",
+                    "tag2": "value2",
+                    "tag3": "value3"
+                }
+            },
+            {
+                "name": "my-other-virtual-network",
+                "addressPrefixes": [
+                    "10.1.0.0/16"
+                ],
+                "subnets": [
+                    {
+                        "name": "web",
+                        "addressPrefix": "10.1.1.0/24"
+                    },
+                    {
+                        "name": "biz",
+                        "addressPrefix": "10.1.2.0/24"
+                    },
+                    {
+                        "name": "GatewaySubnet",
+                        "addressPrefix": "10.1.0.0/27"
+                    }
+                ]
+            },
+            {
+                "name": "my-third-virtual-network",
+                "addressPrefixes": [
+                    "10.2.0.0/16"
+                ],
+                "subnets": [
+                    {
+                        "name": "web",
+                        "addressPrefix": "10.2.1.0/24"
+                    },
+                    {
+                        "name": "biz",
+                        "addressPrefix": "10.2.2.0/24"
+                    },
+                    {
+                        "name": "GatewaySubnet",
+                        "addressPrefix": "10.2.0.0/27"
+                    }
+                ]
+            }
+        ]
+    }
+}

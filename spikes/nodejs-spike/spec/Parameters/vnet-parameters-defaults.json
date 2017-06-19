@@ -1,0 +1,11 @@
+{
+    "$schema": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/settings.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualNetworkSettings": [
+            {
+                "name": "my-virtual-network"
+            }
+        ]
+    }
+}

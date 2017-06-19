@@ -1,0 +1,59 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentContext": {
+      "type": "object",
+      "defaultValue": {
+        "parentTemplateUniqueString": "bbConn"
+      }
+    },
+    "connections": {
+      "type": "array"
+    },
+    "localNetworkGateways": {
+      "type": "array",
+      "defaultValue": []
+    }
+  },
+  "variables": {
+    "workaround": {
+       "true": "[parameters('localNetworkGateways')]",
+       "false": [{
+           "name": "workaround",
+           "properties": {}
+       }]
+     },
+     "lgws": "[variables('workaround')[string(greater(length(parameters('localNetworkGateways')), 0))]]"
+  },
+  "resources": [
+      {
+      "type": "Microsoft.Network/localNetworkGateways",
+      "apiVersion": "2016-06-01",
+      "location": "[resourceGroup().location]",
+      "name": "[variables('lgws')[copyIndex()].name]",
+      "condition": "[greater(length(parameters('localNetworkGateways')), 0)]",
+      "copy": {
+        "name": "localNetworkGateways",
+        "count": "[length(variables('lgws'))]"
+      },
+      "properties": "[variables('lgws')[copyIndex()].properties]"
+    },
+    {
+      "type": "Microsoft.Network/connections",
+      "apiVersion": "2016-06-01",
+      "location": "[resourceGroup().location]",
+      "name": "[parameters('connections')[copyIndex()].name]",
+      "copy": {
+        "name": "connections",
+        "count": "[length(parameters('connections'))]"
+      },
+      "dependsOn": [
+          "localNetworkGateways"
+      ],
+      "properties": "[parameters('connections')[copyIndex()].properties]"
+    }
+  ],
+  "outputs": {
+  }
+}

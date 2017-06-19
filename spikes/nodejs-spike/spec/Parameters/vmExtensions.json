@@ -1,0 +1,60 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachinesExtensionSettings": [
+            {
+                "vms": [
+                    "test-vm1"
+                ],
+                "extensions": [
+                    {
+                        "name": "testCustomExtension",
+                        "publisher": "Microsoft.Compute",
+                        "type": "CustomScriptExtension",
+                        "typeHandlerVersion": "1.8",
+                        "autoUpgradeMinorVersion": true,
+                        "settings": {
+                            "fileUris": [
+                                "https://scriptsa111.blob.core.windows.net/extensions/test.ps1"
+                            ],
+                            "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File ./test.ps1 PrivateSettingsRef:user PrivateSettingsRef:password"
+                        },
+                        "protectedSettings": {
+                            "reference": {
+                                "keyVault": {
+                                    "id": "/subscriptions/3b518fac-e5c8-4f59-8ed5-d70b626f8e10/resourceGroups/testkeyvault/providers/Microsoft.KeyVault/vaults/rosharvault"
+                                },
+                                "secretName": "ext111"
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                "vms": [
+                    "test-vm2"
+                ],
+                "extensions": [
+                    {
+                        "name": "testCustomExtension",
+                        "publisher": "Microsoft.Compute",
+                        "type": "CustomScriptExtension",
+                        "typeHandlerVersion": "1.8",
+                        "autoUpgradeMinorVersion": true,
+                        "settings": {
+                            "fileUris": [
+                                "https://scriptsa222.blob.core.windows.net/extensions/test.ps1"
+                            ],
+                            "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File ./test.ps1 PrivateSettingsRef:user PrivateSettingsRef:password"
+                        },
+                        "protectedSettings": {
+                            "storageAccountName": "scriptsa222",
+                            "storageAccountKey": "6+T/CvPOwNOpfUEoBv/FfdtUX9OjpsMGcS/Pa0a1Narm1L0l7B/xg4VJU3Q48lDDWJW1OiDGL09Nf18+CLMM3A=="
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}

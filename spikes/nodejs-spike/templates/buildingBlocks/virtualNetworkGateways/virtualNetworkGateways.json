@@ -1,0 +1,77 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentContext": {
+      "type": "object",
+      "defaultValue": {
+        "parentTemplateUniqueString": "bbVNG"
+      }
+    },
+    "virtualNetworkGateways": {
+      "type": "array",
+      "metadata": {
+        "description": "Settings for virtual network gateways"
+      }
+    },
+    "publicIpAddresses": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Settings for public IP addresses for virtual network gateways"
+      }
+    }
+  },
+  "variables": {
+    "workaround": {
+       "true": "[parameters('publicIpAddresses')]",
+       "false": [{
+           "name": "workaround",
+           "properties": {}
+       }]
+     },
+     "pips": "[variables('workaround')[string(greater(length(parameters('publicIpAddresses')), 0))]]",
+     "templateUniqueString": "[uniqueString(concat(string(parameters('deploymentContext')), string(parameters('virtualNetworkGateways')), string(parameters('publicIpAddresses'))))]",
+     "virtualNetworkGatewaysTemplate": "[uri(deployment().properties.templateLink.uri, '../../resources/Microsoft.Network/virtualNetworkGateways/virtualNetworkGateways.json')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2016-06-01",
+      "location": "[resourceGroup().location]",
+      "condition": "[greater(length(parameters('publicIpAddresses')), 0)]",
+      "name": "[variables('pips')[copyIndex()].name]",
+      "copy": {
+         "name": "publicIpAddresses",
+         "count": "[length(variables('pips'))]",
+         "mode": "Parallel"
+      },
+      "properties": "[variables('pips')[copyIndex()].properties]"
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-deployVng', copyIndex(), '-', variables('templateUniqueString'))]",
+      "dependsOn": [
+          "publicIpAddresses"
+      ],
+      "copy": {
+        "name": "vngIterator",
+        "count": "[length(parameters('virtualNetworkGateways'))]",
+        "mode": "Parallel"
+      },
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('virtualNetworkGatewaysTemplate')]"
+        },
+        "parameters": {
+          "virtualNetworkGateways": {
+            "value": "[parameters('virtualNetworkGateways')[copyIndex()]]"
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {}
+}

@@ -1,0 +1,129 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentContext": {
+      "type": "object",
+      "defaultValue": {
+        "parentTemplateUniqueString": "bbNetworkSecurityGroup"
+      }
+    },
+    "networkSecurityGroups": {
+      "type": "array"
+    },
+    "subnets": {
+      "type": "array",
+      "defaultValue": []
+    },
+    "networkInterfaces": {
+      "type": "array",
+      "defaultValue": []
+    }
+  },
+  "variables": {
+    "sn-workaround": {
+       "true": "[parameters('subnets')]",
+       "false": [{
+           "name": "workaround",
+           "properties": {}
+       }]
+    },
+    "sn": "[variables('sn-workaround')[string(greater(length(parameters('subnets')), 0))]]",
+    "nic-workaround": {
+       "true": "[parameters('networkInterfaces')]",
+       "false": [{
+           "name": "workaround",
+           "properties": {}
+       }]
+    },
+    "nics": "[variables('nic-workaround')[string(greater(length(parameters('networkInterfaces')), 0))]]"
+  },
+  "resources": [
+    {
+        "type": "Microsoft.Network/networkSecurityGroups",
+        "name": "[parameters('networkSecurityGroups')[copyIndex()].name]",
+        "apiVersion": "2015-06-15",
+        "location": "[resourceGroup().location]",
+        "copy": {
+            "name": "networkSecurityGroup",
+            "count": "[length(parameters('networkSecurityGroups'))]"
+        },
+        "properties": "[parameters('networkSecurityGroups')[copyIndex()].properties]",
+        "tags": "[parameters('networkSecurityGroups')[copyIndex()].tags]"
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "[concat('nsg-sn-', copyIndex())]",
+      "condition": "[greater(length(parameters('subnets')), 0)]",
+      "dependsOn": [
+        "networkSecurityGroup"
+      ],
+      "copy": {
+         "name": "subnets",
+         "count": "[length(variables('sn'))]",
+         "mode": "Serial"
+      },
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+          },
+          "variables": {
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/virtualNetworks/subnets",
+              "apiVersion": "2016-06-01",
+              "location": "[resourceGroup().location]",
+              "name": "[concat(split(variables('sn')[copyIndex()].id, '/')[8], '/', split(variables('sn')[copyIndex()].id, '/')[10])]",
+              "properties": "[union(reference(variables('sn')[copyIndex()].id, '2016-06-01'), variables('sn')[copyIndex()].properties)]"
+            }
+          ],
+          "outputs": {
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "[concat('nsg-nics-', copyIndex())]",
+      "condition": "[greater(length(parameters('networkInterfaces')), 0)]",
+      "dependsOn": [
+        "subnets"
+      ],
+      "copy": {
+         "name": "networkInterfaces",
+         "count": "[length(variables('nics'))]",
+         "mode": "Serial"
+      },
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+          },
+          "variables": {
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/networkInterfaces",
+              "apiVersion": "2016-06-01",
+              "location": "[resourceGroup().location]",
+              "name": "[split(variables('nics')[copyIndex()].id, '/')[8]]",
+              "properties": "[union(reference(variables('nics')[copyIndex()].id, '2016-06-01'), variables('nics')[copyIndex()].properties)]"
+            }
+          ],
+          "outputs": {
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {
+  }
+}

@@ -1,0 +1,129 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "loadBalancerSettings": {
+            "value": {
+                "name": "bb-dev-biz-lb",
+                "frontendIPConfigurations": [
+                    {
+                        "name": "bb-dev-biz-lbfe1",
+                        "loadBalancerType": "public",
+                        "domainNameLabel": "rstest112211"
+                    },
+                    {
+                        "name": "bb-dev-biz-lbfe2",
+                        "loadBalancerType": "internal",
+                        "domainNameLabel": "tests",
+                        "internalLoadBalancerSettings": {
+                            "privateIPAddress": "10.0.2.100",
+                            "subnetName": "biz"
+                        }
+                    }
+                ],
+                "loadBalancingRules": [
+                    {
+                        "name": "lbr1",
+                        "frontendPort": 80,
+                        "backendPort": 80,
+                        "protocol": "Tcp",
+                        "backendPoolName": "lb-bep1",
+                        "frontendIPConfigurationName": "bb-dev-biz-lbfe1",
+                        "enableFloatingIP": false,
+                        "probeName": "lbp1"
+                    },
+                    {
+                        "name": "lbr2",
+                        "frontendPort": 443,
+                        "backendPort": 443,
+                        "protocol": "Tcp",
+                        "backendPoolName": "lb-bep2",
+                        "frontendIPConfigurationName": "bb-dev-biz-lbfe2",
+                        "enableFloatingIP": false,
+                        "probeName": "lbp2"
+                    }
+                ],
+                "probes": [
+                    {
+                        "name": "lbp1",
+                        "port": 80,
+                        "protocol": "Http",
+                        "requestPath": "/",
+                        "intervalInSeconds": 15,
+                        "numberOfProbes": 2
+                    },
+                    {
+                        "name": "lbp2",
+                        "port": 50000,
+                        "protocol": "TCP",
+                        "requestPath": "/",
+                        "intervalInSeconds": 15,
+                        "numberOfProbes": 2
+                    }
+                ],
+                "backendPools": [
+                    {
+                        "name": "lb-bep1",
+                        "nics": {
+                            "names": [
+                                "A",
+                                "B",
+                                "Z"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "lb-bep2",
+                        "nics": {
+                            "names": [
+                                "B",
+                                "C",
+                                "Z"
+                            ]
+                        }
+                    }
+                ],
+                "inboundNatRules": [
+                    {
+                        "name": "nat1",
+                        "frontendIPConfigurationName": "lbfe1",
+                        "startingFrontendPort": 50001,
+                        "backendPort": 3389,
+                        "enableFloatingIP": false,
+                        "protocol": "Tcp",
+                        "idleTimeoutInMinutes": 4,
+                        "nics": {
+                            "names": [
+                                "D",
+                                "E",
+                                "Z"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "nat2",
+                        "frontendIPConfigurationName": "lbfe2",
+                        "frontendPort": 25,
+                        "enableFloatingIP": "FloatingIp",
+                        "protocol": "Tcp",
+                        "idleTimeoutInMinutes": 4,
+                        "nics": {
+                            "names": [
+                                "F"
+                            ]
+                        }
+                    }
+                ],
+                "virtualNetwork": {
+                    "name": "test-vnet"
+                }
+            }
+        },
+        "buildingBlockSettings": {
+            "value": {
+                "resourceGroupName": "rs-test1-rg",
+                "subscriptionId": "3b518fac-e5c8-4f59-8ed5-d70b626f8e10"
+            }
+        }
+    }
+}

@@ -1,0 +1,48 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentContext": { "type": "object" },
+    "source": { "type": "array" },
+    "name": { "type": "string" },
+    "resourceTemplatePath": {"type": "string"}
+  },
+  "variables": {
+    "templateUniqueString": "[uniqueString(concat(string(parameters('deploymentContext')), string(parameters('source')), parameters('name'), parameters('resourceTemplatePath')))]",
+    "count": [
+      1,
+      "[length(parameters('source'))]"
+    ],
+    "resourcesCollection": [
+      [ {} ],
+      "[parameters('source')]"
+    ],
+    "templates": [
+      "[uri(deployment().properties.templateLink.uri, 'nop.json')]",
+      "[parameters('resourceTemplatePath')]"
+    ],
+    "templateToInvoke": "[variables('templates')[mod(add(length(parameters('source')), 2), add(length(parameters('source')), 1))]]",
+    "iteratorCount": "[variables('count')[mod(add(length(parameters('source')), 2), add(length(parameters('source')), 1))]]",
+    "resources": "[variables('resourcesCollection')[mod(add(length(parameters('source')), 2), add(length(parameters('source')), 1))]]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "name": "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-', parameters('name'), copyIndex(), '-', variables('templateUniqueString'))]",
+      "copy": {
+        "name": "iterator",
+        "count": "[variables('iteratorCount')]"
+      },
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('templateToInvoke')]"
+        },
+        "parameters": {
+          "source": { "value": "[variables('resources')[copyIndex()]]" }
+        }
+      }
+    }
+  ]
+}

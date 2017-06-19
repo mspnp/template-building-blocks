@@ -1,0 +1,25 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "source": { "type": "object" }
+  },
+  "variables": {
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2016-03-30",
+      "name": "[parameters('source').name]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "ipConfigurations": "[parameters('source').ipConfigurations]",
+        "enableIPForwarding": "[parameters('source').enableIPForwarding]",
+        "dnsSettings": "[parameters('source').dnsSettings]"
+      },
+      "tags": {
+        "displayName": "nic"
+      }
+    }
+  ]
+}

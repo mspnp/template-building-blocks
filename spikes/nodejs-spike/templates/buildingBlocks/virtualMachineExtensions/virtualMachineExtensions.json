@@ -1,0 +1,48 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "deploymentContext": {
+            "type": "object",
+            "defaultValue": {
+                "parentTemplateUniqueString": "bbVMExtensions"
+            }
+        },
+        "extensions": {
+            "type": "array",
+            "metadata": {
+                "description": "Settings for virtual machine extensions"
+            }
+        }
+    },
+    "variables": {
+        "location": "[resourceGroup().location]",
+        "extensionsTemplate": "[uri(deployment().properties.templateLink.uri, '../../resources/Microsoft.Compute/virtualMachines/extensions/virtualMachineExtensions.json')]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2017-05-10",
+            "name": "[concat('deploy-ext-', copyIndex(), '-', parameters('extensions')[copyIndex()].name)]",
+            "copy": {
+                "name": "ext-iterator",
+                "count": "[length(parameters('extensions'))]",
+                "mode": "Serial"
+            },
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('extensionsTemplate')]"
+                },
+                "parameters": {
+                    "extension": {
+                        "value": "[parameters('extensions')[copyIndex()]]"
+                    },
+                    "extensionProtectedSettings": "[parameters('extensions')[copyIndex()].extensionProtectedSettings]"
+                }
+            }
+        }
+    ],
+    "outputs": {
+    }
+}

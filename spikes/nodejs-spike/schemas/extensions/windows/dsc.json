@@ -1,0 +1,59 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/extensions/windows/dsc.json#",
+    "type": "object",
+    "properties": {
+        "publisher": {
+            "type": "string",
+            "enum": [
+                "Microsoft.Powershell"
+            ]
+        },
+        "type": {
+            "type": "string",
+            "enum": [
+                "DSC"
+            ]
+        },
+        "typeHandlerVersion": {
+            "type": "string",
+            "enum": [
+                "2.1"
+            ]
+        },
+        "settings": {
+            "type": "object",
+            "properties": {
+                "ModulesUrl": {
+                    "type": "string"
+                },
+                "ConfigurationFunction": {
+                    "type": "string"
+                },
+                "Properties": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "SasToken": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "ModulesUrl",
+                "ConfigurationFunction"
+            ]
+        },
+        "protectedSettings": {
+            "type": "object",
+            "properties": {
+                "Items": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "DataBlobUri": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

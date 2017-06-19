@@ -1,0 +1,25 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "source": {
+            "type": "object"
+        },
+        "secret": {
+            "type": "securestring"
+        }
+    },
+    "variables": {
+        "updatedSource": "[base64ToJson(base64(replace(concat(string(parameters('source'))), '$SECRET$', parameters('secret'))))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2016-04-30-preview",
+            "name": "[variables('updatedSource').name]",
+            "location": "[resourceGroup().location]",
+            "tags": "[variables('updatedSource').tags]",
+            "properties": "[variables('updatedSource').properties]"
+        }
+    ]
+}

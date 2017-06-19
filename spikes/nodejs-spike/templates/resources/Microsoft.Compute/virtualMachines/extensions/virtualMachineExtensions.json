@@ -1,0 +1,40 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "extension": {
+            "type": "object",
+            "metadata": {
+                "description": "Settings for virtual machine extension"
+            }
+        },
+        "extensionProtectedSettings": {
+            "type": "securestring",
+            "metadata": {
+                "description": "ProtectedSettings for extension"
+            }
+        }
+    },
+    "variables": {
+        "location": "[resourceGroup().location]",
+        "protectedSettingsObject": {
+            "protectedSettings": "[base64ToJson(base64(parameters('extensionProtectedSettings')))]"
+        },
+        "updatedExtensionProperties": "[union(parameters('extension').extensionSettings, variables('protectedSettingsObject'))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "apiVersion": "2016-03-30",
+            "name": "[concat(parameters('extension').vms[copyIndex()],'/', parameters('extension').name)]",
+            "location": "[resourceGroup().location]",
+            "copy": {
+                "name": "vm-iterator",
+                "count": "[length(parameters('extension').vms)]"
+            },
+            "properties": "[variables('updatedExtensionProperties')]"
+        }
+    ],
+    "outputs": {
+    }
+}

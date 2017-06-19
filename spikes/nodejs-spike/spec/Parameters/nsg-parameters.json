@@ -1,0 +1,81 @@
+{
+    "$schema": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/settings.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "networkSecurityGroupSettings": {
+            "name": "test-nsg",
+            "tags": {
+                "tag9": "value9",
+                "tag10": "value10"
+            },
+            "virtualNetworks": [
+                {
+                    "name": "my-virtual-network",
+                    "subnets": [
+                        "biz"
+                    ]
+                },
+                {
+                    "name": "my-other-virtual-network",
+                    "subnets": [
+                        "web"
+                    ]
+                }
+            ],
+            "networkInterfaces": [
+                {
+                    "name": "myvm-vm1-nic1"
+                },
+                {
+                    "name": "myvm-vm2-nic1"
+                }
+            ],
+            "securityRules": [
+                {
+                    "name": "rule1",
+                    "direction": "Inbound",
+                    "priority": 100,
+                    "sourceAddressPrefix": "192.168.1.1",
+                    "destinationAddressPrefix": "*",
+                    "sourcePortRange": "*",
+                    "destinationPortRange": "*",
+                    "access": "Allow",
+                    "protocol": "*"
+                },
+                {
+                    "name": "rule2",
+                    "direction": "Inbound",
+                    "priority": 101,
+                    "sourceAddressPrefix": "192.168.1.1/24",
+                    "destinationAddressPrefix": "*",
+                    "sourcePortRange": "*",
+                    "destinationPortRange": "*",
+                    "access": "Allow",
+                    "protocol": "*"
+                },
+                {
+                    "name": "rule3",
+                    "direction": "Inbound",
+                    "priority": 102,
+                    "sourceAddressPrefix": "VirtualNetwork",
+                    "destinationAddressPrefix": "AzureLoadBalancer",
+                    "sourcePortRange": "1-65535",
+                    "destinationPortRange": "*",
+                    "access": "Allow",
+                    "protocol": "*"
+                },
+                {
+                    "name": "rule4",
+                    "direction": "Inbound",
+                    "priority": 103,
+                    "sourceAddressPrefix": "Internet",
+                    "destinationAddressPrefix": "*",
+                    "sourcePortRange": "*",
+                    "destinationPortRange": 1234,
+                    "access": "Allow",
+                    "protocol": "*"
+                }
+            ]
+        }
+    }
+}

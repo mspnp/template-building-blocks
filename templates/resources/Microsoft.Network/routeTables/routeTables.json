@@ -8,15 +8,12 @@
         "parentTemplateUniqueString": "UDR"
       }
     },
-    "virtualNetworkSettings": {
-      "type": "object"
-    },
     "routeTableSettings": {
       "type": "array"
     }
   },
   "variables": {
-    "templateUniqueString": "[uniqueString(concat(string(parameters('deploymentContext')), string(parameters('virtualNetworkSettings')), string(parameters('routeTableSettings'))))]"
+    "templateUniqueString": "[uniqueString(concat(string(parameters('deploymentContext')), string(parameters('routeTableSettings'))))]"
   },
   "resources": [
     {
@@ -37,9 +34,6 @@
             "value": {
               "parentTemplateUniqueString": "[concat(variables('templateUniqueString'), '-DeployRT', copyIndex())]"
             }
-          },
-          "virtualNetworkSettings": {
-            "value": "[parameters('virtualNetworkSettings')]"
           },
           "routeTableSetting": {
             "value": "[parameters('routeTableSettings')[copyIndex()]]"

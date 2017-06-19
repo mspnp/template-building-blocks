@@ -1,0 +1,193 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentContext": {
+      "type": "object",
+      "defaultValue": {
+        "parentTemplateUniqueString": "bblb"
+      }
+    },
+    "storageAccounts": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Settings for storage Accounts"
+      }
+    },
+    "diagnosticStorageAccounts": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Settings for diagnostic storage accounts"
+      }
+    },
+    "nics": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Settings for network Interfaces"
+      }
+    },
+    "pips": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Settings for pips"
+      }
+    },
+    "availabilitySet": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Settings for availability set"
+      }
+    },
+    "virtualMachines": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Settings for virtual machines"
+      }
+    },
+    "secret": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "secret: password/ sshKey"
+      }
+    },
+    "loadBalancers": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Settings for load balancers"
+      }
+    },
+    "nicUpdates": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Settings for network interface updates"
+      }
+    }
+  },
+  "variables": {
+    "location": "[resourceGroup().location]",
+    "templateUniqueString": "[uniqueString(concat(string(parameters('deploymentContext')), string(parameters('storageAccounts')), string(parameters('diagnosticStorageAccounts')), string(parameters('nics')), string(parameters('pips')), string(parameters('availabilitySet')), string(parameters('virtualMachines')), string(parameters('loadBalancers')), string(parameters('nicUpdates'))))]",
+    "vmTemplate": "https://rosharpnp.blob.core.windows.net/nodejs-spike/buildingBlocks/virtualMachines/virtualMachines.json",
+    "vmDeploymentName": "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-deployVMs-', variables('templateUniqueString'))]",
+    "lbTemplate": "https://rosharpnp.blob.core.windows.net/nodejs-spike/resources/Microsoft.Network/loadBalancers/loadBalancer.json",
+    "lbDeploymentName": "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-deploylb-', variables('templateUniqueString'))]",
+    "nicRefTemplate": "https://rosharpnp.blob.core.windows.net/nodejs-spike/resources/Microsoft.Network/networkInterfaces/networkInterfaceReference.json"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "[variables('vmDeploymentName')]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('vmTemplate')]"
+        },
+        "parameters": {
+          "deploymentContext": {
+            "value": {
+              "parentTemplateUniqueString": "[concat(variables('templateUniqueString'), '-deployVMs')]"
+            }
+          },
+          "storageAccounts": {
+            "value": "[parameters('storageAccounts')]"
+          },
+          "diagnosticStorageAccounts": {
+            "value": "[parameters('diagnosticStorageAccounts')]"
+          },
+          "nics": {
+            "value": "[parameters('nics')]"
+          },
+          "pips": {
+            "value": "[parameters('pips')]"
+          },
+          "availabilitySet": {
+            "value": "[parameters('availabilitySet')]"
+          },
+          "virtualMachines": {
+            "value": "[parameters('virtualMachines')]"
+          },
+          "secret": {
+            "value": "[parameters('secret')]"
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "[variables('lbDeploymentName')]",
+       "dependsOn": [
+        "[variables('vmDeploymentName')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('lbTemplate')]"
+        },
+        "parameters": {
+          "loadBalancers": {
+            "value": "[parameters('loadBalancers')[0]]"
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-nicRef-', copyIndex(), '-' , variables('templateUniqueString'))]",
+      "copy": {
+        "name": "nicsRefIterator",
+        "count": "[length(parameters('nicUpdates'))]"
+      },
+      "dependsOn": [
+        "[variables('lbDeploymentName')]",
+        "[variables('vmDeploymentName')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('nicRefTemplate')]"
+        },
+        "parameters": {
+          "nicReferenceId": {
+            "value": "[parameters('nicUpdates')[copyIndex()].id]"
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2016-03-30",
+      "name": "[last(split(parameters('nicUpdates')[copyIndex()].id, '/'))]",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "nicsIterator",
+        "count": "[length(parameters('nicUpdates'))]"
+      },
+      "dependsOn": [
+        "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-nicRef-', sub(length(parameters('nicUpdates')), 1), '-' , variables('templateUniqueString'))]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "[reference(concat(parameters('deploymentContext').parentTemplateUniqueString, '-nicRef-', copyIndex(), '-' , variables('templateUniqueString'))).outputs.nicProperties.value.ipConfigurations[0].name]",
+            "properties": "[union(reference(concat(parameters('deploymentContext').parentTemplateUniqueString, '-nicRef-', copyIndex(), '-' , variables('templateUniqueString'))).outputs.nicProperties.value.ipConfigurations[0].properties, parameters('nicUpdates')[copyIndex()].properties)]"
+          }
+        ],
+        "dnsSettings": "[reference(concat(parameters('deploymentContext').parentTemplateUniqueString, '-nicRef-', copyIndex(), '-' , variables('templateUniqueString'))).outputs.nicProperties.value.dnsSettings]",
+        "enableIPForwarding": "[reference(concat(parameters('deploymentContext').parentTemplateUniqueString, '-nicRef-', copyIndex(), '-' , variables('templateUniqueString'))).outputs.nicProperties.value.enableIPForwarding]",
+        "primary": "[reference(concat(parameters('deploymentContext').parentTemplateUniqueString, '-nicRef-', copyIndex(), '-' , variables('templateUniqueString'))).outputs.nicProperties.value.primary]"
+      }
+    }
+  ],
+  "outputs": {}
+}

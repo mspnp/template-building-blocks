@@ -1,0 +1,17 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "nicReferenceId": {
+            "type": "string"
+        }
+    },
+    "variables": {},
+    "resources": [],
+    "outputs": {
+        "nicProperties": {
+            "type": "object",
+            "value": "[reference(parameters('nicReferenceId'), '2016-03-30')]"
+        }
+    }
+}

@@ -1,0 +1,51 @@
+{
+    "$schema": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/settings.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachineSettings": {
+            "vmCount": 2,
+            "namePrefix": "myvm",
+            "size": "Standard_DS2_v2",
+            "computerNamePrefix": "myvm",
+            "adminUsername": "testadminuser",
+            "adminPassword": "testPassw0rd111",
+            "osAuthenticationType": "password",
+            "virtualNetwork": {
+                "name": "my-virtual-network"
+            },
+            "storageAccounts": {
+                "count": 1,
+                "managed": false
+            },
+            "diagnosticStorageAccounts": {
+                "count": 1
+            },
+            "nics": [
+                {
+                    "isPublic": true,
+                    "subnetName": "web",
+                    "privateIPAllocationMethod": "Static",
+                    "startingIPAddress": "10.0.1.240",
+                    "isPrimary": true
+                }
+            ],
+            "osDisk": {
+                "osType": "linux"
+            },
+            "dataDisks": {
+                "count": 1,
+                "properties": {
+                    "diskSizeGB": 127
+                }
+            },
+            "availabilitySet": {
+                "useExistingAvailabilitySet": false,
+                "name": "test-as"
+            },
+            "tags": {
+                "tag4": "value4",
+                "tag5": "value5"
+            }
+        }
+    }
+}

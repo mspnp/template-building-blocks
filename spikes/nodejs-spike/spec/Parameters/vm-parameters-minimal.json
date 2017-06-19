@@ -1,0 +1,15 @@
+{
+    "$schema": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/swagger/settings.json#",
+    "parameters": {
+        "vmCount": 20,
+        "namePrefix": "test",
+        "computerNamePrefix": "test",
+        "adminPassword": "testPassw0rd111",
+        "virtualNetwork": {
+            "name": "ra-vnet"
+        },
+        "osDisk": {
+            "osType": "windows"
+        }
+    }
+}

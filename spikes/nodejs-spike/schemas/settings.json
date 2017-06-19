@@ -1,0 +1,131 @@
+{
+    "id": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/settings.json#",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Building Block Parameters",
+    "description": "A building blocks settings file",
+    "type": "object",
+    "properties": {
+        "$schema": {
+            "type": "string"
+        },
+        "contentVersion": {
+            "type": "string",
+            "pattern": "(^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$)",
+            "description": "A 4 number format for the version number of this parameter file. For example, 1.0.0.0"
+        },
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "connectionSettings": {
+                    "oneOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/connectionSettings.json#"
+                            }
+                        },
+                        {
+                            "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/connectionSettings.json#"
+                        }
+                    ]
+                },
+                "loadBalancerSettings": {
+                    "oneOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/loadBalancerSettings.json#"
+                            }
+                        },
+                        {
+                            "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/loadBalancerSettings.json#"
+                        }
+                    ]
+                },
+                "networkSecurityGroupSettings": {
+                    "oneOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/networkSecurityGroupSettings.json#"
+                            }
+                        },
+                        {
+                            "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/networkSecurityGroupSettings.json#"
+                        }
+                    ]
+                },
+                "routeTableSettings": {
+                    "oneOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/routeTableSettings.json#"
+                            }
+                        },
+                        {
+                            "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/routeTableSettings.json#"
+                        }
+                    ]
+                },
+                "virtualMachineSettings": {
+                    "oneOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/virtualMachineSettings.json#"
+                            }
+                        },
+                        {
+                            "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/virtualMachineSettings.json#"
+                        }
+                    ]
+                },
+                "virtualMachinesExtensionSettings": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/virtualMachineExtensionsSettings.json#"
+                    }
+                },
+                "virtualNetworkGatewaySettings": {
+                    "oneOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/virtualNetworkGatewaySettings.json#"
+                            }
+                        },
+                        {
+                            "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/virtualNetworkGatewaySettings.json#"
+                        }
+                    ]
+                },
+                "virtualNetworkSettings": {
+                    "oneOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/virtualNetworkSettings.json#"
+                            }
+                        },
+                        {
+                            "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/virtualNetworkSettings.json#"
+                        }
+                    ]
+                }
+            },
+            "description": "Collection of parameters to pass into a template",
+            "additionalProperties": false,
+            "oneOf": [
+                { "required": [ "connectionSettings" ] },
+                { "required": [ "loadBalancerSettings" ] },
+                { "required": [ "networkSecurityGroupSettings" ] },
+                { "required": [ "routeTableSettings" ] },
+                { "required": [ "virtualMachinesExtensionSettings" ] },
+                { "required": [ "virtualMachineSettings" ] },
+                { "required": [ "virtualNetworkSettings" ] }
+            ]
+        }
+    },
+    "additionalProperties": false
+}

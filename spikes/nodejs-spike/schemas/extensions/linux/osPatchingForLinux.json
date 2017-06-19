@@ -1,0 +1,116 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/extensions/linux/osPatchingForLinux.json#",
+    "type": "object",
+    "properties": {
+        "publisher": {
+            "type": "string",
+            "enum": [
+                "Microsoft.OSTCExtensions"
+            ]
+        },
+        "type": {
+            "type": "string",
+            "enum": [
+                "OSPatchingForLinux"
+            ]
+        },
+        "typeHandlerVersion": {
+            "type": "string",
+            "enum": [
+                "2.0"
+            ]
+        },
+        "settings": {
+            "type": "object",
+            "properties": {
+                "disabled": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "stop": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "rebootAfterPatch": {
+                    "type": "string",
+                    "default": "RebootIfNeed",
+                    "enum": [
+                        "RebootIfNeed",
+                        "Required",
+                        "NotRequired",
+                        "Auto"       
+                    ]
+                },
+                "category": {
+                    "type": "string",
+                    "default": "Important",
+                    "enum": [
+                        "Important",
+                        "ImportantAndRecommended"    
+                    ]
+                },
+                "installDuration": {
+                    "type": "string",
+                    "default": "01:00"
+                },
+                "oneoff": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "intervalOfWeeks": {
+                    "type": "integer",
+                    "default": 1
+                },
+                "dayOfWeek": {
+                    "type": "string",
+                    "default": "Everyday",
+                    "enum": [
+                        "Sunday",
+                        "Monday",
+                        "Tuesday",
+                        "Wednesday",
+                        "Thursday",
+                        "Friday",
+                        "Saturday",
+                        "Everyday"
+                    ]
+                },
+                "startTime": {
+                    "type": "string",
+                    "default": "03:00"
+                },
+                "distUpgradeList": {
+                    "type": "string",
+                    "default": "/etc/apt/sources.list.d/custom.list"
+                },
+                "distUpgradeAll": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "vmStatusTest": {
+                    "type": "object",
+                    "properties": {
+                        "local": {
+                            "type": "boolean",
+                            "default": false
+                        },
+                        "idleTestScript": {
+                            "type": "string"
+                        },
+                        "healthyTestScript": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "required": [
+                "disabled",
+                "stop"
+            ]
+        },
+        "protectedSettings": {
+            "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/extensions/types.json#/definitions/protectedSettingsStorageAccount"
+        }
+    }
+}

@@ -1,0 +1,32 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Settings for the virtual network building block",
+    "id": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schema/publicIpAddressSettings.json#",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+         "tags": {
+            "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/types.json#/definitions/tags"
+        },
+        "publicIPAllocationMethod": {
+            "type": "string"
+        },
+        "publicIPAddressVersion": {
+            "type": "string"
+        },
+        "idleTimeoutsInMinutes": {
+            "type": "integer"
+        },
+        "domainNameLabel": {
+            "type": "string"
+        },
+        "reverseFqdn": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "name"
+    ]
+}

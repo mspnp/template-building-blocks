@@ -1,0 +1,81 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentContext": {
+      "type": "object",
+      "defaultValue": {
+        "parentTemplateUniqueString": "bbVNet"
+      }
+    },
+    "virtualNetworks": {
+      "type": "array"
+    },
+    "virtualNetworkPeerings": {
+      "type": "array",
+      "defaultValue": []
+    }
+  },
+  "variables": {
+    "workaround": {
+       "true": "[parameters('virtualNetworkPeerings')]",
+       "false": [{
+           "name": "workaround",
+           "properties": {}
+       }]
+     },
+     "peerings": "[variables('workaround')[string(greater(length(parameters('virtualNetworkPeerings')), 0))]]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2016-06-01",
+      "location": "[resourceGroup().location]",
+      "name": "[parameters('virtualNetworks')[copyIndex()].name]",
+      "copy": {
+        "name": "virtualNetworks",
+        "count": "[length(parameters('virtualNetworks'))]"
+      },
+      "properties": "[parameters('virtualNetworks')[copyIndex()].properties]",
+      "tags": "[parameters('virtualNetworks')[copyIndex()].tags]"
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "[concat('vnp-', copyIndex())]",
+      "condition": "[greater(length(parameters('virtualNetworkPeerings')), 0)]",
+      "dependsOn": [
+        "virtualNetworks"
+      ],
+      "copy": {
+         "name": "vnpIterator",
+         "count": "[length(variables('peerings'))]",
+         "mode": "Serial"
+      },
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+          },
+          "variables": {
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+              "apiVersion": "2016-06-01",
+              "location": "[resourceGroup().location]",
+              "name": "[variables('peerings')[copyIndex()].name]",
+              "properties": "[variables('peerings')[copyIndex()].properties]"
+            }
+          ],
+          "outputs": {
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {
+  }
+}

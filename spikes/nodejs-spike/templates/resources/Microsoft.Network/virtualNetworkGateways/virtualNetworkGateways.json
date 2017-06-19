@@ -1,0 +1,27 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "virtualNetworkGateways": {
+      "type": "array"
+    }
+  },
+  "variables": {
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/virtualNetworkGateways",
+      "apiVersion": "2016-06-01",
+      "location": "[resourceGroup().location]",
+      "copy": {
+          "name": "virtualNetworkGateways",
+          "mode": "Serial",
+          "count": "[length(parameters('virtualNetworkGateways'))]"
+      },
+      "name": "[parameters('virtualNetworkGateways')[copyIndex()].name]",
+      "properties": "[parameters('virtualNetworkGateways')[copyIndex()].properties]"
+    }
+  ],
+  "outputs": {
+  }
+}
