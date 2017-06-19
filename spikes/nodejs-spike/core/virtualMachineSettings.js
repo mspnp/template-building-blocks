@@ -1,10 +1,10 @@
 'use strict';
 
-var _ = require('lodash');
-var storageSettings = require('./storageSettings.js');
-var nicSettings = require('./networkInterfaceSettings.js');
-var avSetSettings = require('./availabilitySetSettings.js');
-var resources = require('./resources.js');
+let _ = require('lodash');
+let storageSettings = require('./storageSettings.js');
+let nicSettings = require('./networkInterfaceSettings.js');
+let avSetSettings = require('./availabilitySetSettings.js');
+let resources = require('./resources.js');
 let v = require('./validation.js');
 let defaultSettings = require('./virtualMachineSettingsDefaults.js');
 
@@ -603,7 +603,7 @@ function processVMStamps(param, buildingBlockSettings) {
     }, []);
 }
 
-function process(param, buildingBlockSettings) {
+function transform(param, buildingBlockSettings) {
     let processedParams = _.transform(processVMStamps(param, buildingBlockSettings), (result, n, index) => {
         for (let prop in n) {
             if (typeof processChildResources[prop] === 'function') {
@@ -627,36 +627,39 @@ function process(param, buildingBlockSettings) {
     return processedParams;
 }
 
-function createTemplateParameters(resources) {
-    let templateParameters = {
-        $schema: 'http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#',
-        contentVersion: '1.0.0.0',
-        parameters: {
+function mergeAndTransform(param, buildingBlockSettings) {
+    return transform(merge(param), buildingBlockSettings);
+}
 
+function process(settings, buildingBlockSettings){
+    let buildingBlockErrors = v.validate({
+        settings: buildingBlockSettings,
+        validations: {
+            subscriptionId: v.validationUtilities.isGuid,
+            resourceGroupName: v.validationUtilities.isNotNullOrWhitespace,
         }
-    };
-    templateParameters.parameters = _.transform(resources, (result, value, key) => {
-        if (key === 'secret' && !_.isString(value)) {
-            result[key] = value;
-        } else {
-            result[key] = {};
-            result[key].value = value;
-        }
-        return result;
-    }, {});
-    return templateParameters;
+    });
+
+    if (buildingBlockErrors.length > 0) {
+        throw new Error(JSON.stringify(buildingBlockErrors));
+    }
+
+    let merged = merge(settings);
+
+    let errors = v.validate({
+        settings: merged,
+        validations: virtualMachineValidations
+    });
+
+    if (errors.length > 0) {
+        throw new Error(JSON.stringify(errors));
+    }
+
+    let results = mergeAndTransform(merged, buildingBlockSettings);
+    return results;
 }
 
-function getTemplateParameters(param, buildingBlockSettings) {
-    let processedParams = mergeAndProcess(param, buildingBlockSettings);
-    return createTemplateParameters(processedParams);
-}
-
-function mergeAndProcess(param, buildingBlockSettings) {
-    return process(merge(param), buildingBlockSettings);
-}
-
-exports.processVirtualMachineSettings = mergeAndProcess;
+exports.process = process;
+exports.transform = mergeAndTransform;
 exports.mergeWithDefaults = merge;
 exports.validations = validate;
-exports.getTemplateParameters = getTemplateParameters;

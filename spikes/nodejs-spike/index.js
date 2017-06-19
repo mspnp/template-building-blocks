@@ -65,7 +65,7 @@ let getBuildingBlocks = ({baseUri}) => {
     return {
         vm: {
             process: ({settings, buildingBlockSettings}) => {
-                let process = require(path.resolve('./core', 'virtualMachineSettings.js')).processVirtualMachineSettings;
+                let process = require(path.resolve('./core', 'virtualMachineSettings.js')).process;
                 return process(settings, buildingBlockSettings);
             },
             parameterName: 'virtualMachineSettings',
