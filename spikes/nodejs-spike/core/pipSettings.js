@@ -22,4 +22,4 @@ function process(publicIPSettings) {
     }, []);
 }
 
-exports.processPipSettings = process;
+exports.transform = process;

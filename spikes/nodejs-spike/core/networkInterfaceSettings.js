@@ -103,7 +103,7 @@ function createPipParameters(parent, vmIndex) {
     if (!v.utilities.isNullOrWhitespace(parent.domainNameLabelPrefix)) {
         settings.domainNameLabel = `${parent.domainNameLabelPrefix}${vmIndex}`;
     }
-    return pipSettings.processPipSettings(settings);
+    return pipSettings.transform(settings);
 }
 
 function process(settings, parent, vmIndex) {
