@@ -470,7 +470,7 @@ function processPipsForFrontendIPConfigurations(feIpconfig) {
     feIpconfig.forEach((config) => {
         if (config.loadBalancerType === 'Public') {
             let settings = { namePrefix: config.name, publicIPAllocationMethod: 'Static', domainNameLabel: config.domainNameLabel };
-            pips = pips.concat(pipSettings.processPipSettings(settings));
+            pips = pips.concat(pipSettings.transform(settings));
         }
     });
     return pips;
