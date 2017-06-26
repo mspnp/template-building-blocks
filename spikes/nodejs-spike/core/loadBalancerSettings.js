@@ -30,17 +30,46 @@ const LOADBALANCER_SETTINGS_DEFAULTS = {
 function merge({ settings, buildingBlockSettings, defaultSettings }) {
 
     let defaults = (defaultSettings) ? [LOADBALANCER_SETTINGS_DEFAULTS, defaultSettings] : LOADBALANCER_SETTINGS_DEFAULTS;
-    return v.merge(settings, defaults, defaultsCustomizer);
-}
 
-function defaultsCustomizer(objValue, srcValue, key) {
-    if (key === 'frontendIPConfigurations') {
-        if (_.isNil(srcValue) || srcValue.length === 0) {
-            return objValue;
-        } else {
-            delete objValue[0].name;
+    let merged = _.map(settings.frontendIPConfiguration, (config) => {
+        // If needed, we need to build up a publicIpAddress from the information we have here so it can be merged and validated.
+        if (config.loadBalancerType == 'Public') {
+            let publicIpAddress = {
+                name: `${config.name}-pip`,
+                publicIPAllocationMethod: 'Static',
+                domainNameLabel: config.domainNameLabel,
+                publicIPAddressVersion: config.publicIPAddressVersion
+            };
+
+            config.publicIpAddress = publicIpAddress;
         }
-    }
+
+        return config;
+    });
+
+    merged = r.setupResources(merged, buildingBlockSettings, (parentKey) => {
+        return ((parentKey === null) || (v.utilities.isStringInArray(parentKey, ['publicIpAddress'])));
+    });
+
+    merged = v.merge(merged, defaults, (objValue, srcValue, key) => {
+        if (key === 'frontendIPConfigurations') {
+            if (_.isNil(srcValue) || srcValue.length === 0) {
+                return objValue;
+            } else {
+                delete objValue[0].name;
+            }
+        }
+        if ((key === 'publicIpAddress') && (srcValue)) {
+            let results = publicIpAddressSettings.merge({
+                settings: srcValue,
+                buildingBlockSettings: buildingBlockSettings
+            });
+
+            return results;
+        }
+    });
+
+    return merged;    
 }
 
 let validLoadBalancerTypes = ['Public', 'Internal'];
@@ -96,6 +125,13 @@ let frontendIPConfigurationValidations = {
             validations: internalLoadBalancerSettingsValidations
         };
     },
+    publicIpAddress: (value) => {
+        return _.isNil(value) ? {
+            result: true
+        } : {
+            validations: publicIpAddressSettings.validations
+        };
+    }
 };
 
 let probeValidations = {
@@ -415,14 +451,8 @@ function transform(param) {
     // Get all the publicIpAddresses required for the load balancer
     let pips = _.map(param.frontendIPConfigurations, (config) => {
         if (config.loadBalancerType === 'Public') {
-            let pipSettings = {
-                name: `${config.name}-pip`,
-                publicIPAllocationMethod: 'Static',
-                domainNameLabel: config.domainNameLabel
-            };
-
             return publicIpAddressSettings.transform({
-                settings: pipSettings,
+                settings: config.publicIPAddress,
                 buildingBlockSettings: {
                     subscriptionId: param.subscriptionId,
                     resourceGroupName: param.resourceGroupName,
