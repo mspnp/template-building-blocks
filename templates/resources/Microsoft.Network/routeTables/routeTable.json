@@ -3,60 +3,20 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "deploymentContext": { "type": "object" },
-    "virtualNetworkSettings": {
-      "type": "object"
-    },
     "routeTableSetting": {
       "type": "object"
     }
   },
   "variables": {
-    "templateUniqueString": "[uniqueString(concat(string(parameters('deploymentContext')), string(parameters('virtualNetworkSettings')), string(parameters('routeTableSetting'))))]",
-    "vnetName": "[parameters('virtualNetworkSettings').name]",
-    "subnets": "[parameters('routeTableSetting').subnets]",
-    "routeTableName": "[parameters('routeTableSetting').name]",
-    "routeTableRoutes": "[parameters('routeTableSetting').routes]",
-    "collectorTemplate": "[uri(deployment().properties.templateLink.uri, '../../common/collector.json')]",
-    "referenceTemplate": "[uri(deployment().properties.templateLink.uri, '../../common/reference.json')]",
-
-    "routeTablesRoutesTemplateName": "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-rtRoutes-', variables('templateUniqueString'))]"
+    "templateUniqueString": "[uniqueString(concat(string(parameters('deploymentContext')), string(parameters('routeTableSetting'))))]",
   },
   "resources": [
     {
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
-      "name": "[variables('routeTablesRoutesTemplateName')]",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": { "uri": "[variables('collectorTemplate')]" },
-        "parameters": {
-          "deploymentContext": {
-            "value": {
-              "parentTemplateUniqueString": "[concat(variables('templateUniqueString'), '-rtRoutes')]"
-            }
-          },
-          "source": {
-            "value": "[variables('routeTableRoutes')]"
-          },
-          "context": {
-            "value": {
-              "routeTableName": "[variables('routeTableName')]"
-            }
-          },
-          "mapperTemplateUri": {
-            "value": "[uri(deployment().properties.templateLink.uri, 'routeTable-routes.json')]"
-          }
-        }
-      }
-    },
-    {
       "type": "Microsoft.Network/routeTables",
-      "name": "[variables('routeTableName')]",
+      "name": "[parameters('routeTableSetting').name]",
       "apiVersion": "2015-06-15",
       "location": "[resourceGroup().location]",
-      "properties": {
-        "routes": "[reference(variables('routeTablesRoutesTemplateName')).outputs.result.value]"
-      }
+      "properties": "[parameters('routeTableSetting').properties]"
     },
     {
       "type": "Microsoft.Resources/deployments",
@@ -64,29 +24,28 @@
       "name": "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-subnetRef', copyIndex(), '-', variables('templateUniqueString'))]",
       "copy": {
         "name": "subnet-reference-iterator",
-        "count": "[length(variables('subnets'))]"
+        "count": "[length(parameters('routeTableSetting').subnets)]"
       },
       "properties": {
         "mode": "Incremental",
-        "templateLink": {
-          "uri": "[variables('referenceTemplate')]"
-        },
-        "parameters": {
-          "deploymentContext": {
-            "value": {
-              "parentTemplateUniqueString": "[concat(variables('templateUniqueString') , '-subnetRef', copyIndex())]"
+        "template": {
+          "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+          ],
+          "outputs": {
+            "reference": {
+              "type": "object",
+              "value": {
+                "name": "[split(parameters('routeTableSetting').subnets[copyIndex()], '/')[10]]",
+                "properties": "[reference(parameters('routeTableSetting').subnets[copyIndex()], '2015-06-15')]"
+              }
             }
-          },
-          "resourceType": {
-            "value": "Microsoft.Network/virtualNetworks/subnets"
-          },
-          "resourceName1": {
-            "value": "[variables('vnetName')]"
-          },
-          "resourceName2": {
-            "value": "[variables('subnets')[copyIndex()]]"
           }
-        }
+        },
+        "parameters": {}
       }
     },
     {
@@ -94,7 +53,7 @@
       "apiVersion": "2015-01-01",
       "name": "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-updateSN0', 'Rt-', variables('templateUniqueString'))]",
       "dependsOn": [
-        "[variables('routeTableName')]"
+        "[parameters('routeTableSetting').name]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -117,8 +76,8 @@
         "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-updateSN', copyindex(), 'Rt-', variables('templateUniqueString'))]"
       ],
       "copy": {
-        "name": "[concat(variables('routeTableName'), '-sn-iterator')]",
-        "count": "[length(variables('subnets'))]"
+        "name": "[concat(parameters('routeTableSetting').name, '-sn-iterator')]",
+        "count": "[length(parameters('routeTableSetting').subnets)]"
       },
       "properties": {
         "mode": "Incremental",
@@ -133,12 +92,12 @@
             {
               "type": "Microsoft.Network/virtualNetworks/subnets",
               "apiVersion": "2016-03-30",
-              "name": "[concat(variables('vnetName'), '/', variables('subnets')[copyIndex()])]",
+              "name": "[concat(split(parameters('routeTableSetting').subnets[copyIndex()], '/')[8], '/', split(parameters('routeTableSetting').subnets[copyIndex()], '/')[10])]",
               "location": "[resourceGroup().location]",
               "properties": {
                 "addressPrefix": "[reference(concat(parameters('deploymentContext').parentTemplateUniqueString, '-subnetRef', copyIndex(), '-', variables('templateUniqueString'))).outputs.reference.value.properties.addressPrefix]",
                 "routeTable": {
-                  "id": "[resourceId('Microsoft.Network/routeTables', variables('routeTableName'))]"
+                  "id": "[parameters('routeTableSetting').id]"
                 }
               }
             }

@@ -1,0 +1,40 @@
+{
+    "$schema": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/settings.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualNetworkGatewaySettings": [
+            {
+                "name": "my-vpn-gw",
+                "gatewayType": "Vpn",
+                "vpnType": "RouteBased",
+                "sku": "Standard",
+                "isPublic": true,
+                "virtualNetwork": {
+                    "name": "my-virtual-network"
+                }
+            },
+            {
+                "name": "my-er-gw",
+                "gatewayType": "ExpressRoute",
+                "vpnType": "RouteBased",
+                "sku": "Standard",
+                "isPublic": true,
+                "virtualNetwork": {
+                    "name": "my-virtual-network"
+                }
+            },
+            {
+                "name": "my-vpn-gw2",
+                "gatewayType": "Vpn",
+                "vpnType": "RouteBased",
+                "sku": "Standard",
+                "isPublic": true,
+                "virtualNetwork": {
+                    "name": "my-other-virtual-network"
+                },
+                "bgpSettings": {
+                }
+            }
+        ]
+    }
+}

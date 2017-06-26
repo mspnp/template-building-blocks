@@ -1,0 +1,35 @@
+{
+  "name": "nodejs-spike",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "dependencies": {
+    "commander": "^2.9.0",
+    "lodash": "^4.17.4",
+    "murmurhash-native": "^3.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint-config-google": "^0.7.1",
+    "gulp": "^3.9.1",
+    "gulp-eslint": "^3.0.1",
+    "gulp-istanbul": "^1.1.1",
+    "gulp-jasmine": "^2.4.2",
+    "rewire": "^2.5.2"
+  },
+  "main": "app.js",
+  "preferGlobal": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mspnp/template-building-blocks.git"
+  },
+  "author": "patterns & practices",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mspnp/template-building-blocks/issues"
+  },
+  "homepage": "https://github.com/mspnp/template-building-blocks#readme"
+}

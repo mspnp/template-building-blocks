@@ -1,0 +1,136 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachineSettings": {
+            "vmCount": 2,
+            "namePrefix": "test",
+            "size": "Standard_DS2_v2",
+            "computerNamePrefix": "test",
+            "adminUsername": "testadminuser",
+            "adminPassword": "test$!Passw0rd111",
+            "osAuthenticationType": "password",
+            "virtualNetwork": {
+                "name": "test-vnet"
+            },
+            "storageAccounts": {
+                "count": 1,
+                "managed": false
+            },
+            "diagnosticStorageAccounts": {
+                "count": 1
+            },
+            "nics": [
+                {
+                    "isPublic": true,
+                    "subnetName": "web",
+                    "privateIPAllocationMethod": "Static",
+                    "startingIPAddress": "10.0.1.240",
+                    "isPrimary": true,
+                    "dnsServers": [],
+                    "backendPoolsNames": [
+                        "lb-bep1"
+                    ],
+                    "inboundNatRulesNames": [
+                        "nat1"
+                    ]
+                },
+                {
+                    "isPrimary": false,
+                    "subnetName": "biz",
+                    "privateIPAllocationMethod": "Dynamic",
+                    "backendPoolsNames": [
+                        "lb-bep2"
+                    ],
+                    "inboundNatRulesNames": [ "nat2"]
+                }
+            ],
+            "osDisk": {
+                "osType": "windows"
+            },
+            "dataDisks": {
+                "count": 1,
+                "properties": {
+                    "diskSizeGB": 127
+                }
+            },
+            "availabilitySet": {
+                "useExistingAvailabilitySet": false,
+                "name": "test-as"
+            },
+            "loadBalancerSettings": {
+                "frontendIPConfigurations": [
+                    {
+                        "name": "feConfig1",
+                        "loadBalancerType": "Public"
+                    }
+                ],
+                "loadBalancingRules": [
+                    {
+                        "name": "lbr1",
+                        "frontendPort": 80,
+                        "backendPort": 80,
+                        "protocol": "Tcp",
+                        "backendPoolName": "lb-bep1",
+                        "frontendIPConfigurationName": "feConfig1",
+                        "enableFloatingIP": false,
+                        "loadDistribution": "SourceIP",
+                        "probeName": "lbp1"
+                    },
+                    {
+                        "name": "lbr2",
+                        "frontendPort": 443,
+                        "backendPort": 443,
+                        "protocol": "Tcp",
+                        "backendPoolName": "lb-bep2",
+                        "frontendIPConfigurationName": "feConfig1",
+                        "enableFloatingIP": false,
+                        "probeName": "lbp2"
+                    }
+                ],
+                "probes": [
+                    {
+                        "name": "lbp1",
+                        "port": 80,
+                        "protocol": "Http",
+                        "requestPath": "/"
+                    },
+                    {
+                        "name": "lbp2",
+                        "port": 443,
+                        "protocol": "Http",
+                        "requestPath": "/"
+                    }
+                ],
+                "backendPools": [
+                    {
+                        "name": "lb-bep1"
+                    },
+                    {
+                        "name": "lb-bep2"
+                    }
+                ],
+                "inboundNatRules": [
+                    {
+                        "name": "nat1",
+                        "frontendIPConfigurationName": "feConfig1",
+                        "startingFrontendPort": 50001,
+                        "backendPort": 3389,
+                        "enableFloatingIP": false,
+                        "protocol": "Tcp",
+                        "idleTimeoutInMinutes": 4
+                    },
+                    {
+                        "name": "nat2",
+                        "frontendIPConfigurationName": "feConfig1",
+                        "startingFrontendPort": 40001,
+                        "backendPort": 3389,
+                        "enableFloatingIP": true,
+                        "protocol": "Tcp",
+                        "idleTimeoutInMinutes": 4
+                    }
+                ]
+            }
+        }
+    }
+}

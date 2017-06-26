@@ -1,0 +1,52 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentContext": {
+      "type": "object",
+      "defaultValue": {
+        "parentTemplateUniqueString": "bbrStorageAccounts"
+      }
+    },
+    "storageAccounts": {
+      "type": "array"
+    }
+  },
+  "variables": {
+    "templateUniqueString": "[uniqueString(concat(string(parameters('deploymentContext')), string(parameters('storageAccounts'))))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-st-', copyIndex(), '-', variables('templateUniqueString'))]",
+      "resourceGroup": "[parameters('storageAccounts')[copyIndex()].resourceGroupName]",
+      "copy": {
+        "name": "storageAccounts",
+        "count": "[length(parameters('storageAccounts'))]",
+        "mode": "Parallel"
+      },
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2017-06-01",
+              "location": "[parameters('storageAccounts')[copyIndex()].location]",
+              "name": "[parameters('storageAccounts')[copyIndex()].name]",
+              "kind": "[parameters('storageAccounts')[copyIndex()].kind]",
+              "sku": "[parameters('storageAccounts')[copyIndex()].sku]"
+            }
+          ],
+          "outputs": {}
+        }
+      }
+    }
+  ],
+  "outputs": {}
+}

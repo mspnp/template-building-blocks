@@ -1,0 +1,21 @@
+{
+    "$schema": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/settings.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "connectionSettings": {
+            "name": "my-connection",
+            "connectionType": "Vnet2Vnet",
+            "routingWeight": 10,
+            "sharedKey": "mysecret123",
+            "tags": {
+                "ipSec": "tags worked"
+            },
+            "virtualNetworkGateway1": {
+                "name": "my-vpn-gw"
+            },
+            "virtualNetworkGateway2": {
+                "name": "my-vpn-gw2"
+            }
+        }
+    }
+}

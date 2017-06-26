@@ -1,0 +1,134 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Settings for the virtual machine building block",
+    "id": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/virtualMachineSettings.json#",
+    "type": "object",
+    "definitions": {
+        "osAuthenticationType": {
+            "type": "string",
+            "enum": [
+                "password",
+                "ssh"
+            ]
+        },
+        "osType": {
+            "type": "string",
+            "enum": [
+                "linux",
+                "windows"
+            ]
+        }
+    },
+    "properties": {
+        "adminPassword": {
+            "type": "string"
+        },
+        "adminUsername": {
+            "type": "string"
+        },
+        "availabilitySet": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "useExistingAvailabilitySet": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "computerNamePrefix": {
+            "type": "string"
+        },
+        "dataDisks": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "properties": {
+                    "type": "object",
+                    "properties": {
+                        "diskSizeGB": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            }
+        },
+        "diagnosticStorageAccounts": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "namePrefix": {
+            "type": "string"
+        },
+        "nics": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "dnsServers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/types.json#/definitions/ipAddress"
+                        }
+                    },
+                    "isPrimary": {
+                        "type": "boolean"
+                    },
+                    "isPublic": {
+                        "type": "boolean"
+                    },
+                    "privateIPAllocationMethod": {
+                        "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/types.json#/definitions/ipAllocationMethod"
+                    },
+                    "startingIPAddress": {
+                        "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/types.json#/definitions/ipAddress"
+                    },
+                    "subnetName": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "osAuthenticationType": {
+            "$ref": "#/definitions/osAuthenticationType"
+        },
+        "osDisk": {
+            "type": "object",
+            "properties": {
+                "osType": {
+                    "$ref": "#/definitions/osType"
+                }
+            }
+        },
+        "size": {
+            "type": "string"
+        },
+        "storageAccounts": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "managed": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "virtualNetwork": {
+            "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/types.json#/definitions/resourceReference"
+        },
+        "vmCount": {
+            "type": "integer",
+            "minimum": 1
+        }
+    }
+}

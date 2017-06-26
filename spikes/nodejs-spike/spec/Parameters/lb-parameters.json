@@ -1,0 +1,163 @@
+{
+    "$schema": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/settings.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "loadBalancerSettings": {
+            "value": {
+                "name": "test-lb",
+                "frontendIPConfigurations": [
+                    {
+                        "name": "feConfig1",
+                        "loadBalancerType": "Public"
+                    }
+                ],
+                "loadBalancingRules": [
+                    {
+                        "name": "lbr1",
+                        "frontendPort": 80,
+                        "backendPort": 80,
+                        "protocol": "Tcp",
+                        "backendPoolName": "lb-bep1",
+                        "frontendIPConfigurationName": "feConfig1",
+                        "enableFloatingIP": false,
+                        "probeName": "lbp1"
+                    },
+                    {
+                        "name": "lbr2",
+                        "frontendPort": 443,
+                        "backendPort": 443,
+                        "protocol": "Tcp",
+                        "backendPoolName": "lb-bep2",
+                        "frontendIPConfigurationName": "feConfig1",
+                        "enableFloatingIP": false,
+                        "probeName": "lbp2"
+                    }
+                ],
+                "probes": [
+                    {
+                        "name": "lbp1",
+                        "port": 80,
+                        "protocol": "Http",
+                        "requestPath": "/"
+                    },
+                    {
+                        "name": "lbp2",
+                        "port": 443,
+                        "protocol": "Http",
+                        "requestPath": "/"
+                    }
+                ],
+                "backendPools": [
+                    {
+                        "name": "lb-bep1",
+                        "nics": {
+                            "vmIndex": [
+                                0
+                            ],
+                            "nicIndex": 0
+                        }
+                    },
+                    {
+                        "name": "lb-bep2",
+                        "nics": {
+                            "vmIndex": [
+                                1
+                            ],
+                            "nicIndex": 1
+                        }
+                    }
+                ],
+                "inboundNatRules": [
+                    {
+                        "name": "nat1",
+                        "frontendIPConfigurationName": "feConfig1",
+                        "startingFrontendPort": 50001,
+                        "backendPort": 3389,
+                        "enableFloatingIP": false,
+                        "protocol": "Tcp",
+                        "idleTimeoutInMinutes": 4,
+                        "nics": {
+                            "vmIndex": [
+                                0,
+                                1
+                            ],
+                            "nicIndex": 0
+                        }
+                    },
+                    {
+                        "name": "nat2",
+                        "frontendIPConfigurationName": "feConfig1",
+                        "startingFrontendPort": 25,
+                        "enableFloatingIP": true,
+                        "protocol": "Tcp",
+                        "idleTimeoutInMinutes": 4,
+                        "nics": {
+                            "vmIndex": [
+                                1
+                            ],
+                            "nicIndex": 1
+                        }
+                    }
+                ],
+                "virtualNetwork": {
+                    "name": "my-virtual-network"
+                },
+                "backendVirtualMachinesSettings": {
+                    "vmCount": 2,
+                    "namePrefix": "test",
+                    "size": "Standard_DS2_v2",
+                    "computerNamePrefix": "test",
+                    "adminUsername": "testadminuser",
+                    "adminPassword": "testPassw0rd111",
+                    "osAuthenticationType": "password",
+                    "storageAccounts": {
+                        "count": 1,
+                        "managed": false
+                    },
+                    "diagnosticStorageAccounts": {
+                        "count": 1
+                    },
+                    "nics": [
+                        {
+                            "isPublic": true,
+                            "subnetName": "web",
+                            "privateIPAllocationMethod": "Static",
+                            "startingIPAddress": "10.0.1.240",
+                            "isPrimary": true,
+                            "dnsServers": []
+                        },
+                        {
+                            "isPrimary": false,
+                            "subnetName": "biz"
+                        }
+                    ],
+                    "osDisk": {
+                        "osType": "windows"
+                    },
+                    "dataDisks": {
+                        "count": 1,
+                        "properties": {
+                            "diskSizeGB": 127
+                        }
+                    },
+                    "availabilitySet": {
+                        "useExistingAvailabilitySet": false,
+                        "name": "test-as"
+                    }
+                }
+            }
+        },
+        "buildingBlockSettings": {
+            "value": {
+                "resourceGroupName": "rs-test1-rg",
+                "subscriptionId": "3b518fac-e5c8-4f59-8ed5-d70b626f8e10",
+                "location": "westus2",
+                "cloud": {
+                    "suffixes": {
+                        "storageEndpoint": "core.windows.net"
+                    }
+                }
+            }
+        }
+    }
+}

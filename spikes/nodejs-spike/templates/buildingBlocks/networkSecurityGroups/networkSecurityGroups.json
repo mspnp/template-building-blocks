@@ -1,0 +1,116 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentContext": {
+      "type": "object",
+      "defaultValue": {
+        "parentTemplateUniqueString": "bbNetworkSecurityGroup"
+      }
+    },
+    "networkSecurityGroups": {
+      "type": "array"
+    },
+    "subnets": {
+      "type": "array",
+      "defaultValue": []
+    },
+    "networkInterfaces": {
+      "type": "array",
+      "defaultValue": []
+    }
+  },
+  "variables": {
+    "subnetTemplate": "[uri(deployment().properties.templateLink.uri, 'networkSecurityGroups-subnets.json')]",
+    "networkInterfaceTemplate": "[uri(deployment().properties.templateLink.uri, 'networkSecurityGroups-networkInterfaces.json')]",
+    "templateUniqueString": "[uniqueString(concat(string(parameters('deploymentContext')), string(parameters('networkSecurityGroups')), string(parameters('subnets')), string(parameters('networkInterfaces'))))]",
+    "subnetDeploymentTemplateName": "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-associateSubnets-', variables('templateUniqueString'))]",
+    "networkInterfaceDeploymentTemplateName": "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-associateNetworkInterfaces-', variables('templateUniqueString'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "[concat('nsg-', copyIndex())]",
+      "resourceGroup": "[parameters('networkSecurityGroups')[copyIndex()].resourceGroupName]",
+      "copy": {
+          "name": "networkSecurityGroups",
+          "count": "[length(parameters('networkSecurityGroups'))]",
+          "mode": "Parallel"
+      },
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+              {
+                "type": "Microsoft.Network/networkSecurityGroups",
+                "apiVersion": "2016-06-01",
+                "location": "[parameters('networkSecurityGroups')[copyIndex()].location]",
+                "name": "[parameters('networkSecurityGroups')[copyIndex()].name]",
+                "properties": "[parameters('networkSecurityGroups')[copyIndex()].properties]",
+                "tags": "[parameters('networkSecurityGroups')[copyIndex()].tags]"
+            }
+          ],
+          "outputs": {}
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "[variables('subnetDeploymentTemplateName')]",
+      "condition": "[greater(length(parameters('subnets')), 0)]",
+      "dependsOn": [
+        "networkSecurityGroups"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('subnetTemplate')]"
+        },
+        "parameters": {
+          "deploymentContext": {
+            "value": {
+              "parentTemplateUniqueString": "[concat(variables('templateUniqueString'), '-associateSubnets')]"
+            }
+          },
+          "subnets": {
+            "value": "[parameters('subnets')]"
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "[variables('networkInterfaceDeploymentTemplateName')]",
+      "condition": "[greater(length(parameters('networkInterfaces')), 0)]",
+      "dependsOn": [
+        "[variables('subnetDeploymentTemplateName')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('networkInterfaceTemplate')]"
+        },
+        "parameters": {
+          "deploymentContext": {
+            "value": {
+              "parentTemplateUniqueString": "[concat(variables('templateUniqueString'), '-associateNetworkInterfaces')]"
+            }
+          },
+          "networkInterfaces": {
+            "value": "[parameters('networkInterfaces')]"
+          }
+        }
+
+      }
+    }
+  ],
+  "outputs": {
+  }
+}

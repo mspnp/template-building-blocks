@@ -1,0 +1,56 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/extensions/linux/omsAgentForLinux.json#",
+    "type": "object",
+    "properties": {
+        "publisher": {
+            "type": "string",
+            "enum": [
+                "Microsoft.EnterpriseCloud.Monitoring"
+            ]
+        },
+        "type": {
+            "type": "string",
+            "enum": [
+                "OmsAgentForLinux"
+            ]
+        },
+        "typeHandlerVersion": {
+            "type": "string",
+            "enum": [
+                "1.3"
+            ]
+        },
+        "settings": {
+            "type": "object",
+            "properties": {
+                "workspaceId": {
+                    "type": "string"
+                },
+                "stopOnMultipleConnections": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "workspaceId"
+            ]
+        },
+        "protectedSettings": {
+            "type": "object",
+            "properties": {
+                "workspaceKey": {
+                    "type": "string"
+                },
+                "proxy": {
+                    "type": "string"
+                },
+                "vmResourceId": {
+                    "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/types.json#/definitions/resourceId"
+                }
+            },
+            "required": [
+                "workspaceKey"
+            ]
+        }
+    }
+}

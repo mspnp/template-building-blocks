@@ -1,0 +1,84 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentContext": {
+      "type": "object",
+      "defaultValue": {
+        "parentTemplateUniqueString": "bbRouteTable"
+      }
+    },
+    "routeTables": {
+      "type": "array"
+    },
+    "subnets": {
+      "type": "array",
+      "defaultValue": []
+    }
+  },
+  "variables": {
+    "subnetTemplate": "[uri(deployment().properties.templateLink.uri, 'routeTables-subnets.json')]",
+    "templateUniqueString": "[uniqueString(concat(string(parameters('deploymentContext')), string(parameters('routeTables')), string(parameters('subnets'))))]",
+    "deploymentTemplateName": "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-associateSubnets-', variables('templateUniqueString'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "[concat('rt-', copyIndex())]",
+      "resourceGroup": "[parameters('routeTables')[copyIndex()].resourceGroupName]",
+      "copy": {
+        "name": "routeTables",
+        "count": "[length(parameters('routeTables'))]",
+        "mode": "Parallel"
+      },
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.Network/routeTables",
+              "apiVersion": "2016-06-01",
+              "location": "[parameters('routeTables')[copyIndex()].location]",
+              "name": "[parameters('routeTables')[copyIndex()].name]",
+              "properties": "[parameters('routeTables')[copyIndex()].properties]",
+              "tags": "[parameters('routeTables')[copyIndex()].tags]"
+            }
+          ],
+          "outputs": {}
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "[variables('deploymentTemplateName')]",
+      "condition": "[greater(length(parameters('subnets')), 0)]",
+      "dependsOn": [
+        "routeTables"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('subnetTemplate')]"
+        },
+        "parameters": {
+          "deploymentContext": {
+            "value": {
+              "parentTemplateUniqueString": "[concat(variables('templateUniqueString'), '-associateSubnets')]"
+            }
+          },
+          "subnets": {
+            "value": "[parameters('subnets')]"
+          }
+        }
+
+      }
+    }
+  ],
+  "outputs": {}
+}

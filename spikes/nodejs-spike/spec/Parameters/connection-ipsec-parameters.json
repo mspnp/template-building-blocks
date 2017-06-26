@@ -1,0 +1,25 @@
+{
+    "$schema": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/settings.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "connectionSettings": {
+            "name": "my-connection",
+            "connectionType": "IPsec",
+            "localNetworkGateway": {
+                "addressPrefixes": [
+                    "172.0.0.0/24"
+                ],
+                "ipAddress": "11.22.33.44",
+                "name": "my-connection-lgw"
+            },
+            "routingWeight": 10,
+            "sharedKey": "mysecret123",
+            "tags": {
+                "ipSec": "tags worked"
+            },
+            "virtualNetworkGateway": {
+                "name": "my-vpn-gw"
+            }
+        }
+    }
+}
