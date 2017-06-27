@@ -3,13 +3,14 @@
 let _ = require('lodash');
 let v = require('./validation.js');
 let resources = require('./resources.js');
+let r = require('./resources.js');
 let publicIpAddressSettings = require('./publicIpAddressSettings.js');
 
 const LOADBALANCER_SETTINGS_DEFAULTS = {
     frontendIPConfigurations: [
         {
             name: 'default-feConfig',
-            loadBalancerType: 'public'
+            loadBalancerType: 'Public'
         }
     ],
     loadBalancingRules: [
@@ -31,7 +32,7 @@ function merge({ settings, buildingBlockSettings, defaultSettings }) {
 
     let defaults = (defaultSettings) ? [LOADBALANCER_SETTINGS_DEFAULTS, defaultSettings] : LOADBALANCER_SETTINGS_DEFAULTS;
 
-    let merged = _.map(settings.frontendIPConfiguration, (config) => {
+    let merged = _.map(settings.frontendIPConfigurations, (config) => {
         // If needed, we need to build up a publicIpAddress from the information we have here so it can be merged and validated.
         if (config.loadBalancerType == 'Public') {
             let publicIpAddress = {
@@ -369,7 +370,7 @@ let processProperties = {
                     name: config.name,
                     properties: {
                         privateIPAllocationMethod: 'Dynamic',
-                        publicIPAddress: {
+                        publicIpAddress: {
                             id: resources.resourceId(parent.subscriptionId, parent.resourceGroupName, 'Microsoft.Network/publicIPAddresses', `${config.name}-pip`)
                         }
                     }
@@ -452,7 +453,7 @@ function transform(param) {
     let pips = _.map(param.frontendIPConfigurations, (config) => {
         if (config.loadBalancerType === 'Public') {
             return publicIpAddressSettings.transform({
-                settings: config.publicIPAddress,
+                settings: param.publicIpAddress,
                 buildingBlockSettings: {
                     subscriptionId: param.subscriptionId,
                     resourceGroupName: param.resourceGroupName,
