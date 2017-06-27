@@ -1,0 +1,259 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentContext": {
+      "type": "object",
+      "defaultValue": {
+        "parentTemplateUniqueString": "bbVM"
+      }
+    },
+    "publicIpAddresses": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Settings for public IP addresses"
+      }
+    },
+    "networkInterfaces": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Settings for network interfaces"
+      }
+    },
+    "storageAccounts": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Settings for storage accounts"
+      }
+    },
+    "diagnosticStorageAccounts": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Settings for diagnostic storage accounts"
+      }
+    },
+    "availabilitySet": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Settings for availability set"
+      }
+    },
+    "loadBalancer": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Settings for load balancer"
+      }
+    },
+    "virtualMachines": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Settings for virtual machines"
+      }
+    },
+    "secret": {
+      "type": "securestring",
+      "metadata": {
+        "description": "secret"
+      }
+    }
+  },
+  "variables": {
+    "templateUniqueString": "[uniqueString(concat(string(parameters('deploymentContext')), string(parameters('storageAccounts')), string(parameters('diagnosticStorageAccounts')), string(parameters('networkInterfaces')), string(parameters('publicIpAddresses')), string(parameters('availabilitySet')), string(parameters('virtualMachines'))))]",
+    "pipTemplate": "[uri(deployment().properties.templateLink.uri, '../../resources/Microsoft.Network/publicIPAddresses.json')]",
+    "nicTemplate": "[uri(deployment().properties.templateLink.uri, '../../resources/Microsoft.Network/networkInterfaces.json')]",
+    "storageTemplate": "[uri(deployment().properties.templateLink.uri, '../../resources/Microsoft.Storage/storageAccounts.json')]",
+    "avSetTemplate": "[uri(deployment().properties.templateLink.uri, '../../resources/Microsoft.Compute/availabilitySet.json')]",
+    "vmTemplate": "[uri(deployment().properties.templateLink.uri, '../../resources/Microsoft.Compute/virtualMachines/virtualMachines.json')]",
+    "lbTemplate": "[uri(deployment().properties.templateLink.uri, '../../resources/Microsoft.Network/loadBalancer.json')]",
+    "pipDeploymentName": "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-deployPips-', variables('templateUniqueString'))]",
+    "nicDeploymentName": "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-deployNics-', variables('templateUniqueString'))]",
+    "vmStorageDeploymentName": "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-deploySt-', variables('templateUniqueString'))]",
+    "diagnosticStorageDeploymentName": "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-deployDiagSt-', variables('templateUniqueString'))]",
+    "avSetDeploymentName": "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-deployAvSet-', variables('templateUniqueString'))]",
+    "vmDeploymentName": "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-deployVMs-', variables('templateUniqueString'))]",
+    "lbDeploymentName": "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-deployLb-', variables('templateUniqueString'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "[variables('pipDeploymentName')]",
+      "condition": "[greater(length(parameters('publicIpAddresses')), 0)]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('pipTemplate')]"
+        },
+        "parameters": {
+          "deploymentContext": {
+            "value": {
+              "parentTemplateUniqueString": "[concat(variables('templateUniqueString'), '-deployPips')]"
+            }
+          },
+          "publicIPAddresses": {
+            "value": "[parameters('publicIpAddresses')]"
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "[variables('nicDeploymentName')]",
+      "condition": "[greater(length(parameters('networkInterfaces')), 0)]",
+      "dependsOn": [
+        "[variables('pipDeploymentName')]",
+        "[variables('lbDeploymentName')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('nicTemplate')]"
+        },
+        "parameters": {
+          "deploymentContext": {
+            "value": {
+              "parentTemplateUniqueString": "[concat(variables('templateUniqueString'), '-deployNics')]"
+            }
+          },
+          "networkInterfaces": {
+            "value": "[parameters('networkInterfaces')]"
+          },
+          "mode": {
+            "value": "[length(parameters('loadBalancer'))]"
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "[variables('vmStorageDeploymentName')]",
+      "condition": "[greater(length(parameters('storageAccounts')), 0)]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('storageTemplate')]"
+        },
+        "parameters": {
+          "deploymentContext": {
+            "value": {
+              "parentTemplateUniqueString": "[concat(variables('templateUniqueString'), '-deploySt')]"
+            }
+          },
+          "storageAccounts": {
+            "value": "[parameters('storageAccounts')]"
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "[variables('diagnosticStorageDeploymentName')]",
+      "condition": "[greater(length(parameters('diagnosticStorageAccounts')), 0)]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('storageTemplate')]"
+        },
+        "parameters": {
+          "deploymentContext": {
+            "value": {
+              "parentTemplateUniqueString": "[concat(variables('templateUniqueString'), '-deployDiagSt')]"
+            }
+          },
+          "storageAccounts": {
+            "value": "[parameters('diagnosticStorageAccounts')]"
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "[variables('avSetDeploymentName')]",
+      "condition": "[greater(length(parameters('availabilitySet')), 0)]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('avSetTemplate')]"
+        },
+        "parameters": {
+          "deploymentContext": {
+            "value": {
+              "parentTemplateUniqueString": "[concat(variables('templateUniqueString'), '-deployAvSet')]"
+            }
+          },
+          "availabilitySet": {
+            "value": "[parameters('availabilitySet')]"
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "[variables('lbDeploymentName')]",
+      "condition": "[greater(length(parameters('loadBalancer')), 0)]",
+      "dependsOn": [
+        "[variables('pipDeploymentName')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('lbTemplate')]"
+        },
+        "parameters": {
+          "deploymentContext": {
+            "value": {
+              "parentTemplateUniqueString": "[concat(variables('templateUniqueString'), '-deployLb')]"
+            }
+          },
+          "loadBalancer": {
+            "value": "[parameters('loadBalancer')]"
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "[variables('vmDeploymentName')]",
+      "dependsOn": [
+        "[variables('nicDeploymentName')]",
+        "[variables('vmStorageDeploymentName')]",
+        "[variables('diagnosticStorageDeploymentName')]",
+        "[variables('avSetDeploymentName')]",
+        "[variables('lbDeploymentName')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('vmTemplate')]"
+        },
+        "parameters": {
+          "deploymentContext": {
+            "value": {
+              "parentTemplateUniqueString": "[concat(variables('templateUniqueString'), '-deployVMs')]"
+            }
+          },
+          "virtualMachines": {
+            "value": "[parameters('virtualMachines')]"
+          },
+          "secret": {
+            "value": "[parameters('secret')]"
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {}
+}

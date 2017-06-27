@@ -1,0 +1,81 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Settings for the route table building block",
+    "id": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schema/routeTableSettings.json#",
+    "type": "object",
+    "definitions": {
+        "nextHop": {
+            "type": "string",
+            "enum": [ "Internet", "None", "VirtualNetworkGateway", "VnetLocal" ]
+         }
+    },
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+        "tags": {
+            "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/types.json#/definitions/tags"
+        },
+        "routes": {
+            "type": "array",
+            "items": {
+                "oneOf":[
+                    {
+                        "type": "object",
+                        "properties": {
+                            "addressPrefix": {
+                                "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/types.json#/definitions/cidr"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "nextHop": {
+                                "type": "string",
+                                "oneOf":[
+                                    {
+                                        "$ref": "#/definitions/nextHop"
+                                    },
+                                    {
+                                        "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/types.json#/definitions/ipAddress"
+                                    }
+                                ]
+                            }
+                        },
+                        "required": [
+                            "addressPrefix",
+                            "name",
+                            "nextHop"
+                        ],
+                        "additionalProperties": false
+                    }
+                ]                
+            }
+        },
+        "virtualNetworks": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "allOf":[
+                    {
+                        "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/types.json#/definitions/resourceReference"
+                    },
+                    {
+                        "properties": {
+                            "subnets": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "minItems": 1
+                            }
+                        },
+                        "required": [ "subnets" ]
+                    }
+                ]
+            }
+        }
+    },
+    "required": [
+        "name"
+    ]
+}

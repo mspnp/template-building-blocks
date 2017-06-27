@@ -1,0 +1,27 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Settings for the virtual network building block",
+    "id": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/extensions/types.json#",
+    "definitions": {
+        "protectedSettingsStorageAccount": {
+            "properties": {
+                "storageAccountName": {
+                    "type": "string"
+                },
+                "storageAccountKey": {
+                    "type": "string"
+                }
+            }
+        },
+        "settingsFileUris": {
+            "properties": {
+                "fileUris": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}

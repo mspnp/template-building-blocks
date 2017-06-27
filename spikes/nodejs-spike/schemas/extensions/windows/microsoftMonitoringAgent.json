@@ -1,0 +1,47 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/extensions/windows/microsoftMonitoringAgent.json#",
+    "type": "object",
+    "properties": {
+        "publisher": {
+            "type": "string",
+            "enum": [
+                "Microsoft.EnterpriseCloud.Monitoring"
+            ]
+        },
+        "type": {
+            "type": "string",
+            "enum": [
+                "MicrosoftMonitoringAgent"
+            ]
+        },
+        "typeHandlerVersion": {
+            "type": "string",
+            "enum": [
+                "1.0"
+            ]
+        },
+        "settings": {
+            "type": "object",
+            "properties": {
+                "workspaceId": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "workspaceId"
+            ]
+        },
+        "protectedSettings": {
+            "type": "object",
+            "properties": {
+                "workspaceKey": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "workspaceKey"
+            ]
+        }
+    }
+}

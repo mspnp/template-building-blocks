@@ -1,0 +1,145 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Settings for the network security group building block",
+    "id": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schema/networkSecurityGroupSettings.json#",
+    "type": "object",
+    "definitions": {
+        "protocols": {
+            "type": "string",
+            "enum": [ "TCP", "UDP", "*" ]
+         },
+         "defaultTags": {
+             "type": "string",
+             "enum": [ "VirtualNetwork", "AzureLoadBalancer", "Internet", "*" ]
+         },
+         "directions": {
+             "type": "string",
+             "enum": [ "Inbound", "Outbound" ]
+         },
+         "accesses": {
+             "type": "string",
+             "enum": [ "Allow", "Deny" ]
+         },
+         "addressPrefix": {
+             "type": "string",
+             "oneOf": [
+                 {
+                     "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/types.json#/definitions/cidr"
+                 },
+                 {
+                     "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/types.json#/definitions/ipAddress"
+                 },
+                 {
+                     "$ref": "#/definitions/defaultTags"
+                 }
+             ]
+         },
+         "portRange": {
+             "oneOf": [
+                 {
+                     "type": "integer",
+                     "minimum": 1,
+                     "maximum": 65535
+                 },
+                 {
+                     "type": "string",
+                     "enum": [ "*" ]
+                 },
+                 {
+                     "type": "string",
+                     "pattern": "^\\d+-\\d+$"
+                 }
+             ]
+         }
+    },
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+         "tags": {
+            "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/types.json#/definitions/tags"
+        },
+        "securityRules": {
+            "type": "array",
+            "items": {
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "protocol": {
+                        "$ref": "#/definitions/protocols"
+                    },
+                    "sourcePortRange": {
+                        "$ref": "#/definitions/portRange"
+                    },
+                    "destinationPortRange": {
+                        "$ref": "#/definitions/portRange"
+                    },
+                    "sourceAddressPrefix": {
+                        "$ref": "#/definitions/addressPrefix"
+                    },
+                    "destinationAddressPrefix": {
+                        "$ref": "#/definitions/addressPrefix"
+                    },
+                    "direction": {
+                        "$ref": "#/definitions/directions"
+                    },
+                    "priority": {
+                        "type": "integer",
+                        "minimum": 100,
+                        "maximum": 4096
+                    },
+                    "access": {
+                        "$ref": "#/definitions/accesses"
+                    }
+                },
+                "required": [
+                    "name",
+                    "protocol",
+                    "sourcePortRange",
+                    "destinationPortRange",
+                    "sourceAddressPrefix",
+                    "destinationAddressPrefix",
+                    "destination",
+                    "priority",
+                    "access"
+                ]
+            }
+        },
+        "virtualNetworks": {
+            "type": "array",
+            "minItems": 0,
+            "default": [],
+            "items": {
+                "type": "object",
+                "allOf":[
+                    {
+                        "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/types.json#/definitions/resourceReference"
+                    },
+                    {
+                        "properties": {
+                            "subnets": {
+                                "type": "array",
+                                "minItems": 1,
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "networkInterfaces": {
+            "type": "array",
+            "minItems": 0,
+            "default": [],
+            "items": {
+                "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/types.json#/definitions/resourceReference"
+            }
+        }
+    },
+    "required": [
+        "name"
+    ]
+}

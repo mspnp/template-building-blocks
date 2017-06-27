@@ -1,0 +1,135 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Settings for the route table building block",
+    "id": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schema/connectionSettings.json#",
+    "type": "object",
+    "definitions": {
+    },
+    "allOf": [
+        {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "tags": {
+                    "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/types.json#/definitions/tags"
+                },
+                "routingWeight": {
+                    "type": "integer",
+                    "minimum": 1
+                }
+            },
+            "required": [
+                "name",
+                "routingWeight"
+            ]
+        },
+        {
+            "oneOf": [
+                {
+                    "properties": {
+                        "connectionType": {
+                            "type": "string",
+                            "enum": [ "ExpressRoute" ]
+                        },
+                        "expressRouteCircuit": {
+                            "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/types.json#/definitions/resourceReference"
+                        },
+                        "virtualNetworkGateway": {
+                            "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/types.json#/definitions/resourceReference"
+                        }
+                    },
+                    "required": [
+                        "connectionType",
+                        "expressRouteCircuit",
+                        "virtualNetworkGateway"
+                    ]
+                },
+                {
+                    "allOf": [
+                        {
+                            "properties": {
+                                "sharedKey": {
+                                    "type": "string",
+                                    "minLength": 1
+                                }
+                            },
+                            "required": [
+                                "sharedKey"
+                            ]
+                        },
+                        {
+                            "oneOf": [
+                                {
+                                    "properties": {
+                                        "connectionType": {
+                                            "type": "string",
+                                            "enum": [ "IPsec" ]
+                                        },
+                                        "localNetworkGateway": {
+                                            "type": "object",
+                                            "allOf": [
+                                                {
+                                                    "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/types.json#/definitions/resourceReference"
+                                                },
+                                                {
+                                                    "properties": {
+                                                        "ipAddress": {
+                                                            "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/types.json#/definitions/ipAddress"
+                                                        },
+                                                        "addressPrefixes": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/types.json#/definitions/cidr"
+                                                            },
+                                                            "minItems": 1
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "required": [
+                                                "ipAddress",
+                                                "addressPrefixes"
+                                            ]
+                                        },
+                                        "virtualNetworkGateway": {
+                                            "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/types.json#/definitions/resourceReference"
+                                        }
+                                    },
+                                    "required": [
+                                        "connectionType",
+                                        "localNetworkGateway",
+                                        "virtualNetworkGateway"
+                                    ]
+                                },
+                                {
+                                    "properties": {
+                                        "connectionType": {
+                                            "type": "string",
+                                            "enum": [ "Vnet2Vnet" ]
+                                        },
+                                        "sharedKey": {
+                                            "type": "string",
+                                            "minLength": 1
+                                        },
+                                        "virtualNetworkGateway1": {
+                                            "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/types.json#/definitions/resourceReference"
+                                        },
+                                        "virtualNetworkGateway2": {
+                                            "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/types.json#/definitions/resourceReference"
+                                        }
+                                    },
+                                    "required": [
+                                        "connectionType",
+                                        "virtualNetworkGateway1",
+                                        "virtualNetworkGateway2"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

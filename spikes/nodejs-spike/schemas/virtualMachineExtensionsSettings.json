@@ -1,0 +1,69 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/virtualMachineExtensionsSettings.json#",
+    "type": "object",
+    "definitions": {
+    },
+    "properties": {
+        "extensions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "allOf": [
+                    {
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "autoUpgradeMinorVersion": {
+                                "type": "boolean"
+                            }
+                        }
+                    },
+                    {
+                        "oneOf": [
+                            {
+                                "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/extensions/windows/customScriptExtension1_4.json#"
+                            },
+                            {
+                                "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/extensions/windows/customScriptExtension1_7.json#"
+                            },
+                            {
+                                "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/extensions/windows/dsc.json#"
+                            },
+                            {
+                                "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/extensions/windows/microsoftMonitoringAgent.json#"
+                            },
+                            {
+                                "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/extensions/windows/jsonADDomainExtension.json#"
+                            },
+                            {
+                                "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/extensions/linux/customScript.json#"
+                            },
+                            {
+                                "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/extensions/linux/omsAgentForLinux.json#"
+                            },
+                            {
+                                "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/extensions/linux/osPatchingForLinux.json#"
+                            }
+                        ]
+                    }
+                ],
+                "required": [
+                    "name",
+                    "publisher",
+                    "type",
+                    "typeHandlerVersion",
+                    "settings",
+                    "protectedSettings"
+                ]
+            }
+        },
+        "vms": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        }
+    }
+}

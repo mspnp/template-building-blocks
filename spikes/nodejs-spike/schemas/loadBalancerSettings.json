@@ -1,0 +1,280 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/loadBalancerSettings.json#",
+    "type": "object",
+    "definitions": {
+        "loadBalancerType": {
+            "type": "string",
+            "enum": [
+                "Public",
+                "Internal"
+            ]
+        },
+        "probeProtocolType": {
+            "type": "string",
+            "enum": [
+                "Http",
+                "Tcp"
+            ]
+        },
+        "protocolType": {
+            "type": "string",
+            "enum": [
+                "Tcp",
+                "Udp"
+            ]
+        }
+    },
+    "properties": {
+        "backendPools": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "id": "/properties/loadBalancerSettings/properties/backendPools/items/properties/name",
+                        "type": "string"
+                    },
+                    "nics": {
+                        "type": "object",
+                        "properties": {
+                            "nicIndex": {
+                                "type": "integer"
+                            },
+                            "vmIndex": {
+                                "type": "array",
+                                "items": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "backendVirtualMachinesSettings": {
+            "type": "object",
+            "properties": {
+                "adminPassword": {
+                    "type": "string"
+                },
+                "adminUsername": {
+                    "type": "string"
+                },
+                "availabilitySet": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "useExistingAvailabilitySet": {
+                            "type": "boolean"
+                        }
+                    }
+                },
+                "computerNamePrefix": {
+                    "type": "string"
+                },
+                "dataDisks": {
+                    "type": "object",
+                    "properties": {
+                        "count": {
+                            "type": "integer"
+                        },
+                        "properties": {
+                            "type": "object",
+                            "properties": {
+                                "diskSizeGB": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    }
+                },
+                "diagnosticStorageAccounts": {
+                    "type": "object",
+                    "properties": {
+                        "count": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "namePrefix": {
+                    "type": "string"
+                },
+                "nics": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "dnsServers": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "isPrimary": {
+                                "type": "boolean"
+                            },
+                            "isPublic": {
+                                "type": "boolean"
+                            },
+                            "privateIPAllocationMethod": {
+                                "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/types.json#/definitions/ipAllocationMethod"
+                            },
+                            "startingIPAddress": {
+                                "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/types.json#/definitions/ipAddress"
+                            },
+                            "subnetName": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "osAuthenticationType": {
+                    "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/virtualMachineSettings.json#/definitions/osAuthenticationType"
+                },
+                "osDisk": {
+                    "type": "object",
+                    "properties": {
+                        "osType": {
+                            "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/virtualMachineSettings.json#/definitions/osType"
+                        }
+                    }
+                },
+                "size": {
+                    "type": "string"
+                },
+                "storageAccounts": {
+                    "type": "object",
+                    "properties": {
+                        "count": {
+                            "type": "integer"
+                        },
+                        "managed": {
+                            "type": "boolean"
+                        }
+                    }
+                },
+                "vmCount": {
+                    "type": "integer"
+                }
+            }
+        },
+        "frontendIPConfigurations": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "loadBalancerType": {
+                        "$ref": "#/definitions/loadBalancerType"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "inboundNatRules": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "backendPort": {
+                        "type": "integer"
+                    },
+                    "enableFloatingIP": {
+                        "type": "boolean"
+                    },
+                    "frontendIPConfigurationName": {
+                        "type": "string"
+                    },
+                    "idleTimeoutInMinutes": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "nics": {
+                        "type": "object",
+                        "properties": {
+                            "nicIndex": {
+                                "type": "integer"
+                            },
+                            "vmIndex": {
+                                "type": "array",
+                                "items": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    },
+                    "protocol": {
+                        "$ref": "#/definitions/protocolType"
+                    },
+                    "startingFrontendPort": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "loadBalancingRules": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "backendPoolName": {
+                        "type": "string"
+                    },
+                    "backendPort": {
+                        "type": "integer"
+                    },
+                    "enableFloatingIP": {
+                        "type": "boolean"
+                    },
+                    "frontendIPConfigurationName": {
+                        "type": "string"
+                    },
+                    "frontendPort": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "probeName": {
+                        "type": "string"
+                    },
+                    "protocol": {
+                        "$ref": "#/definitions/protocolType"
+                    }
+                }
+            }
+        },
+        "name": {
+            "type": "string"
+        },
+        "probes": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "port": {
+                        "type": "integer"
+                    },
+                    "protocol": {
+                        "$ref": "#/definitions/probeProtocolType"
+                    },
+                    "requestPath": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "virtualNetwork": {
+            "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/types.json#/definitions/resourceReference"
+        }
+    }
+}

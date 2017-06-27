@@ -1,0 +1,52 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentContext": {
+      "type": "object",
+      "defaultValue": {
+        "parentTemplateUniqueString": "bbNetworkSecurityGroup-networkInterfaces"
+      }
+    },
+    "networkInterfaces": {
+      "type": "array"
+    }
+  },
+  "variables": {
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "[concat('nsg-ni-', copyIndex())]",
+      "resourceGroup": "[parameters('networkInterfaces')[copyIndex()].resourceGroupName]",
+      "dependsOn": [
+      ],
+      "copy": {
+        "name": "subnets",
+        "count": "[length(parameters('networkInterfaces'))]",
+        "mode": "Serial"
+      },
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.Network/networkInterfaces",
+              "apiVersion": "2016-06-01",
+              "location": "[resourceGroup().location]",
+              "name": "[parameters('networkInterfaces')[copyIndex()].name]",
+              "properties": "[union(reference(parameters('networkInterfaces')[copyIndex()].id, '2016-06-01'), parameters('networkInterfaces')[copyIndex()].properties)]"
+            }
+          ],
+          "outputs": {}
+        }
+      }
+    }
+  ],
+  "outputs": {}
+}

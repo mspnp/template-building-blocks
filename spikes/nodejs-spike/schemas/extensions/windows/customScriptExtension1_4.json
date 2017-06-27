@@ -1,0 +1,48 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/extensions/windows/customScriptExtension1_4.json#",
+    "type": "object",
+    "properties": {
+        "publisher": {
+            "type": "string",
+            "enum": [
+                "Microsoft.Compute"
+            ]
+        },
+        "type": {
+            "type": "string",
+            "enum": [
+                "CustomScriptExtension"
+            ]
+        },
+        "typeHandlerVersion": {
+            "type": "string",
+            "enum": [
+                "1.4",
+                "1.5",
+                "1.6"
+            ]
+        },
+        "settings": {
+            "type": "object",
+            "allOf":[
+                {
+                    "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/extensions/types.json#/definitions/settingsFileUris"
+                },
+                {
+                    "properties": {
+                        "commandToExecute": {
+                            "type": "string"
+                        }
+                    }
+                }
+            ],
+            "required": [
+                "commandToExecute"
+            ]
+        },
+        "protectedSettings": {
+            "$ref": "file:///Source/mspnp/template-building-blocks/spikes/nodejs-spike/schemas/extensions/types.json#/definitions/protectedSettingsStorageAccount"
+        }
+    }
+}

@@ -1,0 +1,55 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "deploymentContext": {
+            "type": "object",
+            "defaultValue": {
+                "parentTemplateUniqueString": "bbrVirtualMachines"
+            }
+        },
+        "virtualMachines": {
+            "type": "array"
+        },
+        "secret": {
+            "type": "securestring"
+        }
+    },
+    "variables": {
+        "templateUniqueString": "[uniqueString(concat(string(parameters('deploymentContext')), string(parameters('virtualMachines'))))]",
+        "updatedSource": "[base64ToJson(base64(replace(concat(string(parameters('virtualMachines'))), '$SECRET$', parameters('secret'))))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2017-05-10",
+            "name": "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-vm-', copyIndex(), '-', variables('templateUniqueString'))]",
+            "resourceGroup": "[variables('updatedSource')[copyIndex()].resourceGroupName]",
+            "copy": {
+                "name": "virtualMachines",
+                "count": "[length(variables('updatedSource'))]",
+                "mode": "Parallel"
+            },
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {},
+                    "variables": {},
+                    "resources": [
+                        {
+                            "type": "Microsoft.Compute/virtualMachines",
+                            "apiVersion": "2016-04-30-preview",
+                            "location": "[variables('updatedSource')[copyIndex()].location]",
+                            "name": "[variables('updatedSource')[copyIndex()].name]",
+                            "properties": "[variables('updatedSource')[copyIndex()].properties]",
+                            "tags": "[variables('updatedSource')[copyIndex()].tags]"
+                        }
+                    ],
+                    "outputs": {}
+                }
+            }
+        }
+    ]
+}

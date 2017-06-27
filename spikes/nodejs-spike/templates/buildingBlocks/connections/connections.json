@@ -1,0 +1,81 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentContext": {
+      "type": "object",
+      "defaultValue": {
+        "parentTemplateUniqueString": "bbConn"
+      }
+    },
+    "connections": {
+      "type": "array"
+    },
+    "localNetworkGateways": {
+      "type": "array",
+      "defaultValue": []
+    }
+  },
+  "variables": {
+     "localNetworkGatewayTemplate": "[uri(deployment().properties.templateLink.uri, '../../resources/Microsoft.Network/localNetworkGateways.json')]",
+     "templateUniqueString": "[uniqueString(concat(string(parameters('deploymentContext')), string(parameters('connections')), string(parameters('localNetworkGateways'))))]",
+     "deploymentTemplateName": "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-localNetworkGateways-', variables('templateUniqueString'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "[variables('deploymentTemplateName')]",
+      "condition": "[greater(length(parameters('localNetworkGateways')), 0)]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('localNetworkGatewayTemplate')]"
+        },
+        "parameters": {
+          "deploymentContext": {
+            "value": {
+              "parentTemplateUniqueString": "[concat(variables('templateUniqueString'), '-localNetworkGateways')]"
+            }
+          },
+          "localNetworkGateways": {
+            "value": "[parameters('localNetworkGateways')]"
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "[concat('cn-', copyIndex())]",
+      "resourceGroup": "[parameters('connections')[copyIndex()].resourceGroupName]",
+      "copy": {
+        "name": "connections",
+        "count": "[length(parameters('connections'))]",
+        "mode": "Parallel"
+      },
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.Network/connections",
+              "apiVersion": "2016-06-01",
+              "location": "[parameters('connections')[copyIndex()].location]",
+              "name": "[parameters('connections')[copyIndex()].name]",
+              "properties": "[parameters('connections')[copyIndex()].properties]",
+              "tags": "[parameters('connections')[copyIndex()].tags]"
+            }
+          ],
+          "outputs": {}
+        }
+      }
+    }
+  ],
+  "outputs": {
+  }
+}

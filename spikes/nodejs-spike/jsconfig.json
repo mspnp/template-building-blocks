@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "target": "ES6",
+        "checkJs": false    
+    },
+    "exclude": [
+        "node_modules"
+    ]
+}

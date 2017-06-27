@@ -1,0 +1,51 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "deploymentContext": {
+            "type": "object",
+            "defaultValue": {
+                "parentTemplateUniqueString": "bbrPublicIPAddresses"
+            }
+        },
+        "publicIPAddresses": {
+            "type": "array"
+        }
+    },
+    "variables": {
+        "templateUniqueString": "[uniqueString(concat(string(parameters('deploymentContext')), string(parameters('publicIPAddresses'))))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2017-05-10",
+            "name": "[concat(parameters('deploymentContext').parentTemplateUniqueString, '-pip-', copyIndex(), '-', variables('templateUniqueString'))]",
+            "resourceGroup": "[parameters('publicIPAddresses')[copyIndex()].resourceGroupName]",
+            "copy": {
+                "name": "publicIPAddresses",
+                "count": "[length(parameters('publicIPAddresses'))]",
+                "mode": "Parallel"
+            },
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {},
+                    "variables": {},
+                    "resources": [
+                        {
+                            "type": "Microsoft.Network/publicIPAddresses",
+                            "apiVersion": "2017-04-01",
+                            "location": "[parameters('publicIPAddresses')[copyIndex()].location]",
+                            "name": "[parameters('publicIPAddresses')[copyIndex()].name]",
+                            "properties": "[parameters('publicIPAddresses')[copyIndex()].properties]"
+                        }
+                    ],
+                    "outputs": {}
+                }
+            }
+        }
+    ],
+    "outputs": {}
+}

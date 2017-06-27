@@ -1,0 +1,51 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentContext": {
+      "type": "object",
+      "defaultValue": {
+        "parentTemplateUniqueString": "bbRouteTable-subnets"
+      }
+    },
+    "subnets": {
+      "type": "array"
+    }
+  },
+  "variables": {
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "name": "[concat('sn-', copyIndex())]",
+      "resourceGroup": "[parameters('subnets')[copyIndex()].resourceGroupName]",
+      "dependsOn": [
+      ],
+      "copy": {
+        "name": "subnets",
+        "count": "[length(parameters('subnets'))]",
+        "mode": "Serial"
+      },
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.Network/virtualNetworks/subnets",
+              "apiVersion": "2016-06-01",
+              "name": "[concat(parameters('subnets')[copyIndex()].virtualNetwork, '/', parameters('subnets')[copyIndex()].name)]",
+              "properties": "[union(reference(parameters('subnets')[copyIndex()].id, '2016-06-01'), parameters('subnets')[copyIndex()].properties)]"
+            }
+          ],
+          "outputs": {}
+        }
+      }
+    }
+  ],
+  "outputs": {}
+}
