@@ -97,45 +97,6 @@ describe('publicIpAddressSettings', () => {
             reverseFqdn: 'niamodym'
         };
 
-        it('name undefined', () => {
-            let settings = _.cloneDeep(publicIpAddress);
-            delete settings.name;
-
-            let errors = validation.validate({
-                settings: settings,
-                validations: pipValidations
-            });
-
-            expect(errors.length).toEqual(1);
-            expect(errors[0].name).toEqual('.name');
-        });
-
-        it('name null', () => {
-            let settings = _.cloneDeep(publicIpAddress);
-            settings.name = null;
-
-            let errors = validation.validate({
-                settings: settings,
-                validations: pipValidations
-            });
-
-            expect(errors.length).toEqual(1);
-            expect(errors[0].name).toEqual('.name');
-        });
-
-        it('name empty', () => {
-            let settings = _.cloneDeep(publicIpAddress);
-            settings.name = '';
-
-            let errors = validation.validate({
-                settings: settings,
-                validations: pipValidations
-            });
-
-            expect(errors.length).toEqual(1);
-            expect(errors[0].name).toEqual('.name');
-        });
-
         it('subscriptionId undefined', () => {
             let settings = _.cloneDeep(publicIpAddress);
             delete settings.subscriptionId;

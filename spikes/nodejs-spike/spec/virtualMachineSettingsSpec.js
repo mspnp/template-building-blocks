@@ -1303,7 +1303,7 @@ describe('virtualMachineSettings:', () => {
             });
         });
     });
-    describe('transform:', () => {
+    describe('process:', () => {
         it('validates that number of stamps created are based on vmcount property', () => {
 
             let processedParam = virtualMachineSettings.process({ settings: testSettings, buildingBlockSettings });
@@ -1682,8 +1682,8 @@ describe('virtualMachineSettings:', () => {
                 let processedParam = virtualMachineSettings.process({ settings, buildingBlockSettings });
 
                 expect(processedParam.parameters.publicIpAddresses.length).toEqual(2);
-                expect(processedParam.parameters.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.id).toEqual('/subscriptions/00000000-0000-1000-A000-000000000000/resourceGroups/test-rg/providers/Microsoft.Network/publicIPAddresses/test-vm1-nic1-pip');
-                expect(processedParam.parameters.networkInterfaces[2].properties.ipConfigurations[0].properties.publicIPAddress.id).toEqual('/subscriptions/00000000-0000-1000-A000-000000000000/resourceGroups/test-rg/providers/Microsoft.Network/publicIPAddresses/test-vm2-nic1-pip');
+                expect(processedParam.parameters.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIpAddress.id).toEqual('/subscriptions/00000000-0000-1000-A000-000000000000/resourceGroups/test-rg/providers/Microsoft.Network/publicIPAddresses/test-vm1-nic1-pip');
+                expect(processedParam.parameters.networkInterfaces[2].properties.ipConfigurations[0].properties.publicIpAddress.id).toEqual('/subscriptions/00000000-0000-1000-A000-000000000000/resourceGroups/test-rg/providers/Microsoft.Network/publicIPAddresses/test-vm2-nic1-pip');
 
             });
             it('validate that nic references are correctly computed and applied in vm stamps', () => {
@@ -1827,6 +1827,16 @@ describe('virtualMachineSettings:', () => {
                 let processedParam = virtualMachineSettings.process({ settings: linuxSettings, buildingBlockSettings });
                 expect(processedParam.parameters.virtualMachines[0].properties.osProfile.adminPassword).toEqual(null);
                 expect(processedParam.parameters.virtualMachines[1].properties.osProfile.adminPassword).toEqual(null);
+            });
+            it('validates load balancer settings', () => {
+                let settings = _.cloneDeep(testSettings);
+
+                let processedParam = virtualMachineSettings.process({ settings: settings, buildingBlockSettings });
+                expect(processedParam.parameters.publicIpAddresses[0].properties.publicIPAllocationMethod).toEqual('Dynamic');
+                expect(processedParam.parameters.publicIpAddresses[0].properties.publicIPAddressVersion).toEqual('IPv4');
+                expect(processedParam.parameters.publicIpAddresses[1].properties.publicIPAllocationMethod).toEqual('Dynamic');
+                expect(processedParam.parameters.publicIpAddresses[1].properties.publicIPAddressVersion).toEqual('IPv4');
+                
             });
 
         });

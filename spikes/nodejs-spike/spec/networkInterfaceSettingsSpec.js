@@ -4,12 +4,18 @@ describe('networkInterfaceSettings:', () => {
     let _ = require('lodash');
     let v = require('../core/validation.js');
 
+    let buildingBlockSettings = {
+        subscriptionId: '00000000-0000-1000-A000-000000000000',
+        resourceGroupName: 'test-rg',
+        location: 'westus'
+    };
+
     describe('merge:', () => {
 
         it('validate valid defaults are applied.', () => {
             let settings = {};
 
-            let mergedValue = networkInterfaceSettings.merge(settings);
+            let mergedValue = networkInterfaceSettings.merge(settings, buildingBlockSettings);
             expect(mergedValue.isPublic).toEqual(true);
             expect(mergedValue.isPrimary).toEqual(true);
             expect(mergedValue.hasOwnProperty('subnetName')).toEqual(false);
@@ -31,7 +37,7 @@ describe('networkInterfaceSettings:', () => {
                 'dnsServers': ['10.0.0.0']
             };
 
-            let mergedValue = networkInterfaceSettings.merge(settings);
+            let mergedValue = networkInterfaceSettings.merge(settings, buildingBlockSettings);
             expect(mergedValue.isPublic).toEqual(false);
             expect(mergedValue.isPrimary).toEqual(true);
             expect(mergedValue.subnetName).toEqual('default1');
@@ -47,7 +53,7 @@ describe('networkInterfaceSettings:', () => {
                 'name1': 'test-as'
             };
 
-            let mergedValue = networkInterfaceSettings.merge(settings);
+            let mergedValue = networkInterfaceSettings.merge(settings, buildingBlockSettings);
             expect(mergedValue.hasOwnProperty('name1')).toEqual(true);
             expect(mergedValue.name1).toEqual('test-as');
             expect(mergedValue.isPublic).toEqual(true);
@@ -60,7 +66,7 @@ describe('networkInterfaceSettings:', () => {
                 'dnsServers': ['10.0.0.0']
             };
 
-            let mergedValue = networkInterfaceSettings.merge(settings);
+            let mergedValue = networkInterfaceSettings.merge(settings, buildingBlockSettings);
             expect(mergedValue.isPublic).toEqual(true);
             expect(mergedValue.isPrimary).toEqual(true);
             expect(mergedValue.privateIPAllocationMethod).toEqual('Dynamic');
@@ -70,6 +76,27 @@ describe('networkInterfaceSettings:', () => {
             expect(mergedValue.dnsServers.length).toEqual(1);
             expect(mergedValue.dnsServers[0]).toEqual('10.0.0.0');
         });
+        it('validate default pip settings when missing.', () => {
+            let settings = {
+                isPublic: true
+            };
+
+            let mergedValue = networkInterfaceSettings.merge(settings, buildingBlockSettings);
+            expect(mergedValue.publicIpAddress.publicIPAllocationMethod).toEqual('Dynamic');
+            expect(mergedValue.publicIpAddress.publicIPAddressVersion).toEqual('IPv4');
+        });
+        it('validate settings overrides pip defaults.', () => {
+            let settings = {
+                name: 'test',
+                isPublic: true,
+                publicIPAllocationMethod: 'Static',
+                publicIPAddressVersion: 'IPv6'
+            };
+
+            let mergedValue = networkInterfaceSettings.merge(settings, buildingBlockSettings);
+            expect(mergedValue.publicIpAddress.publicIPAllocationMethod).toEqual('Static');
+            expect(mergedValue.publicIpAddress.publicIPAddressVersion).toEqual('IPv6');
+        });        
     });
     describe('validations:', () => {
         let nicParam = {
@@ -232,31 +259,38 @@ describe('networkInterfaceSettings:', () => {
         };
 
         it('validates that total number of nics returned equals number of nics in stamp', () => {
-            let result = networkInterfaceSettings.transform(settings.nics, settings, vmIndex);
+            let merged = networkInterfaceSettings.merge(settings.nics, buildingBlockSettings);
+            let result = networkInterfaceSettings.transform(merged, settings, vmIndex);
 
             expect(result.nics.length).toEqual(2);
         });
         it('validates that nics are named appropriately for each VM', () => {
-            let result = networkInterfaceSettings.transform(settings.nics, settings, vmIndex);
+            let param = _.cloneDeep(settings);
+            let merged = networkInterfaceSettings.merge(param.nics, buildingBlockSettings);
+            param.nics = merged;
+            let result = networkInterfaceSettings.transform(merged, param, vmIndex);
 
             expect(result.nics.length).toEqual(2);
             expect(result.nics[0].name).toEqual('testVM1-nic1');
             expect(result.nics[1].name).toEqual('testVM1-nic2');
         });
         it('validates that primary nics are correctly assigned for each VM', () => {
-            let result = networkInterfaceSettings.transform(settings.nics, settings, vmIndex);
+            let merged = networkInterfaceSettings.merge(settings.nics, buildingBlockSettings);
+            let result = networkInterfaceSettings.transform(merged, settings, vmIndex);
 
             expect(result.nics[0].properties.primary).toEqual(true);
             expect(result.nics[1].properties.primary).toEqual(false);
         });
         it('validates that enableIPForwarding is correctly assigned for each VM', () => {
-            let result = networkInterfaceSettings.transform(settings.nics, settings, vmIndex);
+            let merged = networkInterfaceSettings.merge(settings.nics, buildingBlockSettings);
+            let result = networkInterfaceSettings.transform(merged, settings, vmIndex);
 
             expect(result.nics[0].properties.enableIPForwarding).toEqual(false);
             expect(result.nics[1].properties.enableIPForwarding).toEqual(true);
         });
         it('validates that dnsServers are correctly assigned for each VM', () => {
-            let result = networkInterfaceSettings.transform(settings.nics, settings, vmIndex);
+            let merged = networkInterfaceSettings.merge(settings.nics, buildingBlockSettings);
+            let result = networkInterfaceSettings.transform(merged, settings, vmIndex);
 
             expect(result.nics[0].properties.dnsSettings.dnsServers.length).toEqual(2);
             expect(result.nics[0].properties.dnsSettings.appliedDnsServers.length).toEqual(2);
@@ -269,7 +303,8 @@ describe('networkInterfaceSettings:', () => {
             expect(result.nics[1].properties.dnsSettings.appliedDnsServers.length).toEqual(0);
         });
         it('validates that privateIPAllocationMethod is correctly assigned in the Ip configuration', () => {
-            let result = networkInterfaceSettings.transform(settings.nics, settings, vmIndex);
+            let merged = networkInterfaceSettings.merge(settings.nics, buildingBlockSettings);
+            let result = networkInterfaceSettings.transform(merged, settings, vmIndex);
 
             expect(result.nics[0].properties.ipConfigurations[0].properties.privateIPAllocationMethod).toEqual('Static');
             expect(result.nics[0].properties.ipConfigurations[0].properties.privateIPAddress).toEqual('10.0.1.240');
@@ -277,35 +312,41 @@ describe('networkInterfaceSettings:', () => {
             expect(result.nics[1].properties.ipConfigurations[0].properties.hasOwnProperty('privateIPAddress')).toEqual(false);
         });
         it('validates that startingIPAddress is correctly computed', () => {
-            let result = networkInterfaceSettings.transform(settings.nics, settings, 5);
+            let merged = networkInterfaceSettings.merge(settings.nics, buildingBlockSettings);
+            let result = networkInterfaceSettings.transform(merged, settings, 5);
 
             expect(result.nics[0].properties.ipConfigurations[0].properties.privateIPAllocationMethod).toEqual('Static');
             expect(result.nics[0].properties.ipConfigurations[0].properties.privateIPAddress).toEqual('10.0.1.245');
         });
         it('validates that startingIPAddress is correctly computed and rolls over to next octet', () => {
-            let result = networkInterfaceSettings.transform(settings.nics, settings, 18);
+            let merged = networkInterfaceSettings.merge(settings.nics, buildingBlockSettings);
+            let result = networkInterfaceSettings.transform(merged, settings, 18);
 
             expect(result.nics[0].properties.ipConfigurations[0].properties.privateIPAllocationMethod).toEqual('Static');
             expect(result.nics[0].properties.ipConfigurations[0].properties.privateIPAddress).toEqual('10.0.2.2');
         });
         it('validates that subnets are correctly referenced in the Ip configuration', () => {
-            let result = networkInterfaceSettings.transform(settings.nics, settings, vmIndex);
+            let merged = networkInterfaceSettings.merge(settings.nics, buildingBlockSettings);
+            let result = networkInterfaceSettings.transform(merged, settings, vmIndex);
 
             expect(result.nics[0].properties.ipConfigurations[0].properties.subnet.id).toEqual('/subscriptions/00000000-0000-1000-A000-000000000000/resourceGroups/test-rg/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/web');
             expect(result.nics[1].properties.ipConfigurations[0].properties.subnet.id).toEqual('/subscriptions/00000000-0000-1000-A000-000000000000/resourceGroups/test-rg/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/biz');
         });
-        it('validates that piblic nics have the publicIPAddress correctly referenced in the Ip configuration', () => {
+        it('validates that piblic nics have the publicIpAddress correctly referenced in the Ip configuration', () => {
             let param = _.cloneDeep(settings);
             param.nics[0].isPublic = true;
-            let result = networkInterfaceSettings.transform(param.nics, param, vmIndex);
+            let merged = networkInterfaceSettings.merge(param.nics, buildingBlockSettings);
+            param.nics = merged;
+            let result = networkInterfaceSettings.transform(merged, param, vmIndex);
 
-            expect(result.nics[0].properties.ipConfigurations[0].properties.publicIPAddress.id).toEqual('/subscriptions/00000000-0000-1100-AA00-000000000000/resourceGroups/test-rg/providers/Microsoft.Network/publicIPAddresses/testVM1-nic1-pip');
-            expect(result.nics[1].properties.ipConfigurations[0].properties.hasOwnProperty('publicIPAddress')).toEqual(false);
+            expect(result.nics[0].properties.ipConfigurations[0].properties.publicIpAddress.id).toEqual('/subscriptions/00000000-0000-1000-A000-000000000000/resourceGroups/test-rg/providers/Microsoft.Network/publicIPAddresses/testVM1-nic1-pip');
+            expect(result.nics[1].properties.ipConfigurations[0].properties.hasOwnProperty('publicIpAddress')).toEqual(false);
         });
         it('validates that only one Ip configuration is created for each nic', () => {
             let param = _.cloneDeep(settings);
             param.nics[0].isPublic = true;
-            let result = networkInterfaceSettings.transform(param.nics, param, vmIndex);
+            let merged = networkInterfaceSettings.merge(settings.nics, buildingBlockSettings);
+            let result = networkInterfaceSettings.transform(merged, settings, vmIndex);
 
             expect(result.nics[0].properties.ipConfigurations.length).toEqual(1);
             expect(result.nics[0].properties.ipConfigurations[0].name).toEqual('ipconfig1');
@@ -313,21 +354,26 @@ describe('networkInterfaceSettings:', () => {
             expect(result.nics[1].properties.ipConfigurations[0].name).toEqual('ipconfig1');
         });
         it('validates that for private nics, pips array is empty', () => {
-            let result = networkInterfaceSettings.transform(settings.nics, settings, vmIndex);
+            let merged = networkInterfaceSettings.merge(settings.nics, buildingBlockSettings);
+            let result = networkInterfaceSettings.transform(merged, settings, vmIndex);
 
             expect(result.pips.length).toEqual(0);
         });
         it('validates that pips are named correctly', () => {
             let param = _.cloneDeep(settings);
             param.nics[0].isPublic = true;
-            let result = networkInterfaceSettings.transform(param.nics, param, vmIndex);
+            let merged = networkInterfaceSettings.merge(param.nics, buildingBlockSettings);
+            param.nics = merged;
+            let result = networkInterfaceSettings.transform(merged, param, vmIndex);
 
             expect(result.pips[0].name).toEqual('testVM1-nic1-pip');
         });
         it('validates that publicIPAllocationMethod is correctly assigned in the pips', () => {
             let param = _.cloneDeep(settings);
             param.nics[0].isPublic = true;
-            let result = networkInterfaceSettings.transform(param.nics, param, vmIndex);
+            let merged = networkInterfaceSettings.merge(param.nics, buildingBlockSettings);
+            param.nics = merged;
+            let result = networkInterfaceSettings.transform(merged, param, vmIndex);
 
             expect(result.pips[0].properties.publicIPAllocationMethod).toEqual('Dynamic');
         });
