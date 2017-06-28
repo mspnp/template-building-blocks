@@ -46,7 +46,31 @@ let localNetworkGatewayValidations = {
     }
 };
 
-let transform = (settings) => {
+let merge = ({settings, buildingBlockSettings, defaultSettings }) => {
+    let defaults = (defaultSettings) ? [LOCALNETWORKGATEWAY_SETTINGS_DEFAULTS, defaultSettings] : LOCALNETWORKGATEWAY_SETTINGS_DEFAULTS;
+    
+    let merged = r.setupResources(settings, buildingBlockSettings, (parentKey) => {
+        return (parentKey === null);
+    });
+
+    return v.merge(merged, defaults);
+};
+
+function transform(settings) {
+    if (_.isPlainObject(settings)) {
+        settings = [settings];
+    }
+
+    let results = _.map(settings, (setting) => {
+        return transformSettings(setting);
+    });
+
+    return {
+        localNetworkGateways: results
+    };
+}
+
+let transformSettings = (settings) => {
     let result = {
         name: settings.name,
         id: r.resourceId(settings.subscriptionId, settings.resourceGroupName, 'Microsoft.Network/localNetworkGateway', settings.name),
@@ -68,55 +92,6 @@ let transform = (settings) => {
     return result;
 };
 
-let merge = ({settings, buildingBlockSettings, defaultSettings }) => {
-    let defaults = (defaultSettings) ? [LOCALNETWORKGATEWAY_SETTINGS_DEFAULTS, defaultSettings] : LOCALNETWORKGATEWAY_SETTINGS_DEFAULTS;
-    
-    let merged = r.setupResources(settings, buildingBlockSettings, (parentKey) => {
-        return (parentKey === null);
-    });
-
-    return v.merge(merged, defaults);
-};
-
 exports.validations = localNetworkGatewayValidations;
 exports.merge = merge;
-exports.transform = function ({ settings, buildingBlockSettings, defaultSettings }) {
-    if (_.isPlainObject(settings)) {
-        settings = [settings];
-    }
-
-    let buildingBlockErrors = v.validate({
-        settings: buildingBlockSettings,
-        validations: {
-            subscriptionId: v.validationUtilities.isGuid,
-            resourceGroupName: v.validationUtilities.isNotNullOrWhitespace,
-        }
-    });
-
-    if (buildingBlockErrors.length > 0) {
-        throw new Error(JSON.stringify(buildingBlockErrors));
-    }
-
-    let results = merge({
-        settings: settings,
-        buildingBlockSettings: buildingBlockSettings,
-        defaultSettings: defaultSettings
-    });
-
-    let errors = v.validate({
-        settings: results,
-        validations: localNetworkGatewayValidations
-    });
-
-    if (errors.length > 0) {
-        throw new Error(JSON.stringify(errors));
-    }
-
-    results = _.map(results, (setting) => {
-        return transform(setting);
-    });
-
-    return {
-        localNetworkGateways: results
-    };
-};
+exports.transform = transform;
