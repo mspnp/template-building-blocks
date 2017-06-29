@@ -47,12 +47,8 @@ let localNetworkGatewayValidations = {
 };
 
 let merge = ({settings, buildingBlockSettings, defaultSettings }) => {
-    if (!_.isPlainObject(settings)) {
-        throw new Error('settings must be an object');
-    }
-
     let defaults = (defaultSettings) ? [LOCALNETWORKGATEWAY_SETTINGS_DEFAULTS, defaultSettings] : LOCALNETWORKGATEWAY_SETTINGS_DEFAULTS;
-
+    
     let merged = r.setupResources(settings, buildingBlockSettings, (parentKey) => {
         return (parentKey === null);
     });
@@ -62,7 +58,7 @@ let merge = ({settings, buildingBlockSettings, defaultSettings }) => {
 
 function transform(settings) {
     if (!_.isPlainObject(settings)) {
-        throw new Error('settings must be an object');
+        throw new Error('setting should not be a plain object');
     }
     return transformSettings(settings);
 }
