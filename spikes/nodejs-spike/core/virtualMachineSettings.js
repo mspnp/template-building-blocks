@@ -9,6 +9,7 @@ let resources = require('./resources.js');
 let v = require('./validation.js');
 let vmDefaults = require('./virtualMachineSettingsDefaults.js');
 const os = require('os');
+let pipSettings = require('./publicIpAddressSettings.js');
 
 function merge({ settings, buildingBlockSettings, defaultSettings }) {
     if (v.utilities.isNullOrWhitespace(settings.osType)) {
@@ -31,7 +32,28 @@ function merge({ settings, buildingBlockSettings, defaultSettings }) {
         delete defaults.loadBalancerSettings;
     }
 
-    let merged = v.merge(settings, defaults, defaultsCustomizer);
+    let merged = v.merge(settings, defaults, (objValue, srcValue, key) => {
+        if (key === 'storageAccounts' || key === 'diagnosticStorageAccounts') {
+            let mergedDefaults = storageSettings.merge(objValue, key);
+            return v.merge(srcValue, mergedDefaults);
+        }
+        if (key === 'availabilitySet') {
+            return avSetSettings.merge(srcValue, objValue);
+        }
+        if (key === 'nics') {
+            // If source has more than 1 nic specified then set the 'isPrimary' property in defaults to false
+            if (srcValue.length > 1) {
+                if(objValue.length > 0)
+                    objValue[0].isPrimary = false;
+                else
+                    objValue = [{ isPrimary: false }];
+            }
+            return nicSettings.merge(srcValue, buildingBlockSettings, objValue);
+        }
+        if (key === 'loadBalancerSettings') {
+            return lbSettings.merge({ settings: srcValue, defaultSettings: objValue });
+        }
+    });
 
     // Add resourceGroupName and SubscriptionId to resources
     let updatedSettings = resources.setupResources(merged, buildingBlockSettings, (parentKey) => {
@@ -94,28 +116,6 @@ function NormalizeProperties(settings) {
     }
 
     return updatedSettings;
-}
-
-function defaultsCustomizer(objValue, srcValue, key) {
-    if (key === 'storageAccounts' || key === 'diagnosticStorageAccounts') {
-        let mergedDefaults = storageSettings.merge(objValue, key);
-        return v.merge(srcValue, mergedDefaults);
-    }
-    if (key === 'availabilitySet') {
-        return avSetSettings.merge(srcValue, objValue);
-    }
-    if (key === 'nics') {
-        let mergedDefaults = ((objValue.length === 0) ? nicSettings.merge({}) : nicSettings.merge(objValue[0]));
-
-        // If source has more than 1 nic specified than set the 'isPrimary' property in defaults to false
-        if (srcValue.length > 1) {
-            mergedDefaults.isPrimary = false;
-        }
-        return v.merge(srcValue, [mergedDefaults]);
-    }
-    if (key === 'loadBalancerSettings') {
-        return lbSettings.merge({ settings: srcValue, defaultSettings: objValue });
-    }
 }
 
 let validOSTypes = ['linux', 'windows'];
@@ -354,8 +354,18 @@ let virtualMachineValidations = {
     storageAccounts: storageSettings.storageValidations,
     diagnosticStorageAccounts: storageSettings.diagnosticValidations,
     nics: (value, parent) => {
+        let nicValidations = _.cloneDeep(nicSettings.validations);
+        let pipValidations = _.cloneDeep(pipSettings.validations);
+        delete pipValidations.name;
+        nicValidations.publicIpAddress = (value) => {
+            return _.isNil(value) ? {
+                result: true
+            } : {
+                validations: pipValidations
+            };
+        };
         let result = {
-            validations: nicSettings.validations
+            validations: nicValidations
         };
 
         if ((!_.isNil(value)) && (value.length > 0)) {

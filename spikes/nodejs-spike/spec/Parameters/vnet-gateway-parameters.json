@@ -9,6 +9,7 @@
                 "vpnType": "RouteBased",
                 "sku": "Standard",
                 "isPublic": true,
+                "enableBgp": false,
                 "virtualNetwork": {
                     "name": "my-virtual-network"
                 }
@@ -19,6 +20,7 @@
                 "vpnType": "RouteBased",
                 "sku": "Standard",
                 "isPublic": true,
+                "enableBgp": false,
                 "virtualNetwork": {
                     "name": "my-virtual-network"
                 }
@@ -29,6 +31,7 @@
                 "vpnType": "RouteBased",
                 "sku": "Standard",
                 "isPublic": true,
+                "enableBgp": false,
                 "virtualNetwork": {
                     "name": "my-other-virtual-network"
                 },

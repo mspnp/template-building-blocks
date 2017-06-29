@@ -196,7 +196,9 @@ describe('virtualMachineSettings:', () => {
             });
         });
         describe('windows:', () => {
+
             it('validates that properties for windows are applied', () => {
+
                 let settings = { vmCount: 2, osType: 'windows' };
 
                 let mergedValue = merge({ settings, buildingBlockSettings });
@@ -653,10 +655,13 @@ describe('virtualMachineSettings:', () => {
             };
 
             it('overrides vmCount', () => {
+
                 let userDefaults = _.cloneDeep(windowsDefaults);
                 userDefaults.vmCount = 5;
+
                 let settings = _.cloneDeep(testSettings);
                 delete settings.vmCount;
+
                 let results = merge({
                     settings: settings,
                     buildingBlockSettings: buildingBlockSettings,
@@ -666,10 +671,13 @@ describe('virtualMachineSettings:', () => {
             });
 
             it('overrides namePrefix', () => {
+
                 let userDefaults = _.cloneDeep(windowsDefaults);
                 userDefaults.namePrefix = 'contoso';
+
                 let settings = _.cloneDeep(testSettings);
                 delete settings.namePrefix;
+
                 let results = merge({
                     settings: settings,
                     buildingBlockSettings: buildingBlockSettings,
@@ -679,10 +687,13 @@ describe('virtualMachineSettings:', () => {
             });
 
             it('overrides computerNamePrefix', () => {
+
                 let userDefaults = _.cloneDeep(windowsDefaults);
                 userDefaults.computerNamePrefix = 'contoso';
+
                 let settings = _.cloneDeep(testSettings);
                 delete settings.computerNamePrefix;
+
                 let results = merge({
                     settings: settings,
                     buildingBlockSettings: buildingBlockSettings,
@@ -692,10 +703,13 @@ describe('virtualMachineSettings:', () => {
             });
 
             it('overrides size', () => {
+
                 let userDefaults = _.cloneDeep(windowsDefaults);
                 userDefaults.size = 'Standard_DS5_v2';
+
                 let settings = _.cloneDeep(testSettings);
                 delete settings.size;
+
                 let results = merge({
                     settings: settings,
                     buildingBlockSettings: buildingBlockSettings,
@@ -706,10 +720,13 @@ describe('virtualMachineSettings:', () => {
 
             describe('osDisk defaults:', () => {
                 it('overrides caching', () => {
+
                     let userDefaults = _.cloneDeep(windowsDefaults);
                     userDefaults.osDisk.caching = 'ReadOnly';
+
                     let settings = _.cloneDeep(testSettings);
                     delete settings.osDisk.caching;
+
                     let results = merge({
                         settings: settings,
                         buildingBlockSettings: buildingBlockSettings,
@@ -718,10 +735,13 @@ describe('virtualMachineSettings:', () => {
                     expect(results.osDisk.caching).toEqual('ReadOnly');
                 });
                 it('overrides createOption', () => {
+
                     let userDefaults = _.cloneDeep(windowsDefaults);
                     userDefaults.osDisk.createOption = 'attach';
+
                     let settings = _.cloneDeep(testSettings);
                     delete settings.osDisk.createOption;
+
                     let results = merge({
                         settings: settings,
                         buildingBlockSettings: buildingBlockSettings,
@@ -732,10 +752,13 @@ describe('virtualMachineSettings:', () => {
             });
 
             it('overrides adminUsername', () => {
+
                 let userDefaults = _.cloneDeep(windowsDefaults);
                 userDefaults.adminUsername = 'superuser';
+
                 let settings = _.cloneDeep(testSettings);
                 delete settings.adminUsername;
+
                 let results = merge({
                     settings: settings,
                     buildingBlockSettings: buildingBlockSettings,
@@ -744,12 +767,15 @@ describe('virtualMachineSettings:', () => {
                 expect(results.adminUsername).toEqual('superuser');
             });
             it('overrides storageAccounts', () => {
+
                 let userDefaults = _.cloneDeep(windowsDefaults);
                 userDefaults.storageAccounts.managed = false;
                 userDefaults.storageAccounts.nameSuffix = 'some';
                 userDefaults.storageAccounts.count = 5;
+
                 let settings = _.cloneDeep(testSettings);
                 delete settings.storageAccounts;
+
                 let results = merge({
                     settings: settings,
                     buildingBlockSettings: buildingBlockSettings,
@@ -760,12 +786,15 @@ describe('virtualMachineSettings:', () => {
                 expect(results.storageAccounts.count).toEqual(5);
             });
             it('overrides diagnosticStorageAccounts', () => {
+
                 let userDefaults = _.cloneDeep(windowsDefaults);
                 userDefaults.diagnosticStorageAccounts.managed = true;
                 userDefaults.diagnosticStorageAccounts.nameSuffix = 'some';
                 userDefaults.diagnosticStorageAccounts.count = 5;
+
                 let settings = _.cloneDeep(testSettings);
                 delete settings.diagnosticStorageAccounts;
+
                 let results = merge({
                     settings: settings,
                     buildingBlockSettings: buildingBlockSettings,
@@ -776,12 +805,14 @@ describe('virtualMachineSettings:', () => {
                 expect(results.diagnosticStorageAccounts.count).toEqual(5);
             });
             it('overrides nics', () => {
+
                 let userDefaults = _.cloneDeep(windowsDefaults);
                 userDefaults.nics = [{
                     isPrimary: false,
                     isPublic: false,
                     domainNameLabelPrefix: 'some',
                 }];
+
                 let settings = _.cloneDeep(testSettings);
                 settings.nics = [
                     {
@@ -793,6 +824,7 @@ describe('virtualMachineSettings:', () => {
                         enableIPForwarding: true,
                     }
                 ];
+
                 let results = merge({
                     settings: settings,
                     buildingBlockSettings: buildingBlockSettings,
@@ -810,10 +842,13 @@ describe('virtualMachineSettings:', () => {
                 expect(results.nics[1].enableIPForwarding).toEqual(true);
             });
             it('overrides windows imageReference', () => {
+
                 let userDefaults = _.cloneDeep(windowsDefaults);
                 userDefaults.imageReference.sku = '2008-R2-SP1';
+
                 let settings = _.cloneDeep(testSettings);
                 delete settings.imageReference;
+
                 let results = merge({
                     settings: settings,
                     buildingBlockSettings: buildingBlockSettings,
@@ -822,13 +857,16 @@ describe('virtualMachineSettings:', () => {
                 expect(results.imageReference.sku).toEqual('2008-R2-SP1');
             });
             it('overrides debian imageReference', () => {
+
                 let userDefaults = _.cloneDeep(windowsDefaults);
                 userDefaults.osType = 'linux';
                 userDefaults.imageReference.offer = 'Debian';
                 userDefaults.imageReference.sku = '8';
                 userDefaults.imageReference.version = '8.0.201701180';
+
                 let settings = _.cloneDeep(testSettings);
                 delete settings.imageReference;
+
                 let results = merge({
                     settings: settings,
                     buildingBlockSettings: buildingBlockSettings,
@@ -839,6 +877,7 @@ describe('virtualMachineSettings:', () => {
                 expect(results.imageReference.version).toEqual('8.0.201701180');
             });
             it('overrides dataDisks', () => {
+
                 let userDefaults = _.cloneDeep(windowsDefaults);
                 userDefaults.dataDisks = {
                     count: 5,
@@ -846,8 +885,10 @@ describe('virtualMachineSettings:', () => {
                         diskSizeGB: 256,
                     }
                 };
+
                 let settings = _.cloneDeep(testSettings);
                 delete settings.dataDisks;
+
                 let results = merge({
                     settings: settings,
                     buildingBlockSettings: buildingBlockSettings,
@@ -857,6 +898,7 @@ describe('virtualMachineSettings:', () => {
                 expect(results.dataDisks.properties.diskSizeGB).toEqual(256);
             });
             it('overrides virtualNetwork', () => {
+
                 let userDefaults = _.cloneDeep(windowsDefaults);
                 userDefaults.virtualNetwork = {
                     subnets: [
@@ -875,8 +917,10 @@ describe('virtualMachineSettings:', () => {
                         }
                     ]
                 };
+
                 let settings = _.cloneDeep(testSettings);
                 delete settings.virtualNetwork;
+
                 let results = merge({
                     settings: settings,
                     buildingBlockSettings: buildingBlockSettings,
@@ -1400,7 +1444,6 @@ describe('virtualMachineSettings:', () => {
                     expect(result[0].name).toEqual('.sshPublicKey');
                 });
             });
-
         });
         describe('linux:', () => {
             describe('AuthenticationType:', () => {
@@ -1454,8 +1497,9 @@ describe('virtualMachineSettings:', () => {
             });
         });
     });
+
     if (global.testConfiguration.runTransform) {
-        describe('transform:', () => {
+        describe('process:', () => {
             it('validates that number of stamps created are based on vmcount property', () => {
 
                 let processedParam = virtualMachineSettings.process({ settings: testSettings, buildingBlockSettings });
@@ -1885,8 +1929,8 @@ describe('virtualMachineSettings:', () => {
                     let processedParam = virtualMachineSettings.process({ settings, buildingBlockSettings });
 
                     expect(processedParam.parameters.publicIpAddresses.length).toEqual(2);
-                    expect(processedParam.parameters.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIPAddress.id).toEqual('/subscriptions/00000000-0000-1000-A000-000000000000/resourceGroups/test-rg/providers/Microsoft.Network/publicIPAddresses/test-vm1-nic1-pip');
-                    expect(processedParam.parameters.networkInterfaces[2].properties.ipConfigurations[0].properties.publicIPAddress.id).toEqual('/subscriptions/00000000-0000-1000-A000-000000000000/resourceGroups/test-rg/providers/Microsoft.Network/publicIPAddresses/test-vm2-nic1-pip');
+                    expect(processedParam.parameters.networkInterfaces[0].properties.ipConfigurations[0].properties.publicIpAddress.id).toEqual('/subscriptions/00000000-0000-1000-A000-000000000000/resourceGroups/test-rg/providers/Microsoft.Network/publicIPAddresses/test-vm1-nic1-pip');
+                    expect(processedParam.parameters.networkInterfaces[2].properties.ipConfigurations[0].properties.publicIpAddress.id).toEqual('/subscriptions/00000000-0000-1000-A000-000000000000/resourceGroups/test-rg/providers/Microsoft.Network/publicIPAddresses/test-vm2-nic1-pip');
 
                 });
                 it('validate that nic references are correctly computed and applied in vm stamps', () => {
@@ -2030,6 +2074,16 @@ describe('virtualMachineSettings:', () => {
                     let processedParam = virtualMachineSettings.process({ settings: linuxSettings, buildingBlockSettings });
                     expect(processedParam.parameters.virtualMachines[0].properties.osProfile.adminPassword).toEqual(null);
                     expect(processedParam.parameters.virtualMachines[1].properties.osProfile.adminPassword).toEqual(null);
+                });
+                it('validates load balancer settings', () => {
+                    let settings = _.cloneDeep(testSettings);
+
+                    let processedParam = virtualMachineSettings.process({ settings: settings, buildingBlockSettings });
+                    expect(processedParam.parameters.publicIpAddresses[0].properties.publicIPAllocationMethod).toEqual('Dynamic');
+                    expect(processedParam.parameters.publicIpAddresses[0].properties.publicIPAddressVersion).toEqual('IPv4');
+                    expect(processedParam.parameters.publicIpAddresses[1].properties.publicIPAllocationMethod).toEqual('Dynamic');
+                    expect(processedParam.parameters.publicIpAddresses[1].properties.publicIPAddressVersion).toEqual('IPv4');
+                    
                 });
 
             });

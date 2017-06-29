@@ -60,10 +60,10 @@ let publicIpAddressValidations = {
     }
 };
 
-function transform(settings) {
+function transform(settings, buildingBlockSettings) {
     let result = {
         name: settings.name,
-        id: r.resourceId(settings.subscriptionId, settings.resourceGroupName, 'Microsoft.Network/publicIPAddresses', settings.name),
+        id: r.resourceId(buildingBlockSettings.subscriptionId, buildingBlockSettings.resourceGroupName, 'Microsoft.Network/publicIPAddresses', settings.name),
         resourceGroupName: settings.resourceGroupName,
         subscriptionId: settings.subscriptionId,
         location: settings.location,
@@ -103,34 +103,7 @@ let merge = ({ settings, buildingBlockSettings, defaultSettings }) => {
 };
 
 exports.transform = function ({ settings, buildingBlockSettings }) {
-    let buildingBlockErrors = v.validate({
-        settings: buildingBlockSettings,
-        validations: {
-            subscriptionId: v.validationUtilities.isGuid,
-            resourceGroupName: v.validationUtilities.isNotNullOrWhitespace,
-        }
-    });
-
-    if (buildingBlockErrors.length > 0) {
-        throw new Error(JSON.stringify(buildingBlockErrors));
-    }
-
-    let results = merge({
-        settings: settings,
-        buildingBlockSettings: buildingBlockSettings
-    });
-
-    let errors = v.validate({
-        settings: results,
-        validations: publicIpAddressValidations
-    });
-
-    if (errors.length > 0) {
-        throw new Error(JSON.stringify(errors));
-    }
-
-    results = (_.isArray(settings)) ? _.map(results, (setting) => { return transform(setting); }) : transform(results);
-
+    let results = (_.isArray(settings)) ? _.map(settings, (setting) => { return transform(setting, buildingBlockSettings); }) : transform(settings, buildingBlockSettings);
     return {
         publicIpAddresses: results
     };

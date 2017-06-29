@@ -4,6 +4,7 @@ var _ = require('lodash');
 var pipSettings = require('./publicIpAddressSettings.js');
 var resources = require('./resources.js');
 let v = require('./validation.js');
+let r = require('./resources.js');
 
 const NETWORKINTERFACE_SETTINGS_DEFAULTS = {
     isPrimary: true,
@@ -18,9 +19,49 @@ const NETWORKINTERFACE_SETTINGS_DEFAULTS = {
     inboundNatRulesNames: []
 };
 
-function merge(settings, userDefaults) {
+function merge(settings, buildingBlockSettings, userDefaults) {
     let defaults = (userDefaults) ? [NETWORKINTERFACE_SETTINGS_DEFAULTS, userDefaults] : NETWORKINTERFACE_SETTINGS_DEFAULTS;
-    return v.merge(settings, defaults);
+
+    if(_.isArray(settings)){
+        return _.map(settings, (config) => {
+            return mergeSingle(config, buildingBlockSettings, defaults);
+        });
+    }
+    else{
+        return mergeSingle(settings, buildingBlockSettings, defaults);
+    }
+}
+
+function mergeSingle(settings, buildingBlockSettings, defaultSettings){
+    let merged = _.cloneDeep(settings);
+    // If needed, we need to build up a publicIpAddress from the information we have here so it can be merged and validated.
+    if (settings.isPublic == true) {
+        let publicIpAddress = {
+            publicIPAllocationMethod: settings.publicIPAllocationMethod,
+            publicIPAddressVersion: settings.publicIPAddressVersion
+        };
+        if(!_.isNull(settings.domainNameLabelPrefix) && !_.isEmpty(settings.domainNameLabelPrefix))
+            publicIpAddress.domainNameLabel = settings.domainNameLabelPrefix;
+
+        merged.publicIpAddress = publicIpAddress;
+    }
+
+    merged = r.setupResources(merged, buildingBlockSettings, (parentKey) => {
+        return ((parentKey === null) || (v.utilities.isStringInArray(parentKey, ['publicIpAddress'])));
+    });
+
+    merged = v.merge(merged, defaultSettings, (objValue, srcValue, key) => {
+        if ((key === 'publicIpAddress') && (srcValue)) {
+            let results = pipSettings.merge({
+                settings: srcValue,
+                buildingBlockSettings: buildingBlockSettings
+            });
+
+            return results;
+        }
+    });
+
+    return merged;
 }
 
 let validIPAllocationMethods = ['Static', 'Dynamic'];
@@ -74,6 +115,13 @@ let networkInterfaceValidations = {
                 validations: v.validationUtilities.isValidIpAddress
             };
         }
+    },
+    publicIpAddress: (value) => {
+        return _.isNil(value) ? {
+            result: true
+        } : {
+            validations: pipSettings.validations
+        };
     }
 };
 
@@ -96,12 +144,9 @@ function ipToInt(ip) {
 }
 
 function createPipParameters(parent, vmIndex) {
-    let settings = {
-        name: `${parent.name}-pip`,
-        publicIPAllocationMethod: parent.publicIPAllocationMethod
-    };
-    if (!v.utilities.isNullOrWhitespace(parent.domainNameLabelPrefix)) {
-        settings.domainNameLabel = `${parent.domainNameLabelPrefix}${vmIndex}`;
+    let settings = _.cloneDeep(parent);
+    if (!v.utilities.isNullOrWhitespace(parent.domainNameLabel)) {
+        settings.domainNameLabel = `${parent.domainNameLabel}${vmIndex}`;
     }
     return pipSettings.transform({
         settings: settings,
@@ -172,10 +217,13 @@ function transform(settings, parent, vmIndex) {
         }
 
         if (nic.isPublic) {
-            let pip = createPipParameters(nic, vmIndex);
+            if(_.isNull(nic.publicIpAddress.name) || _.isEmpty(nic.publicIpAddress.name))
+                nic.publicIpAddress.name = nic.name + '-pip';
+
+            let pip = createPipParameters(nic.publicIpAddress, vmIndex);
             result.pips = _.concat(result.pips, pip.publicIpAddresses);
 
-            instance.properties.ipConfigurations[0].properties.publicIPAddress = {
+            instance.properties.ipConfigurations[0].properties.publicIpAddress = {
                 id: resources.resourceId(nic.subscriptionId, nic.resourceGroupName, 'Microsoft.Network/publicIPAddresses', pip.publicIpAddresses.name)
             };
         }
