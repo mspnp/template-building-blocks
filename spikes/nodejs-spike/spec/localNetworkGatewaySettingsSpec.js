@@ -347,10 +347,8 @@ describe('localNetworkGatewaySettings', () => {
                     buildingBlockSettings: buildingBlockSettings
                 });
 
-                let result = localNetworkGatewaySettings.transform(merged);
+                let settingsResult = localNetworkGatewaySettings.transform(merged);
 
-                expect(result.localNetworkGateways.length).toBe(1);
-                let settingsResult = result.localNetworkGateways[0];
                 expect(settingsResult.hasOwnProperty('id')).toBe(true);
                 expect(settingsResult.name).toBe(settings.name);
                 expect(settingsResult.hasOwnProperty('resourceGroupName')).toBe(true);
@@ -358,7 +356,6 @@ describe('localNetworkGatewaySettings', () => {
 
                 expect(settingsResult.properties.ipAddress).toBe(localNetworkGateway.gatewayIpAddress);
                 expect(settingsResult.properties.localNetworkAddressSpace.addressPrefixes[0]).toBe(localNetworkGateway.addressPrefixes[0]);
-
 
                 expect(() => {
                     localNetworkGatewaySettings.transform({
