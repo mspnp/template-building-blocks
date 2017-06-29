@@ -9,6 +9,7 @@ let resources = require('./resources.js');
 let v = require('./validation.js');
 let vmDefaults = require('./virtualMachineSettingsDefaults.js');
 const os = require('os');
+let pipSettings = require('./publicIpAddressSettings.js');
 
 function merge({ settings, buildingBlockSettings, defaultSettings }) {
     if (v.utilities.isNullOrWhitespace(settings.osType)) {
@@ -42,7 +43,10 @@ function merge({ settings, buildingBlockSettings, defaultSettings }) {
         if (key === 'nics') {
             // If source has more than 1 nic specified then set the 'isPrimary' property in defaults to false
             if (srcValue.length > 1) {
-                objValue[0].isPrimary = false;
+                if(objValue.length > 0)
+                    objValue[0].isPrimary = false;
+                else
+                    objValue = [{ isPrimary: false }];
             }
             return nicSettings.merge(srcValue, buildingBlockSettings, objValue);
         }
@@ -350,8 +354,18 @@ let virtualMachineValidations = {
     storageAccounts: storageSettings.storageValidations,
     diagnosticStorageAccounts: storageSettings.diagnosticValidations,
     nics: (value, parent) => {
+        let nicValidations = _.cloneDeep(nicSettings.validations);
+        let pipValidations = _.cloneDeep(pipSettings.validations);
+        delete pipValidations.name;
+        nicValidations.publicIpAddress = (value) => {
+            return _.isNil(value) ? {
+                result: true
+            } : {
+                validations: pipValidations
+            };
+        };
         let result = {
-            validations: nicSettings.validations
+            validations: nicValidations
         };
 
         if ((!_.isNil(value)) && (value.length > 0)) {
