@@ -47,12 +47,8 @@ let localNetworkGatewayValidations = {
 };
 
 let merge = ({settings, buildingBlockSettings, defaultSettings }) => {
-    if (!_.isPlainObject(settings)) {
-        throw new Error('settings must be an object');
-    }
-
     let defaults = (defaultSettings) ? [LOCALNETWORKGATEWAY_SETTINGS_DEFAULTS, defaultSettings] : LOCALNETWORKGATEWAY_SETTINGS_DEFAULTS;
-
+    
     let merged = r.setupResources(settings, buildingBlockSettings, (parentKey) => {
         return (parentKey === null);
     });
@@ -60,42 +56,11 @@ let merge = ({settings, buildingBlockSettings, defaultSettings }) => {
     return v.merge(merged, defaults);
 };
 
-function transform({ settings, buildingBlockSettings, defaultSettings }) {
+function transform(settings) {
     if (!_.isPlainObject(settings)) {
-        throw new Error('settings must be an object');
+        throw new Error('setting should not be a plain object');
     }
-
-    let buildingBlockErrors = v.validate({
-        settings: buildingBlockSettings,
-        validations: {
-            subscriptionId: v.validationUtilities.isGuid,
-            resourceGroupName: v.validationUtilities.isNotNullOrWhitespace,
-            location: v.validationUtilities.isNotNullOrWhitespace
-        }
-    });
-
-    if (buildingBlockErrors.length > 0) {
-        throw new Error(JSON.stringify(buildingBlockErrors));
-    }
-
-    let results = merge({
-        settings: settings,
-        buildingBlockSettings: buildingBlockSettings,
-        defaultSettings: defaultSettings
-    });
-
-    let errors = v.validate({
-        settings: results,
-        validations: localNetworkGatewayValidations
-    });
-
-    if (errors.length > 0) {
-        throw new Error(JSON.stringify(errors));
-    }
-
-    results = transformSettings(results);
-
-    return results;
+    return transformSettings(settings);
 }
 
 let transformSettings = (settings) => {
@@ -123,4 +88,3 @@ let transformSettings = (settings) => {
 exports.validations = localNetworkGatewayValidations;
 exports.merge = merge;
 exports.transform = transform;
-
