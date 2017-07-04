@@ -15,13 +15,17 @@ describe('availabilitySetSettings:', () => {
         });
         it('validate defaults do not override settings.', () => {
             let settings = {
-                'platformFaultDomainCount': 10,
+                //'platformFaultDomainCount': 10,
                 'platformUpdateDomainCount': 11,
                 'name': 'test-as'
             };
 
-            let mergedValue = availabilitySetSettings.merge({settings});
-            expect(mergedValue.platformFaultDomainCount).toEqual(10);
+            let directoryDefaults = {
+                'platformFaultDomainCount': 12,
+            };
+
+            let mergedValue = merge(settings, directoryDefaults);
+            expect(mergedValue.platformFaultDomainCount).toEqual(12);
             expect(mergedValue.platformUpdateDomainCount).toEqual(11);
             expect(mergedValue.name).toEqual('test-as');
         });
