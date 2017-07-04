@@ -112,23 +112,23 @@ describe('virtualNetworkGatewaySettings', () => {
         });
 
         it('invalid value', () => {
-            expect(isValidSku('NOT_A_VALID_SKU')).toEqual(false);
+            expect(isValidSku('NOT_VALID')).toEqual(false);
         });
 
         it('Basic', () => {
             expect(isValidSku('Basic')).toEqual(true);
         });
 
-        it('HighPerformance', () => {
-            expect(isValidSku('HighPerformance')).toEqual(true);
+        it('VpnGw1', () => {
+            expect(isValidSku('VpnGw1')).toEqual(true);
         });
 
-        it('Standard', () => {
-            expect(isValidSku('Standard')).toEqual(true);
+        it('VpnGw2', () => {
+            expect(isValidSku('VpnGw2')).toEqual(true);
         });
 
-        it('UltraPerformance', () => {
-            expect(isValidSku('UltraPerformance')).toEqual(true);
+        it('VpnGw3', () => {
+            expect(isValidSku('VpnGw3')).toEqual(true);
         });
     });
 
@@ -275,7 +275,7 @@ describe('virtualNetworkGatewaySettings', () => {
                 resourceGroupName: 'test-rg',
                 gatewayType: 'Vpn',
                 vpnType: 'RouteBased',
-                sku: 'Standard',
+                sku: 'VpnGw1',
                 isPublic: true,
                 publicIpAddressVersion: 'IPv4',
                 virtualNetwork: {
@@ -675,7 +675,7 @@ describe('virtualNetworkGatewaySettings', () => {
             name: 'my-gw',
             gatewayType: 'Vpn',
             vpnType: 'RouteBased',
-            sku: 'Standard',
+            sku: 'VpnGw1',
             isPublic: true,
             virtualNetwork: {
                 name: 'my-virtual-network'
@@ -760,7 +760,7 @@ describe('virtualNetworkGatewaySettings', () => {
                 name: 'my-gw',
                 gatewayType: 'Vpn',
                 vpnType: 'RouteBased',
-                sku: 'Standard',
+                sku: 'VpnGw1',
                 isPublic: true,
                 virtualNetwork: {
                     name: 'my-virtual-network'

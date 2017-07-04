@@ -24,8 +24,8 @@ let availabilitySetValidations = {
     name: v.validationUtilities.isNotNullOrWhitespace
 };
 
-function merge(settings, userDefaults) {
-    let defaults = (userDefaults) ? [AVAILABILITYSET_SETTINGS_DEFAULTS, userDefaults] : AVAILABILITYSET_SETTINGS_DEFAULTS;
+function merge({ settings, buildingBlockSettings, defaultSettings }) {
+    let defaults = (defaultSettings) ? [AVAILABILITYSET_SETTINGS_DEFAULTS, defaultSettings] : AVAILABILITYSET_SETTINGS_DEFAULTS;
 
     return v.merge(settings, defaults);
 }

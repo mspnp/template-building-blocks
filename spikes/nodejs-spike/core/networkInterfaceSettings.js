@@ -18,9 +18,33 @@ const NETWORKINTERFACE_SETTINGS_DEFAULTS = {
     inboundNatRulesNames: []
 };
 
-function merge(settings, userDefaults) {
-    let defaults = (userDefaults) ? [NETWORKINTERFACE_SETTINGS_DEFAULTS, userDefaults] : NETWORKINTERFACE_SETTINGS_DEFAULTS;
-    return v.merge(settings, defaults);
+function merge({ settings, buildingBlockSettings, defaultSettings }) {
+    // If settings has more than 1 nic, than change isPrimary to false in defaults
+    let defaults = _.cloneDeep(NETWORKINTERFACE_SETTINGS_DEFAULTS);
+    if ((_.isArray(settings)) && settings.length > 1) {
+        defaults.isPrimary = false;
+    }
+    defaults = (defaultSettings) ? [defaults, defaultSettings] : defaults;
+
+    let mergedSettings = v.merge(settings, defaults);
+
+    mergedSettings = _.map(mergedSettings, (nic) => {
+        // If needed, we need to build up a publicIpAddress from the information we have here so it can be merged and validated.
+        if (nic.isPublic === true) {
+            let publicIpAddress = {
+                publicIPAllocationMethod: nic.publicIPAllocationMethod,
+                publicIPAddressVersion: nic.publicIPAddressVersion
+            };
+            nic.publicIpAddress = pipSettings.merge({ settings: publicIpAddress, buildingBlockSettings });
+        }
+        return nic;
+    });
+
+    let updatedMergedSettings = resources.setupResources(mergedSettings, buildingBlockSettings, (parentKey) => {
+        return ((parentKey === null) || (v.utilities.isStringInArray(parentKey, ['publicIpAddress'])));
+    });
+
+    return updatedMergedSettings;
 }
 
 let validIPAllocationMethods = ['Static', 'Dynamic'];
@@ -74,6 +98,19 @@ let networkInterfaceValidations = {
                 validations: v.validationUtilities.isValidIpAddress
             };
         }
+    },
+    publicIpAddress: (value) => {
+        if (_.isNil(value)) {
+            return {
+                result: true
+            };
+        } else {
+            let pipValidations = _.cloneDeep(pipSettings.validations);
+            delete pipValidations.name;
+            return {
+                validations: pipValidations
+            };
+        }
     }
 };
 
@@ -95,22 +132,15 @@ function ipToInt(ip) {
     return (ipl >>> 0);
 }
 
-function createPipParameters(parent, vmIndex) {
-    let settings = {
-        name: `${parent.name}-pip`,
-        publicIPAllocationMethod: parent.publicIPAllocationMethod
-    };
+function transformPublicIpAddresses(parent, vmIndex, nicIndex) {
+    let settings = parent.publicIpAddress;
+
+    settings.name = `${parent.name}-pip`;
+
     if (!v.utilities.isNullOrWhitespace(parent.domainNameLabelPrefix)) {
-        settings.domainNameLabel = `${parent.domainNameLabelPrefix}${vmIndex}`;
+        settings.domainNameLabel = `${parent.domainNameLabelPrefix}${vmIndex + 1}${nicIndex + 1}`;
     }
-    return pipSettings.transform({
-        settings: settings,
-        buildingBlockSettings: {
-            subscriptionId: parent.subscriptionId,
-            resourceGroupName: parent.resourceGroupName,
-            location: parent.location
-        }
-    });
+    return pipSettings.transform(settings);
 }
 
 function transform(settings, parent, vmIndex) {
@@ -172,7 +202,7 @@ function transform(settings, parent, vmIndex) {
         }
 
         if (nic.isPublic) {
-            let pip = createPipParameters(nic, vmIndex);
+            let pip = transformPublicIpAddresses(nic, vmIndex, index);
             result.pips = _.concat(result.pips, pip.publicIpAddresses);
 
             instance.properties.ipConfigurations[0].properties.publicIPAddress = {

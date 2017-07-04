@@ -387,10 +387,7 @@ describe('publicIpAddressSettings', () => {
             it('single publicIpAddress without idleTimeoutInMinutes', () => {
                 let settings = _.cloneDeep(publicIpAddress);
                 delete settings.idleTimeoutInMinutes;
-                let result = publicIpAddressSettings.transform({
-                    settings: settings,
-                    buildingBlockSettings: buildingBlockSettings
-                });
+                let result = publicIpAddressSettings.transform(settings);
 
                 let settingsResult = result.publicIpAddresses;
                 expect(settingsResult.hasOwnProperty('id')).toBe(true);
@@ -410,10 +407,7 @@ describe('publicIpAddressSettings', () => {
                 delete settings.domainNameLabel;
                 delete settings.reverseFqdn;
 
-                let result = publicIpAddressSettings.transform({
-                    settings: settings,
-                    buildingBlockSettings: buildingBlockSettings
-                });
+                let result = publicIpAddressSettings.transform(settings);
 
                 let settingsResult = result.publicIpAddresses;
                 expect(settingsResult.hasOwnProperty('id')).toBe(true);
@@ -430,10 +424,7 @@ describe('publicIpAddressSettings', () => {
             it('single publicIpAddress without domainNameLabel', () => {
                 let settings = _.cloneDeep(publicIpAddress);
                 delete settings.domainNameLabel;
-                let result = publicIpAddressSettings.transform({
-                    settings: settings,
-                    buildingBlockSettings: buildingBlockSettings
-                });
+                let result = publicIpAddressSettings.transform(settings);
 
                 let settingsResult = result.publicIpAddresses;
                 expect(settingsResult.hasOwnProperty('id')).toBe(true);
@@ -451,10 +442,7 @@ describe('publicIpAddressSettings', () => {
             it('single publicIpAddress without reverseFqdn', () => {
                 let settings = _.cloneDeep(publicIpAddress);
                 delete settings.reverseFqdn;
-                let result = publicIpAddressSettings.transform({
-                    settings: settings,
-                    buildingBlockSettings: buildingBlockSettings
-                });
+                let result = publicIpAddressSettings.transform(settings);
 
                 let settingsResult = result.publicIpAddresses;
                 expect(settingsResult.hasOwnProperty('id')).toBe(true);
@@ -471,10 +459,7 @@ describe('publicIpAddressSettings', () => {
 
             it('array publicIpAddress', () => {
                 let settings = _.cloneDeep(publicIpAddress);
-                let result = publicIpAddressSettings.transform({
-                    settings: [settings],
-                    buildingBlockSettings: buildingBlockSettings
-                });
+                let result = publicIpAddressSettings.transform([settings]);
 
                 expect(result.publicIpAddresses.length).toBe(1);
                 let settingsResult = result.publicIpAddresses[0];
@@ -490,28 +475,28 @@ describe('publicIpAddressSettings', () => {
                 expect(settingsResult.properties.dnsSettings.reverseFqdn).toBe(publicIpAddress.reverseFqdn);
             });
 
-            it('test settings validation errors', () => {
-                let settings = _.cloneDeep(publicIpAddress);
-                delete settings.name;
-                expect(() => {
-                    publicIpAddressSettings.transform({
-                        settings: settings,
-                        buildingBlockSettings: buildingBlockSettings
-                    });
-                }).toThrow();
-            });
+            // it('test settings validation errors', () => {
+            //     let settings = _.cloneDeep(publicIpAddress);
+            //     delete settings.name;
+            //     expect(() => {
+            //         publicIpAddressSettings.transform({
+            //             settings: settings,
+            //             buildingBlockSettings: buildingBlockSettings
+            //         });
+            //     }).toThrow();
+            // });
 
-            it('test building blocks validation errors', () => {
-                let settings = _.cloneDeep(publicIpAddress);
-                let bbSettings = _.cloneDeep(buildingBlockSettings);
-                delete bbSettings.subscriptionId;
-                expect(() => {
-                    publicIpAddressSettings.transform({
-                        settings: settings,
-                        buildingBlockSettings: bbSettings
-                    });
-                }).toThrow();
-            });
+            // it('test building blocks validation errors', () => {
+            //     let settings = _.cloneDeep(publicIpAddress);
+            //     let bbSettings = _.cloneDeep(buildingBlockSettings);
+            //     delete bbSettings.subscriptionId;
+            //     expect(() => {
+            //         publicIpAddressSettings.transform({
+            //             settings: settings,
+            //             buildingBlockSettings: bbSettings
+            //         });
+            //     }).toThrow();
+            // });
         });
     }
 });

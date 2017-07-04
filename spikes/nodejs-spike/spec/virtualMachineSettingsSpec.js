@@ -1876,8 +1876,8 @@ describe('virtualMachineSettings:', () => {
                     let processedParam = virtualMachineSettings.process({ settings, buildingBlockSettings });
 
                     expect(processedParam.parameters.publicIpAddresses.length).toEqual(2);
-                    expect(processedParam.parameters.publicIpAddresses[0].properties.dnsSettings.domainNameLabel).toEqual('mydomain-vm0');
-                    expect(processedParam.parameters.publicIpAddresses[1].properties.dnsSettings.domainNameLabel).toEqual('mydomain-vm1');
+                    expect(processedParam.parameters.publicIpAddresses[0].properties.dnsSettings.domainNameLabel).toEqual('mydomain-vm11');
+                    expect(processedParam.parameters.publicIpAddresses[1].properties.dnsSettings.domainNameLabel).toEqual('mydomain-vm21');
                 });
                 it('validate that references for pips are correctly computed and applied', () => {
                     let settings = _.cloneDeep(testSettings);

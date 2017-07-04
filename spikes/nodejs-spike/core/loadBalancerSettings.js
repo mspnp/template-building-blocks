@@ -442,14 +442,7 @@ function transform(param) {
     // Get all the publicIpAddresses required for the load balancer
     let pips = _.map(param.frontendIPConfigurations, (config) => {
         if (config.loadBalancerType === 'Public') {
-            return publicIpAddressSettings.transform({
-                settings: config.publicIpAddress,
-                buildingBlockSettings: {
-                    subscriptionId: param.subscriptionId,
-                    resourceGroupName: param.resourceGroupName,
-                    location: param.location
-                }
-            }).publicIpAddresses;
+            return publicIpAddressSettings.transform(config.publicIpAddress).publicIpAddresses;
         }
     });
     if (pips.length > 0) {

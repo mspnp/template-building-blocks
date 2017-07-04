@@ -40,16 +40,18 @@ function merge({ settings, buildingBlockSettings, defaultSettings }) {
             return v.merge(srcValue, mergedDefaults);
         }
         if (key === 'availabilitySet') {
-            return avSetSettings.merge(srcValue, objValue);
+            return avSetSettings.merge({
+                settings: srcValue,
+                buildingBlockSettings: buildingBlockSettings,
+                defaultSettings: objValue
+            });
         }
         if (key === 'nics') {
-            let mergedDefaults = ((objValue.length === 0) ? nicSettings.merge({}) : nicSettings.merge(objValue[0]));
-
-            // If source has more than 1 nic specified than set the 'isPrimary' property in defaults to false
-            if (srcValue.length > 1) {
-                mergedDefaults.isPrimary = false;
-            }
-            return v.merge(srcValue, [mergedDefaults]);
+            return nicSettings.merge({
+                settings: srcValue,
+                buildingBlockSettings: buildingBlockSettings,
+                defaultSettings: objValue
+            });
         }
         if (key === 'loadBalancerSettings') {
             return lbSettings.merge({

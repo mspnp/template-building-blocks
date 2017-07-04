@@ -8,13 +8,13 @@ let publicIpAddress = require('./publicIpAddressSettings');
 const VIRTUALNETWORKGATEWAY_SETTINGS_DEFAULTS = {
     gatewayType: 'Vpn',
     vpnType: 'RouteBased',
-    sku: 'Standard',
+    sku: 'VpnGw1',
     enableBgp: false
 };
 
 let validGatewayTypes = ['Vpn', 'ExpressRoute'];
 let validVpnTypes = ['PolicyBased', 'RouteBased'];
-let validSkus = ['Basic', 'HighPerformance', 'Standard', 'UltraPerformance'];
+let validSkus = ['Basic', 'VpnGw1', 'VpnGw2', 'VpnGw3'];
 
 let isValidGatewayType = (gatewayType) => {
     return v.utilities.isStringInArray(gatewayType, validGatewayTypes);
@@ -257,10 +257,7 @@ function process({ settings, buildingBlockSettings, defaultSettings }) {
 
     results = _.transform(results, (result, setting) => {
         if (setting.publicIpAddress) {
-            let pip = publicIpAddress.transform({
-                settings: setting.publicIpAddress,
-                buildingBlockSettings: buildingBlockSettings
-            });
+            let pip = publicIpAddress.transform(setting.publicIpAddress);
             result.publicIpAddresses.push(pip.publicIpAddresses);
         }
 

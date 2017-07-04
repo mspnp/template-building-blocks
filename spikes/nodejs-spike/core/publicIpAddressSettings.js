@@ -102,34 +102,8 @@ let merge = ({ settings, buildingBlockSettings, defaultSettings }) => {
     return merged;
 };
 
-exports.transform = function ({ settings, buildingBlockSettings }) {
-    let buildingBlockErrors = v.validate({
-        settings: buildingBlockSettings,
-        validations: {
-            subscriptionId: v.validationUtilities.isGuid,
-            resourceGroupName: v.validationUtilities.isNotNullOrWhitespace,
-        }
-    });
-
-    if (buildingBlockErrors.length > 0) {
-        throw new Error(JSON.stringify(buildingBlockErrors));
-    }
-
-    let results = merge({
-        settings: settings,
-        buildingBlockSettings: buildingBlockSettings
-    });
-
-    let errors = v.validate({
-        settings: results,
-        validations: publicIpAddressValidations
-    });
-
-    if (errors.length > 0) {
-        throw new Error(JSON.stringify(errors));
-    }
-
-    results = (_.isArray(settings)) ? _.map(results, (setting) => { return transform(setting); }) : transform(results);
+exports.transform = function (settings) {
+    let results = (_.isArray(settings)) ? _.map(settings, (setting) => { return transform(setting); }) : transform(settings);
 
     return {
         publicIpAddresses: results
