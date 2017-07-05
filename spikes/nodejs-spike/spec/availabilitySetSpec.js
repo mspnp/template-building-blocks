@@ -1,10 +1,10 @@
 describe('availabilitySetSettings:', () => {
     let rewire = require('rewire');
-    let availabilitySetSettings = rewire('../core/availabilitySetSettings.js');
     let _ = require('lodash');
 
     describe('merge:', () => {
-        let merge = availabilitySetSettings.__get__('merge');
+        //let merge = availabilitySetSettings.__get__('merge');
+        let availabilitySetSettings = rewire('../core/availabilitySetSettings.js');
 
         it('validate valid defaults are applied.', () => {
             let settings = {};
@@ -58,7 +58,84 @@ describe('availabilitySetSettings:', () => {
             expect(mergedValue.platformUpdateDomainCount).toEqual(11);
         });
     });
+    describe('userDefaults:', () => {
+        it('validate valid user defaults are applied.', () => {
+            let availabilitySetSettings = rewire('../core/availabilitySetSettings.js');
+            let settings = {};
+
+            let defaults = {
+                'platformFaultDomainCount': 12
+            };
+
+            let mergedValue = availabilitySetSettings.merge({settings, defaultSettings: defaults});
+            expect(mergedValue.platformFaultDomainCount).toEqual(12);
+            expect(mergedValue.platformUpdateDomainCount).toEqual(5);
+        });
+        it('validate user defaults do not override settings.', () => {
+            let availabilitySetSettings = rewire('../core/availabilitySetSettings.js');
+            let settings = {
+                'platformFaultDomainCount': 10,
+                'platformUpdateDomainCount': 11,
+                'name': 'test-as'
+            };
+
+            let defaults = {
+                'platformFaultDomainCount': 12,
+                'platformUpdateDomainCount': 12,
+                'name': 'xyz-test-as'
+            };
+
+            let mergedValue = availabilitySetSettings.merge({settings, defaultSettings: defaults});
+            expect(mergedValue.platformFaultDomainCount).toEqual(10);
+            expect(mergedValue.platformUpdateDomainCount).toEqual(11);
+            expect(mergedValue.name).toEqual('test-as');
+        });
+        it('validate additional properties in user settings are not removed.', () => {
+            let availabilitySetSettings = rewire('../core/availabilitySetSettings.js');
+            let settings = {
+                'name1': 'test-as'
+            };
+
+            let defaults = {
+                'name1': 'xyz-test-as'
+            };
+
+            let mergedValue = availabilitySetSettings.merge({settings, defaultSettings: defaults});
+            expect(mergedValue.hasOwnProperty('name1')).toBeTruthy();
+            expect(mergedValue.name1).toEqual('test-as');
+        });
+        it('validate missing properties in settings are picked up from defaults.', () => {
+            let availabilitySetSettings = rewire('../core/availabilitySetSettings.js');
+            let settings = {
+                'platformFaultDomainCount': 10
+            };
+
+            let defaults = {
+                'platformFaultDomainCount': 12
+            };
+
+            let mergedValue = availabilitySetSettings.merge({settings, defaultSettings: defaults});
+            expect(mergedValue.hasOwnProperty('platformUpdateDomainCount')).toEqual(true);
+            expect(mergedValue.platformUpdateDomainCount).toEqual(5);
+        });
+        it('validate merge lets override defaults.', () => {
+            let availabilitySetSettings = rewire('../core/availabilitySetSettings.js');
+            let settings = {
+                'platformFaultDomainCount': 10,
+            };
+
+            let defaults = {
+                'platformUpdateDomainCount': 11,
+                'platformFaultDomainCount': 11
+            };
+
+            let mergedValue = availabilitySetSettings.merge({settings: settings, defaultSettings: defaults});
+            expect(mergedValue.platformFaultDomainCount).toEqual(10);
+            expect(mergedValue.platformUpdateDomainCount).toEqual(11);
+        });
+    });
     describe('validations:', () => {
+        let availabilitySetSettings = rewire('../core/availabilitySetSettings.js');
         let testAvSetSettings = {
             platformFaultDomainCount: 3,
             platformUpdateDomainCount: 5,
@@ -81,6 +158,7 @@ describe('availabilitySetSettings:', () => {
             });
         });
         describe('platformUpdateDomainCount:', () => {
+            let availabilitySetSettings = rewire('../core/availabilitySetSettings.js');
             let validation = availabilitySetSettings.__get__('availabilitySetValidations').platformUpdateDomainCount;
             it('validate platformUpdateDomainCount values can be between 1-20.', () => {
                 let result = validation(0, testAvSetSettings);
@@ -97,6 +175,7 @@ describe('availabilitySetSettings:', () => {
             });
         });
         describe('name:', () => {
+            let availabilitySetSettings = rewire('../core/availabilitySetSettings.js');
             let validation = availabilitySetSettings.__get__('availabilitySetValidations').name;
             it('validate name canot be an empty string.', () => {
                 let result = validation('', testAvSetSettings);
@@ -113,6 +192,7 @@ describe('availabilitySetSettings:', () => {
 
     if (global.testConfiguration.runTransform) {
         describe('transform:', () => {
+            let availabilitySetSettings = rewire('../core/availabilitySetSettings.js');
             let settings = {
                 storageAccounts: {
                     count: 2,
