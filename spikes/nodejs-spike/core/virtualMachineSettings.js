@@ -550,6 +550,12 @@ let virtualMachineValidations = {
                 message: '.dataDisks.properties.image cannot be provided for scalesets.'
             };
         }
+        if (value.location !== parent.location || value.subscriptionId !== parent.subscriptionId) {
+            return {
+                result: false,
+                message: 'Virtual Machine must be in the same location and subscription than scaleSet'
+            };
+        }
         return {
             validations: scaleSetSettings.validations
         };
