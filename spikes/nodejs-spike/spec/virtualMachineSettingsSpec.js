@@ -2429,7 +2429,7 @@ describe('virtualMachineSettings:', () => {
                     });
                     expect(result.parameters.loadBalancer[0].properties.inboundNatRules[0].properties.idleTimeoutInMinutes).toEqual(5);
                 });
-                it('inboundNatRules idleTimeoutInMinutes not specified', () => {
+                it('inboundNatRules idleTimeoutInMinutes when not specified takes default', () => {
                     let settings = _.cloneDeep(testSettings);
                     settings.loadBalancerSettings = {
                         name: 'lbtest004',
@@ -2457,7 +2457,7 @@ describe('virtualMachineSettings:', () => {
                         settings: settings,
                         buildingBlockSettings: buildingBlockSettings
                     });
-                    expect(result.parameters.loadBalancer[0].properties.inboundNatRules[0].properties.hasOwnProperty('idleTimeoutInMinutes')).toEqual(false);
+                    expect(result.parameters.loadBalancer[0].properties.inboundNatRules[0].properties.idleTimeoutInMinutes).toEqual(4);
                 });
             });
         });

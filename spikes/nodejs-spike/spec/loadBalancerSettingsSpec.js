@@ -950,7 +950,7 @@ describe('loadBalancerSettings', () => {
                 let result = loadBalancerSettings.transform(merged);
                 expect(result.loadBalancer[0].properties.loadBalancingRules[0].properties.idleTimeoutInMinutes).toEqual(5);
             });
-            it('loadBalancingRules idleTimeoutInMinutes not specified', () => {
+            it('loadBalancingRules idleTimeoutInMinutes takes default when not specified', () => {
                 testSettings.frontendIPConfigurations = [
                     {
                         name: 'feConfig1',
@@ -985,7 +985,7 @@ describe('loadBalancerSettings', () => {
                 ];
                 let merged = loadBalancerSettings.merge({ settings: testSettings });
                 let result = loadBalancerSettings.transform(merged);
-                expect(result.loadBalancer[0].properties.loadBalancingRules[0].properties.hasOwnProperty('idleTimeoutInMinutes')).toEqual(false);
+                expect(result.loadBalancer[0].properties.loadBalancingRules[0].properties.idleTimeoutInMinutes).toEqual(4);
             });
         });
     }
