@@ -14,7 +14,8 @@ const LOADBALANCER_SETTINGS_DEFAULTS = {
     ],
     loadBalancingRules: [
         {
-            loadDistribution: 'Default'
+            loadDistribution: 'Default',
+            idleTimeoutInMinutes: 4
         }
     ],
     probes: [
@@ -25,7 +26,8 @@ const LOADBALANCER_SETTINGS_DEFAULTS = {
     ],
     backendPools: [],
     inboundNatRules: [{
-        enableFloatingIP: false
+        enableFloatingIP: false,
+        idleTimeoutInMinutes: 4
     }],
     inboundNatPools: []
 };
@@ -228,10 +230,10 @@ let loadBalancerValidations = {
                     result: true
                 };
 
-                if ((parent.protocol === 'Tcp') && (!_.isNil(value) && !_.inRange(value, 4, 31))) {
+                if ((parent.protocol === 'Tcp') && (_.isNil(value) || !_.inRange(value, 4, 31))) {
                     result = {
                         result: false,
-                        message: 'Valid values are from 4 to 30'
+                        message: 'If protocol is Tcp, idleTimeoutInMinutes must be specified and between 4 and 30'
                     };
                 } else if ((parent.protocol === 'Udp') && (!_.isNil(value))) {
                     result = {
@@ -311,10 +313,10 @@ let loadBalancerValidations = {
                     result: true
                 };
 
-                if ((parent.protocol === 'Tcp') && (!_.isNil(value) && !_.inRange(value, 4, 31))) {
+                if ((parent.protocol === 'Tcp') && (_.isNil(value) || !_.inRange(value, 4, 31))) {
                     result = {
                         result: false,
-                        message: 'Valid values are from 4 to 30'
+                        message: 'If protocol is Tcp, idleTimeoutInMinutes must be specified and between 4 and 30'
                     };
                 } else if ((parent.protocol === 'Udp') && (!_.isNil(value))) {
                     result = {
@@ -429,15 +431,13 @@ let processProperties = {
                     backendPort: rule.backendPort,
                     protocol: rule.protocol,
                     enableFloatingIP: rule.enableFloatingIP,
+                    idleTimeoutInMinutes: rule.idleTimeoutInMinutes,
                     loadDistribution: rule.loadDistribution,
                     probe: {
                         id: resources.resourceId(parent.subscriptionId, parent.resourceGroupName, 'Microsoft.Network/loadBalancers/probes', parent.name, rule.probeName)
                     },
                 }
             };
-            if (!_.isNil(rule.idleTimeoutInMinutes)) {
-                lbRule.properties.idleTimeoutInMinutes = rule.idleTimeoutInMinutes;
-            }
             lbRules.push(lbRule);
         });
         properties['loadBalancingRules'] = lbRules;
@@ -474,12 +474,10 @@ let processProperties = {
                         protocol: rule.protocol,
                         enableFloatingIP: rule.enableFloatingIP,
                         frontendPort: rule.startingFrontendPort + i,
-                        backendPort: rule.backendPort
+                        backendPort: rule.backendPort,
+                        idleTimeoutInMinutes: rule.idleTimeoutInMinutes
                     }
                 };
-                if (!_.isNil(rule.idleTimeoutInMinutes)) {
-                    natRule.properties.idleTimeoutInMinutes = rule.idleTimeoutInMinutes;
-                }
                 natRules.push(natRule);
             }
         });
