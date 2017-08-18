@@ -53,13 +53,16 @@ const APPLICATIONGATEWAY_SETTINGS_DEFAULTS = {
     ],
     redirectConfigurations: [],
     webApplicationFirewallConfiguration: {
-        enabled: false,
+        enabled: true,
         firewallMode: 'Prevention',
         ruleSetType: 'OWASP',
         ruleSetVersion: '3.0',
         disabledRuleGroups: []
     },
-    sslPolicy: {}
+    sslPolicy: {},
+    tags: {
+        'deployedWith': 'bbv2'
+    }
 };
 
 function merge({ settings, buildingBlockSettings, defaultSettings }) {
@@ -215,8 +218,8 @@ let frontendIPConfigurationValidations = {
         return _.isNil(value) ? {
             result: true
         } : {
-            validations: publicIpAddressSettings.validations
-        };
+                validations: publicIpAddressSettings.validations
+            };
     }
 };
 
@@ -484,14 +487,14 @@ let applicationGatewayValidations = {
         let probesValidation = {
             protocol: protocolValidation,
             pickHostNameFromBackendHttpSettings: v.validationUtilities.isBoolean
-        // TODO: valid host
-        // TODO: valid path
-        // TODO: valid interval
-        // TODO: valid timeout
-        // TODO: valid unhealthyThreshold
-        // TODO: valid pickHostNameFromBackendHttpSettings
-        // TODO: valid minServers
-        // TODO: match
+            // TODO: valid host
+            // TODO: valid path
+            // TODO: valid interval
+            // TODO: valid timeout
+            // TODO: valid unhealthyThreshold
+            // TODO: valid pickHostNameFromBackendHttpSettings
+            // TODO: valid minServers
+            // TODO: match
         };
         return { validations: probesValidation };
     },
@@ -742,6 +745,7 @@ function transform(param) {
         resourceGroupName: param.resourceGroupName,
         subscriptionId: param.subscriptionId,
         location: param.location,
+        tags: settings.tags,
         properties: gatewayProperties
     }];
 

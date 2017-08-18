@@ -27,7 +27,10 @@ const LOADBALANCER_SETTINGS_DEFAULTS = {
     inboundNatRules: [{
         enableFloatingIP: false
     }],
-    inboundNatPools: []
+    inboundNatPools: [],
+    tags: {
+        'deployedWith': 'bbv2'
+    }
 };
 
 function merge({ settings, buildingBlockSettings, defaultSettings }) {
@@ -122,8 +125,8 @@ let frontendIPConfigurationValidations = {
         return _.isNil(value) ? {
             result: true
         } : {
-            validations: publicIpAddressSettings.validations
-        };
+                validations: publicIpAddressSettings.validations
+            };
     }
 };
 

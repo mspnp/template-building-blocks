@@ -4,8 +4,11 @@ let _ = require('lodash');
 let v = require('./validation');
 
 const AVAILABILITYSET_SETTINGS_DEFAULTS = {
-    platformFaultDomainCount: 3,
-    platformUpdateDomainCount: 5
+    platformFaultDomainCount: 2,
+    platformUpdateDomainCount: 5,
+    tags: {
+        'deployedWith': 'bbv2'
+    }
 };
 
 let availabilitySetValidations = {
@@ -36,6 +39,7 @@ function transform(settings, parent) {
         subscriptionId: settings.subscriptionId,
         location: settings.location,
         name: settings.name,
+        tags: settings.tags,
         properties: {
             platformFaultDomainCount: settings.platformFaultDomainCount,
             platformUpdateDomainCount: settings.platformUpdateDomainCount

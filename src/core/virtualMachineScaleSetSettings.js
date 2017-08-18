@@ -54,6 +54,9 @@ const SCALESET_SETTINGS_DEFAULTS = {
             }
 
         ]
+    },
+    tags: {
+        'deployedWith': 'bbv2'
     }
 };
 
@@ -214,14 +217,16 @@ function transform(param, resources) {
         properties: properties,
         resourceGroupName: param.resourceGroupName,
         subscriptionId: param.subscriptionId,
-        location: param.location
+        location: param.location,
+        tags: settings.tags
     }];
     accumulator['autoScaleSettings'] = [{
         name: param.autoScaleSettings.name,
         properties: param.autoScaleSettings,
         resourceGroupName: param.resourceGroupName,
         subscriptionId: param.subscriptionId,
-        location: param.location
+        location: param.location,
+        tags: settings.tags,
     }];
 
     return accumulator;

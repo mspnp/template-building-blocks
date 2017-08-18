@@ -9,7 +9,10 @@ const VIRTUALNETWORKGATEWAY_SETTINGS_DEFAULTS = {
     gatewayType: 'Vpn',
     vpnType: 'RouteBased',
     sku: 'VpnGw1',
-    enableBgp: false
+    enableBgp: false,
+    tags: {
+        'deployedWith': 'bbv2'
+    }
 };
 
 let validGatewayTypes = ['Vpn', 'ExpressRoute'];
@@ -33,25 +36,25 @@ let bgpSettingsValidations = {
         return _.isNil(value) ? {
             result: true
         } : {
-            result: _.isFinite(value),
-            message: 'Value must be an integer'
-        };
+                result: _.isFinite(value),
+                message: 'Value must be an integer'
+            };
     },
     bgpPeeringAddress: (value) => {
         return _.isNil(value) ? {
             result: true
         } : {
-            result: !v.utilities.isNullOrWhitespace(value),
-            message: 'Value cannot be null, empty, or only whitespace'
-        };
+                result: !v.utilities.isNullOrWhitespace(value),
+                message: 'Value cannot be null, empty, or only whitespace'
+            };
     },
     peerWeight: (value) => {
         return _.isNil(value) ? {
             result: true
         } : {
-            result: _.isFinite(value),
-            message: 'Value must be an integer'
-        };
+                result: _.isFinite(value),
+                message: 'Value must be an integer'
+            };
     }
 };
 
@@ -82,8 +85,8 @@ let virtualNetworkGatewaySettingsValidations = {
         return _.isNil(value) ? {
             result: true
         } : {
-            validations: bgpSettingsValidations
-        };
+                validations: bgpSettingsValidations
+            };
     },
     virtualNetwork: (value, parent) => {
         if (_.isNil(value)) {
@@ -123,8 +126,8 @@ let virtualNetworkGatewaySettingsValidations = {
         return _.isNil(value) ? {
             result: true
         } : {
-            validations: publicIpAddress.validations
-        };
+                validations: publicIpAddress.validations
+            };
     }
 };
 
@@ -263,9 +266,9 @@ function process({ settings, buildingBlockSettings, defaultSettings }) {
         setting = transform(setting);
         result.virtualNetworkGateways.push(setting);
     }, {
-        virtualNetworkGateways: [],
-        publicIpAddresses: []
-    });
+            virtualNetworkGateways: [],
+            publicIpAddresses: []
+        });
 
     // We need to reshape the results a bit since there could be both an ExpressRoute and Vpn gateway for the same virtual network
     // If this is the case, the ExpressRoute gateway MUST be created first, so we'll put it at the front of the array.

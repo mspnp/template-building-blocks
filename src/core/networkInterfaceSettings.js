@@ -18,7 +18,10 @@ const NETWORKINTERFACE_SETTINGS_DEFAULTS = {
     applicationGatewayBackendPoolNames: [],
     backendPoolNames: [],
     inboundNatRulesNames: [],
-    inboundNatPoolNames: []
+    inboundNatPoolNames: [],
+    tags: {
+        'deployedWith': 'bbv2'
+    }
 };
 
 function merge({ settings, buildingBlockSettings, defaultSettings }) {
@@ -154,6 +157,7 @@ function transform(settings, parent, vmIndex) {
             subscriptionId: nic.subscriptionId,
             location: nic.location,
             name: nic.name,
+            tags: settings.tags,
             properties: {
                 ipConfigurations: [
                     {
@@ -248,9 +252,9 @@ function transform(settings, parent, vmIndex) {
         result.nics.push(instance);
         return result;
     }, {
-        pips: [],
-        nics: []
-    });
+            pips: [],
+            nics: []
+        });
 }
 
 exports.transform = transform;

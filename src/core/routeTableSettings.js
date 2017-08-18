@@ -11,7 +11,9 @@ const ROUTETABLE_SETTINGS_DEFAULTS = {
         }
     ],
     routes: [],
-    tags: {}
+    tags: {
+        'deployedWith': 'bbv2'
+    }
 };
 
 let validNextHopTypes = ['VirtualNetworkGateway', 'VnetLocal', 'Internet', 'HyperNetGateway', 'None'];
