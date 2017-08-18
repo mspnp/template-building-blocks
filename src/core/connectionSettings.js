@@ -6,7 +6,9 @@ let r = require('./resources');
 let localNetworkGateway = require('./localNetworkGatewaySettings');
 
 const CONNECTION_SETTINGS_DEFAULTS = {
-    tags: {}
+    tags: {
+        'deployedWith': 'bbv2'
+    }
 };
 
 let validConnectionTypes = ['IPsec', 'Vnet2Vnet', 'ExpressRoute'];

@@ -13,7 +13,10 @@ const STORAGE_SETTINGS_DEFAULTS = {
     supportsHttpsTrafficOnly: false,
     encryptBlobStorage: false,
     encryptFileStorage: false,
-    keyVaultProperties: {}
+    keyVaultProperties: {},
+    tags: {
+        'deployedWith': 'bbv2'
+    }
 };
 
 const DIAGNOSTIC_STORAGE_SETTINGS_DEFAULTS = {
@@ -25,7 +28,10 @@ const DIAGNOSTIC_STORAGE_SETTINGS_DEFAULTS = {
     supportsHttpsTrafficOnly: false,
     encryptBlobStorage: false,
     encryptFileStorage: false,
-    keyVaultProperties: {}
+    keyVaultProperties: {},
+    tags: {
+        'deployedWith': 'bbv2'
+    }
 };
 
 let storageValidations = {

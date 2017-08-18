@@ -33,7 +33,9 @@ const VIRTUALMACHINE_SETTINGS_DEFAULTS_WINDOWS = {
     applicationGatewaySettings: {},
     loadBalancerSettings: {},
     scaleSetSettings: {},
-    tags: {}
+    tags: {
+        'deployedWith':'bbv2'
+    }
 };
 
 const VIRTUALMACHINE_SETTINGS_DEFAULTS_LINUX = {
@@ -68,7 +70,9 @@ const VIRTUALMACHINE_SETTINGS_DEFAULTS_LINUX = {
     applicationGatewaySettings: {},
     loadBalancerSettings: {},
     scaleSetSettings: {},
-    tags: {}
+    tags: {
+        'deployedWith':'bbv2'
+    }
 };
 
 exports.defaultWindowsSettings = VIRTUALMACHINE_SETTINGS_DEFAULTS_WINDOWS;

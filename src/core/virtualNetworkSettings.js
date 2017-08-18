@@ -6,8 +6,13 @@ let r = require('./resources');
 let validationMessages = require('./validationMessages');
 
 const VIRTUALNETWORK_SETTINGS_DEFAULTS = {
-    addressPrefixes: [],
-    subnets: [],
+    addressPrefixes: ['10.0.0.0/16'],
+    subnets: [
+        {
+            'name': 'subnet1',
+            'addressPrefix': '10.0.0.0/24'
+        }
+    ],
     dnsServers: [],
     virtualNetworkPeerings: [
         {
@@ -16,7 +21,9 @@ const VIRTUALNETWORK_SETTINGS_DEFAULTS = {
             useRemoteGateways: false
         }
     ],
-    tags: {}
+    tags: {
+        'deployedWith': 'bbv2'
+    }
 };
 
 let virtualNetworkSettingsSubnetsValidations = {
@@ -106,7 +113,7 @@ let virtualNetworkSettingsValidations = {
     }
 };
 
-let validate = ({settings}) => {
+let validate = ({ settings }) => {
     let errors = v.validate({
         settings: settings,
         validations: virtualNetworkSettingsValidations
@@ -207,7 +214,7 @@ function process({ settings, buildingBlockSettings, defaultSettings }) {
         defaultSettings: defaultSettings
     });
 
-    let errors = validate({settings: results});
+    let errors = validate({ settings: results });
 
     if (errors.length > 0) {
         throw new Error(JSON.stringify(errors));
@@ -222,9 +229,9 @@ function process({ settings, buildingBlockSettings, defaultSettings }) {
                 }, []));
         }
     }, {
-        virtualNetworks: [],
-        virtualNetworkPeerings: []
-    });
+            virtualNetworks: [],
+            virtualNetworkPeerings: []
+        });
 
     // Get needed resource groups information.
     let resourceGroups = r.extractResourceGroups(results.virtualNetworks);

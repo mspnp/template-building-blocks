@@ -13,7 +13,9 @@ const NETWORKSECURITYGROUP_SETTINGS_DEFAULTS = [
         ],
         networkInterfaces: [],
         securityRules: [],
-        tags: {}
+        tags: {
+            'deployedWith': 'bbv2'
+        }
     }
 ];
 
@@ -280,7 +282,7 @@ let namedSecurityRules = {
     ],
     'ElasticSearch': [
         {
-            name :'ElasticSearch',
+            name: 'ElasticSearch',
             protocol: 'TCP',
             sourcePortRange: '*',
             destinationPortRange: '9200-9300',
@@ -762,7 +764,7 @@ let validate = (settings) => {
     return errors;
 };
 
-let expandSecurityRules = ({securityRules}) => {
+let expandSecurityRules = ({ securityRules }) => {
     // We need to check for named rules.  We will loop through the rules of the nsg, adding them to a new array.
     // As we encounter named rules, we will expand them and insert them in place in the resultant array.
     let expandedSecurityRules = _.transform(securityRules, (result, value) => {
@@ -925,10 +927,10 @@ function process({ settings, buildingBlockSettings, defaultSettings }) {
             }, []));
         }
     }, {
-        networkSecurityGroups: [],
-        subnets: [],
-        networkInterfaces: []
-    });
+            networkSecurityGroups: [],
+            subnets: [],
+            networkInterfaces: []
+        });
 
     // Get needed resource groups information.
     let resourceGroups = r.extractResourceGroups(results.networkSecurityGroups);

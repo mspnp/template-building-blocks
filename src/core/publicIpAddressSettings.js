@@ -6,7 +6,10 @@ let r = require('./resources');
 
 const PUBLICIPADDRESS_SETTINGS_DEFAULTS = {
     publicIPAllocationMethod: 'Dynamic',
-    publicIPAddressVersion: 'IPv4'
+    publicIPAddressVersion: 'IPv4',
+    tags: {
+        'deployedWith': 'bbv2'
+    }
 };
 
 let validIPAllocationMethods = ['Dynamic', 'Static'];
@@ -45,8 +48,8 @@ let publicIpAddressValidations = {
         return _.isUndefined(value) ? {
             result: true
         } : {
-            validations: v.validationUtilities.isNotNullOrWhitespace
-        };
+                validations: v.validationUtilities.isNotNullOrWhitespace
+            };
     },
     reverseFqdn: (value, parent) => {
         return _.isUndefined(value) ? {
@@ -55,8 +58,8 @@ let publicIpAddressValidations = {
             result: false,
             message: 'reverseFqdn cannot be set if publicIPAddressVersion is IPv6'
         } : {
-            validations: v.validationUtilities.isNotNullOrWhitespace
-        };
+                    validations: v.validationUtilities.isNotNullOrWhitespace
+                };
     }
 };
 
@@ -67,10 +70,11 @@ function transform(settings) {
         resourceGroupName: settings.resourceGroupName,
         subscriptionId: settings.subscriptionId,
         location: settings.location,
+        tags: settings.tags,
         properties: {
             publicIPAllocationMethod: settings.publicIPAllocationMethod,
             publicIPAddressVersion: settings.publicIPAddressVersion
-        }
+        }        
     };
 
     if (settings.idleTimeoutInMinutes) {
