@@ -1178,7 +1178,7 @@ describe('applicationGatewaySettings:', () => {
             expect(result.length > 0).toEqual(true);
             expect(result[0].name).toEqual('.sslPolicy.policyType');
         });
-        it('sslPolicy disabledSslProtocols is obsolote should use minProtocolVersion instead', () => {
+        it('sslPolicy disabledSslProtocols is obsolete should use minProtocolVersion instead', () => {
             settings.sslPolicy = {
                 policyType: 'Custom',
                 disabledSslProtocols: [ 'TLSv1_0', 'TLSv1_1' ],
