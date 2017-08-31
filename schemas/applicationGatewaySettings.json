@@ -151,17 +151,6 @@
                                 "Custom"
                             ]
                         },
-                        "disabledSslProtocols": {
-                            "type": "array",
-                            "items": {
-                                "type": "string",
-                                "enum": [
-                                    "TLSv1_0",
-                                    "TLSv1_1",
-                                    "TLSv1_2"
-                                ]
-                            }
-                        },
                         "cipherSuites": {
                             "type": "array",
                             "items": {

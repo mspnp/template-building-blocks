@@ -1162,7 +1162,6 @@ describe('applicationGatewaySettings:', () => {
         it('valid Custom sslPolicy', () => {
             settings.sslPolicy = {
                 policyType: 'Custom',
-                disabledSslProtocols: [ 'TLSv1_0', 'TLSv1_1' ],
                 cipherSuites: ['TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384', 'TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256', 'TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA'],
                 minProtocolVersion: 'TLSv1_1'
             };
@@ -1172,7 +1171,6 @@ describe('applicationGatewaySettings:', () => {
         it('sslPolicy type must be Predefined or Custom', () => {
             settings.sslPolicy = {
                 policyType: 'invalid',
-                disabledSslProtocols: [ 'TLSv1_0', 'TLSv1_1' ],
                 cipherSuites: ['TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384', 'TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256', 'TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA'],
                 minProtocolVersion: 'TLSv1_1'
             };
@@ -1180,31 +1178,10 @@ describe('applicationGatewaySettings:', () => {
             expect(result.length > 0).toEqual(true);
             expect(result[0].name).toEqual('.sslPolicy.policyType');
         });
-        it('sslPolicy disabledSslProtocols can be empty', () => {
+        it('sslPolicy disabledSslProtocols is obsolete should use minProtocolVersion instead', () => {
             settings.sslPolicy = {
                 policyType: 'Custom',
-                disabledSslProtocols: [],
-                cipherSuites: ['TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384', 'TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256', 'TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA'],
-                minProtocolVersion: 'TLSv1_1'
-            };
-            let result = mergeAndValidate(settings, buildingBlockSettings);
-            expect(result.length).toEqual(0);
-        });
-        it('sslPolicy disabledSslProtocols must be any of TLSv1_0, TLSv1_1 or TLSv1_2', () => {
-            settings.sslPolicy = {
-                policyType: 'Custom',
-                disabledSslProtocols: [ 'invalid', 'TLSv1_1' ],
-                cipherSuites: ['TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384', 'TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256', 'TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA'],
-                minProtocolVersion: 'TLSv1_1'
-            };
-            let result = mergeAndValidate(settings, buildingBlockSettings);
-            expect(result.length).toEqual(1);
-            expect(result[0].name).toEqual('.sslPolicy.disabledSslProtocols');
-        });
-        it('sslPolicy disabledSslProtocols cannot specify all 3 protocols', () => {
-            settings.sslPolicy = {
-                policyType: 'Custom',
-                disabledSslProtocols: [ 'TLSv1_0', 'TLSv1_1', 'TLSv1_2' ],
+                disabledSslProtocols: [ 'TLSv1_0', 'TLSv1_1' ],
                 cipherSuites: ['TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384', 'TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256', 'TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA'],
                 minProtocolVersion: 'TLSv1_1'
             };
@@ -1215,7 +1192,6 @@ describe('applicationGatewaySettings:', () => {
         it('sslPolicy cipherSuites must be valid', () => {
             settings.sslPolicy = {
                 policyType: 'Custom',
-                disabledSslProtocols: [ 'TLSv1_1' ],
                 cipherSuites: ['invalid', 'TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256', 'TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA'],
                 minProtocolVersion: 'TLSv1_1'
             };
@@ -1226,7 +1202,6 @@ describe('applicationGatewaySettings:', () => {
         it('sslPolicy minProtocolVersion must be any of TLSv1_0, TLSv1_1 or TLSv1_2', () => {
             settings.sslPolicy = {
                 policyType: 'Custom',
-                disabledSslProtocols: [ 'TLSv1_1' ],
                 cipherSuites: ['TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256', 'TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA'],
                 minProtocolVersion: 'invalid'
             };
@@ -1237,7 +1212,6 @@ describe('applicationGatewaySettings:', () => {
         it('sslPolicy cipherSuites cannot be undefined when type is custom', () => {
             settings.sslPolicy = {
                 policyType: 'Custom',
-                disabledSslProtocols: [ 'TLSv1_1' ],
                 minProtocolVersion: 'TLSv1_1'
             };
             let result = mergeAndValidate(settings, buildingBlockSettings);
@@ -1247,7 +1221,6 @@ describe('applicationGatewaySettings:', () => {
         it('sslPolicy minProtocolVersion cannot be undefined when type is custom', () => {
             settings.sslPolicy = {
                 policyType: 'Custom',
-                disabledSslProtocols: [ 'TLSv1_1' ],
                 cipherSuites: ['TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256', 'TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA']
             };
             let result = mergeAndValidate(settings, buildingBlockSettings);
@@ -1258,7 +1231,6 @@ describe('applicationGatewaySettings:', () => {
             settings.sslPolicy = {
                 policyType: 'Custom',
                 policyName: 'AppGwSslPolicy20150501',
-                disabledSslProtocols: [ 'TLSv1_1' ],
                 cipherSuites: ['TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256', 'TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA'],
                 minProtocolVersion: 'TLSv1_1'
             };
@@ -1283,19 +1255,17 @@ describe('applicationGatewaySettings:', () => {
             expect(result.length).toEqual(1);
             expect(result[0].name).toEqual('.sslPolicy.policyName');
         });
-        it('sslPolicy cipherSuites, disabledSslProtocols and minProtocolVersion cannot be specified when type is Predefined', () => {
+        it('sslPolicy cipherSuites and minProtocolVersion cannot be specified when type is Predefined', () => {
             settings.sslPolicy = {
                 policyType: 'Predefined',
                 policyName: 'AppGwSslPolicy20150501',
-                disabledSslProtocols: [ 'TLSv1_1' ],
                 cipherSuites: ['TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256', 'TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA'],
                 minProtocolVersion: 'TLSv1_1'
             };
             let result = mergeAndValidate(settings, buildingBlockSettings);
-            expect(result.length).toEqual(3);
+            expect(result.length).toEqual(2);
             expect(result[0].name).toEqual('.sslPolicy.cipherSuites');
             expect(result[1].name).toEqual('.sslPolicy.minProtocolVersion');
-            expect(result[2].name).toEqual('.sslPolicy.disabledSslProtocols');
         });
 
         it('backendAddressPools valid backendAddresses', () => {
