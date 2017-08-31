@@ -48,6 +48,12 @@ let virtualNetworkSettingsPeeringValidations = {
 let virtualNetworkSettingsValidations = {
     name: v.validationUtilities.isNotNullOrWhitespace,
     addressPrefixes: (value) => {
+        if (_.isUndefined(value) || (_.isArray(value) && value.length === 0)) {
+            return {
+                result: false,
+                message: 'addressPrefixes must be specified.'
+            };
+        }
         let errorMessage = '';
         value.forEach((prefix, index) => {
             let validation = v.validationUtilities.isValidCidr(prefix);
