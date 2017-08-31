@@ -47,7 +47,25 @@ let virtualNetworkSettingsPeeringValidations = {
 
 let virtualNetworkSettingsValidations = {
     name: v.validationUtilities.isNotNullOrWhitespace,
-    addressPrefixes: v.validationUtilities.isValidCidr,
+    addressPrefixes: (value) => {
+        if (_.isUndefined(value) || (_.isArray(value) && value.length === 0)) {
+            return {
+                result: false,
+                message: 'addressPrefixes must be specified.'
+            };
+        }
+        let errorMessage = '';
+        value.forEach((prefix, index) => {
+            let validation = v.validationUtilities.isValidCidr(prefix);
+            if (validation.result === false) {
+                errorMessage += `addressPrefixes[${index}]. ${validation.message}`;
+            }
+        });
+        return {
+            result: errorMessage === '',
+            message: errorMessage
+        };
+    },
     subnets: (value) => {
         if (_.isNil(value)) {
             return {
