@@ -1,0 +1,217 @@
+{
+    "$schema": "https://raw.githubusercontent.com/mspnp/template-building-blocks/master/schemas/buildingBlocks.json",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "buildingBlocks": {
+            "value": [
+                {
+                    "type": "VirtualNetwork",
+                    "settings": [
+                        {
+                            "name": "msft-hub-vnet",
+                            "addressPrefixes": [
+                                "10.0.0.0/16"
+                            ],
+                            "subnets": [
+                                {
+                                    "name": "firewall",
+                                    "addressPrefix": "10.0.1.0/24"
+                                },
+                                {
+                                    "name": "mgmt",
+                                    "addressPrefix": "10.0.2.0/24"
+                                },
+                                {
+                                    "name": "ad",
+                                    "addressPrefix": "10.0.3.0/24"
+                                }
+                            ],
+                            "virtualNetworkPeerings": [
+                                {
+                                    "remoteVirtualNetwork": {
+                                        "name": "msft-spoke1-vnet"
+                                    },
+                                    "allowForwardedTraffic": true,
+                                    "allowGatewayTransit": true,
+                                    "useRemoteGateways": false
+                                }
+                            ],
+                            "dnsServers": [
+                                "10.0.3.4",
+                                "10.0.3.5",
+                                "168.63.129.16"
+                            ],
+                            "tags": {
+                                "department": "Central IT",
+                                "managedBy": "Admins"
+                            }
+                        },
+                        {
+                            "name": "msft-spoke1-vnet",
+                            "addressPrefixes": [
+                                "10.1.0.0/16"
+                            ],
+                            "subnets": [
+                                {
+                                    "name": "web",
+                                    "addressPrefix": "10.1.1.0/24"
+                                }
+                            ],
+                            "virtualNetworkPeerings": [
+                                {
+                                    "remoteVirtualNetwork": {
+                                        "name": "msft-hub-vnet"
+                                    },
+                                    "allowForwardedTraffic": true,
+                                    "allowGatewayTransit": false,
+                                    "useRemoteGateways": false
+                                }
+                            ],
+                            "tags": {
+                                "department": "HR",
+                                "managedBy": "DevOps"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "VirtualMachine",
+                    "settings": {
+                        "vmCount": 1,
+                        "osType": "windows",
+                        "namePrefix": "jb",
+                        "adminPassword": "testPassw0rd!23",
+                        "nics": [
+                            {
+                                "subnetName": "mgmt",
+                                "isPublic": true
+                            }
+                        ],
+                        "virtualNetwork": {
+                            "name": "msft-hub-vnet"
+                        }
+                    }
+                },
+                {
+                    "type": "VirtualMachine",
+                    "settings": {
+                        "vmCount": 2,
+                        "osType": "windows",
+                        "namePrefix": "ad",
+                        "adminPassword": "testPassw0rd!23",
+                        "nics": [
+                            {
+                                "subnetName": "ad",
+                                "isPublic": false,
+                                "privateIPAllocationMethod": "Static",
+                                "startingIPAddress": "10.0.3.4"
+                            }
+                        ],
+                        "virtualNetwork": {
+                            "name": "msft-hub-vnet"
+                        },
+                        "imageReference": {
+                            "publisher": "MicrosoftWindowsServer",
+                            "offer": "WindowsServer",
+                            "sku": "2012-R2-Datacenter",
+                            "version": "latest"
+                        },
+                        "dataDisks": {
+                            "count": 1,
+                            "diskSizeGB": 127,
+                            "caching": "None",
+                            "createOption": "empty"
+                        }
+                    }
+                },
+                {
+                    "type": "VirtualMachineExtension",
+                    "settings": [
+                        {
+                            "vms": [
+                                "ad-vm1"
+                            ],
+                            "extensions": [
+                                {
+                                    "name": "install-adds-forest",
+                                    "publisher": "Microsoft.Compute",
+                                    "type": "CustomScriptExtension",
+                                    "typeHandlerVersion": "1.8",
+                                    "autoUpgradeMinorVersion": true,
+                                    "settings": {
+                                      "fileUris": [
+                                        "https://raw.githubusercontent.com/mspnp/reference-architectures/master/identity/adds-extend-domain/extensions/adds-forest.ps1"
+                                      ]
+                                    },
+                                    "protectedSettings": {
+                                      "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File adds-forest.ps1 -DomainName contoso.com -DomainNetbiosName contoso -SafeModePassword Saf3M0de@PW"
+                                    }
+                                  },
+                                  {
+                                    "name": "install-adds-forest",
+                                    "publisher": "Microsoft.Compute",
+                                    "type": "CustomScriptExtension",
+                                    "typeHandlerVersion": "1.8",
+                                    "autoUpgradeMinorVersion": true,
+                                    "settings": {
+                                      "fileUris": [
+                                        "https://raw.githubusercontent.com/mspnp/reference-architectures/master/identity/adds-extend-domain/extensions/adds-replication-site.ps1"
+                                      ]
+                                    },
+                                    "protectedSettings": {
+                                      "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File adds-replication-site.ps1 -DomainName contoso.com -AdminUser adminUser -AdminPassword testPassw0rd!23 -SiteName Azbb-Tutorial-Site -OnPremsiteName Default-First-Site-Name -Cidr 10.0.0.0/16 -ReplicationFrequency 10"
+                                    }
+                                  }
+
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "VirtualMachineExtension",
+                    "settings": [
+                        {
+                            "vms": [
+                                "ad-vm2"
+                            ],
+                            "extensions": [
+                                {
+                                    "name": "join-ad-domain",
+                                    "publisher": "Microsoft.Compute",
+                                    "type": "JsonADDomainExtension",
+                                    "typeHandlerVersion": "1.3",
+                                    "autoUpgradeMinorVersion": true,
+                                    "settings": {
+                                      "Name": "contoso.com",
+                                      "OUPath": "",
+                                      "User": "contoso.com\\adminUser",
+                                      "Restart": true,
+                                      "Options": 3
+                                    },
+                                    "protectedSettings": {
+                                      "Password": "testPassw0rd!23"
+                                    }
+                                  },
+                                  {
+                                    "name": "install-adds",
+                                    "publisher": "Microsoft.Compute",
+                                    "type": "CustomScriptExtension",
+                                    "typeHandlerVersion": "1.8",
+                                    "autoUpgradeMinorVersion": true,
+                                    "settings": {
+                                      "fileUris": [
+                                        "https://raw.githubusercontent.com/mspnp/reference-architectures/master/identity/adds-extend-domain/extensions/adds.ps1"
+                                      ]
+                                    },
+                                    "protectedSettings": {
+                                      "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File adds.ps1 -DomainName contoso.com -DomainNetbiosName contoso -SafeModePassword Saf3M0de@PW -AdminUser adminUser -AdminPassword testPassw0rd!23 -SiteName Default-First-Site-Name"
+                                    }
+                                  }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
