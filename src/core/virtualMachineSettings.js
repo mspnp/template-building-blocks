@@ -849,6 +849,11 @@ let virtualMachineValidations = {
         return { result: true };
     },
     adminPassword: (value, parent) => {
+        if (value.reference) {
+            delete value.reference.keyVault.subscriptionId
+            delete value.reference.keyVault.resourceGroupName
+            delete value.reference.keyVault.location
+        }
         let result = {
             result: true
         };
