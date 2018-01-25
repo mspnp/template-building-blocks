@@ -23,6 +23,24 @@ Verify the version of azure building blocks you are running using the command be
 azbb -V
 ```
 
+Or in Docker. Content of a Dockerfile
+
+```
+FROM node:latest
+RUN npm install -g @mspnp/azure-building-blocks
+```
+Build container
+
+```
+docker build -t azure-building-blocks:<version> .
+```
+
+Run container
+
+```
+docker run -it --name azbb-<version> -v <path to folder containing json files>:/data azure-building-blocks:<version> bash
+```
+
 Then, [author an Azure Building Blocks parameter file](https://github.com/mspnp/template-building-blocks/wiki/create-a-template-building-blocks-parameter-file) and [run the `azbb` command line tool](https://github.com/mspnp/template-building-blocks/wiki/command-line-reference).
 
 # Documentation
