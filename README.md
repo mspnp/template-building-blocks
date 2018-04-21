@@ -28,6 +28,14 @@ Or in Docker. Content of a Dockerfile
 ```
 FROM node:latest
 RUN npm install -g @mspnp/azure-building-blocks
+RUN apt-get update && \
+    apt-get install apt-transport-https && \
+    echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(awk -F"[)(]+" '/VERSION=/ {print $2}' /etc/os-release) main" > \
+    /etc/apt/sources.list.d/azure-cli.list && \
+    apt-key adv --keyserver packages.microsoft.com --recv-keys 52E16F86FEE04B979B07E28DB02C46DF417A0893 && \
+    apt-get update && \
+    apt-get install azure-cli && \
+    az
 ```
 Build container
 
