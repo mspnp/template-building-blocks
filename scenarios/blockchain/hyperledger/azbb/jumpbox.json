@@ -1,0 +1,31 @@
+{
+    "$schema": "https://raw.githubusercontent.com/mspnp/template-building-blocks/master/schemas/buildingBlocks.json",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "buildingBlocks": {
+            "value": [
+                {
+                    "type": "VirtualMachine",
+                    "settings": {
+                        "vmCount": 1,
+                        "osType": "linux",
+                        "namePrefix": "jb",
+                        "computerNamePrefix": "jb",
+                        "adminUsername": "jbAdmin",
+                        "adminPassword": "testPassw0rd!23",
+                        "nics": [
+                            {
+                                "subnetName": "mgmt",
+                                "isPublic": true
+                            }
+                        ],
+                        "virtualNetwork": {
+                            "resourceGroupName": "msft-blockchain-net-rg",
+                            "name": "msft-blockchain-vnet"
+                        }                    
+                    }
+                }                           
+            ]
+        }
+    }
+}

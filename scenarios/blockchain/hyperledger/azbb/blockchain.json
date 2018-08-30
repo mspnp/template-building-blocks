@@ -1,0 +1,124 @@
+{
+    "$schema": "https://raw.githubusercontent.com/mspnp/template-building-blocks/master/schemas/buildingBlocks.json",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "buildingBlocks": {
+            "value": [
+                {
+                    "type": "VirtualMachine",
+                    "settings": {
+                        "vmCount": 1,
+                        "osType": "linux",
+                        "namePrefix": "ca",
+                        "computerNamePrefix": "ca",
+                        "adminUsername": "azureuser",
+                        "adminPassword": "testPassw0rd!23",
+                        "nics": [
+                            {
+                                "subnetName": "blockchain",
+                                "isPublic": false
+                            }
+                        ],
+                        "virtualNetwork": {
+                            "resourceGroupName": "msft-blockchain-net-rg",
+                            "name": "msft-blockchain-vnet"
+                        },
+                        "extensions": [
+                            {
+                                "name": "blockchain-ca",
+                                "publisher": "Microsoft.Azure.Extensions",
+                                "type": "CustomScript",
+                                "typeHandlerVersion": "2.0",
+                                "autoUpgradeMinorVersion": true,
+                                "settings": {
+                                    "fileUris": [
+                                      "https://raw.githubusercontent.com/telmosampaio/azure-blockchain/master/hyperledger/azbb/scripts/configure.sh"
+                                    ]
+                                  },
+                                  "protectedSettings": {
+                                    "commandToExecute": "/bin/bash configure.sh \"ca\" \"azureuser\" \"https://raw.githubusercontent.com/telmosampaio/azure-blockchain/master/hyperledger/azbb\" \"1\" \"ca-vm\" \"1\" \"orderer-vm\" \"1\" \"peer-vm\" \"3\" \"caUser\" \"caP@$$w0rd\" \"uniquednsname\""
+                                  }
+                            }
+                        ]                        
+                    }
+                },
+                {
+                    "type": "VirtualMachine",
+                    "settings": {
+                        "vmCount": 1,
+                        "osType": "linux",
+                        "namePrefix": "orderer",
+                        "computerNamePrefix": "orderer",
+                        "adminUsername": "azureuser",
+                        "adminPassword": "testPassw0rd!23",
+                        "nics": [
+                            {
+                                "subnetName": "blockchain",
+                                "isPublic": false
+                            }
+                        ],
+                        "virtualNetwork": {
+                            "resourceGroupName": "msft-blockchain-net-rg",
+                            "name": "msft-blockchain-vnet"
+                        },
+                        "extensions": [
+                            {
+                                "name": "blockchain-orderer",
+                                "publisher": "Microsoft.Azure.Extensions",
+                                "type": "CustomScript",
+                                "typeHandlerVersion": "2.0",
+                                "autoUpgradeMinorVersion": true,
+                                "settings": {
+                                    "fileUris": [
+                                      "https://raw.githubusercontent.com/telmosampaio/azure-blockchain/master/hyperledger/azbb/scripts/configure.sh"
+                                    ]
+                                  },
+                                  "protectedSettings": {
+                                    "commandToExecute": "/bin/bash configure.sh \"orderer\" \"azureuser\" \"https://raw.githubusercontent.com/telmosampaio/azure-blockchain/master/hyperledger/azbb/\" \"1\" \"ca-vm\" \"1\" \"orderer-vm\" \"1\" \"peer-vm\" \"3\" \"caUser\" \"caP@$$w0rd\" \"uniquednsname\""
+                                  }
+                            }
+                        ]  
+                    }
+                },
+                {
+                    "type": "VirtualMachine",
+                    "settings": {
+                        "vmCount": 3,
+                        "osType": "linux",
+                        "namePrefix": "peer",
+                        "computerNamePrefix": "peer",
+                        "adminUsername": "azureuser",
+                        "adminPassword": "testPassw0rd!23",
+                        "nics": [
+                            {
+                                "subnetName": "blockchain",
+                                "isPublic": false
+                            }
+                        ],
+                        "virtualNetwork": {
+                            "resourceGroupName": "msft-blockchain-net-rg",
+                            "name": "msft-blockchain-vnet"
+                        },
+                        "extensions": [
+                            {
+                                "name": "blockchain-peer",
+                                "publisher": "Microsoft.Azure.Extensions",
+                                "type": "CustomScript",
+                                "typeHandlerVersion": "2.0",
+                                "autoUpgradeMinorVersion": true,
+                                "settings": {
+                                    "fileUris": [
+                                      "https://raw.githubusercontent.com/telmosampaio/azure-blockchain/master/hyperledger/azbb/scripts/configure.sh"
+                                    ]
+                                  },
+                                  "protectedSettings": {
+                                    "commandToExecute": "/bin/bash configure.sh \"peer\" \"azureuser\" \"https://raw.githubusercontent.com/telmosampaio/azure-blockchain/master/hyperledger/azbb/\" \"1\" \"ca-vm\" \"1\" \"orderer-vm\" \"1\" \"peer-vm\" \"3\" \"caUser\" \"caP@$$w0rd\" \"uniquednsname\""
+                                  }
+                            }
+                        ]  
+                    }
+                }                             
+            ]
+        }
+    }
+}

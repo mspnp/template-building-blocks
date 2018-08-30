@@ -1,0 +1,470 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vNetResourceGroup": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of resource group hosting the virtual network."
+            },
+            "maxLength": 64
+        },
+        "vNetName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of virtual network to be used."
+            },
+            "maxLength": 64
+        },
+        "txSubnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of subnet used for transaction VMs."
+            },
+            "maxLength": 64
+        },
+        "mnSubnetNames": {
+            "type": "array",
+            "metadata": {
+                "description": "Name of subnets used for mining VMs."
+            },
+            "maxLength": 12
+        },
+        "namePrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "String used as a base for naming resources (6 alphanumeric characters or less).  A unique hash is prepended to the string for some resources, while resource-specific information is appended."
+            },
+            "maxLength": 6
+        },        
+        "authType": {
+            "type": "string",
+            "allowedValues": [
+                "password",
+                "sshPublicKey"
+            ],
+            "metadata": {
+                "description": "Authorization type for SSH access to VMs"
+            }
+        },
+        "adminUsername": {
+            "type": "string",
+            "defaultValue": "gethadmin",
+            "metadata": {
+                "description": "Administrator username of each deployed VM (alphanumeric characters only)"
+            }
+        },
+        "adminPassword": {
+            "type": "securestring",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Administrator password for each deployed VM"
+            }
+        },
+        "adminSSHKey": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "SSH RSA public key file as a string"
+            }
+        },
+        "ethereumAccountPsswd": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Password used to secure the default Ethereum account that will be generated"
+            }
+        },
+        "ethereumAccountPassphrase": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Password used to generate the private key associated with the default Ethereum account that is generated.  Consider a password with sufficient randomness to ensure a strong private key"
+            }
+        },
+        "ethereumNetworkID": {
+            "type": "int",
+            "defaultValue": 72,
+            "metadata": {
+                "description": "Private Ethereum network ID to which to connect (max 9 digit number)"
+            },
+            "maxValue": 2147483647
+        },
+        "numConsortiumMembers": {
+            "type": "int",
+            "defaultValue": 2,
+            "metadata": {
+                "description": "Number of members within the network.  Each member's nodes live in their own subnet."
+            },
+            "minValue": 2,
+            "maxValue": 12
+        },
+        "numMiningNodesPerMember": {
+            "type": "int",
+            "defaultValue": 1,
+            "metadata": {
+                "description": "Number of mining nodes to create for each consortium member."
+            },
+            "minValue": 1,
+            "maxValue": 15
+        },
+        "mnNodeVMSize": {
+            "type": "string",
+            "defaultValue": "Standard_A1",
+            "allowedValues": [],
+            "metadata": {
+                "description": "Size of the virtual machine used for mining nodes"
+            }
+        },
+        "mnStorageAccountType": {
+            "type": "string",
+            "defaultValue": "Standard_LRS",
+            "allowedValues": [
+                "Standard_LRS",
+                "Standard_GRS",
+                "Standard_RAGRS",
+                "Premium_LRS"
+            ],
+            "metadata": {
+                "description": "Type of storage accounts to create"
+            }
+        },
+        "numTXNodes": {
+            "type": "int",
+            "defaultValue": 1,
+            "metadata": {
+                "description": "Number of load balanced transaction nodes"
+            },
+            "minValue": 1,
+            "maxValue": 5
+        },
+        "txNodeVMSize": {
+            "type": "string",
+            "defaultValue": "Standard_A1",
+            "allowedValues": [],
+            "metadata": {
+                "description": "Size of the virtual machine for transaction nodes"
+            }
+        },
+        "txStorageAccountType": {
+            "type": "string",
+            "defaultValue": "Standard_LRS",
+            "allowedValues": [
+                "Standard_LRS",
+                "Standard_GRS",
+                "Standard_RAGRS",
+                "Premium_LRS"
+            ],
+            "metadata": {
+                "description": "Type of storage accounts to create"
+            }
+        },
+        "location": {
+            "type": "string"
+        },
+        "baseUrl": {
+            "type": "string",
+            "metadata": {
+                "description": "The base URL for dependent assets",
+                "artifactsBaseUrl": ""
+            },
+            "defaultValue": "https://raw.githubusercontent.com/telmosampaio/azure-blockchain/master/ethereum"
+        }
+    },
+    "variables": {
+        "apiVersionDeployments": "2016-09-01",
+        "apiVersionStorageAccounts": "2016-01-01",
+        "apiVersionAvailabilitySets": "2016-03-30",
+        "apiVersionNetworkInterfaces": "2016-09-01",
+        "apiVersionVirtualMachines": "2016-03-30",
+        "namingInfix": "[toLower(substring(concat(parameters('namePrefix'), uniqueString(resourceGroup().id)), 0, 9))]",
+        "availabilitySetName": "[concat(variables('namingInfix'), 'AvSet')]",
+        "httpPort": 80,
+        "adminSitePort": 3000,
+        "gethRPCPort": 8545,
+        "gethIPCPort": 30303,
+        "loadBalancerName": "[concat(variables('namingInfix'), '-LB')]",
+        "loadBalancerBackendAddressPoolName": "LoadBalancerBackend1",
+        "numMNNodes": "[mul(parameters('numConsortiumMembers'), parameters('numMiningNodesPerMember'))]",
+        "maxVMsPerStorageAcct": 20,
+        "mnStorageAcctCount": "[add(div(variables('numMNNodes'), variables('maxVMsPerStorageAcct')), 1)]",
+        "mnStorageAcctNames": [
+            "[concat(uniqueString(resourceGroup().id, variables('namingInfix')), 'mn0')]",
+            "[concat(uniqueString(resourceGroup().id, variables('namingInfix')), 'mn1')]",
+            "[concat(uniqueString(resourceGroup().id, variables('namingInfix')), 'mn2')]",
+            "[concat(uniqueString(resourceGroup().id, variables('namingInfix')), 'mn3')]",
+            "[concat(uniqueString(resourceGroup().id, variables('namingInfix')), 'mn4')]",
+            "[concat(uniqueString(resourceGroup().id, variables('namingInfix')), 'mn5')]",
+            "[concat(uniqueString(resourceGroup().id, variables('namingInfix')), 'mn6')]",
+            "[concat(uniqueString(resourceGroup().id, variables('namingInfix')), 'mn7')]",
+            "[concat(uniqueString(resourceGroup().id, variables('namingInfix')), 'mn8')]",
+            "[concat(uniqueString(resourceGroup().id, variables('namingInfix')), 'mn9')]"
+        ],
+        "mnVMNamePrefix": "[concat(variables('namingInfix'), '-mn')]",
+        "mnNICPrefix": "nic-mn",
+        "txStorageAcctName": "[concat(uniqueString(resourceGroup().id, variables('namingInfix')), 'tx')]",
+        "txVMNamePrefix": "[concat(variables('namingInfix'), '-tx')]",
+        "txSubnetRef": "[concat(variables('vnetID'),'/subnets/', parameters('txSubnetName'))]",
+        "txNIPrefix": "nic-tx",
+        "vnetID": "[resourceId(parameters('vNetResourceGroup'),'Microsoft.Network/virtualNetworks', parameters('vNetName'))]",
+        "ubuntuImage": {
+            "publisher": "Canonical",
+            "offer": "UbuntuServer",
+            "sku": "16.04.0-LTS",
+            "version": "latest"
+        }
+    },
+    "resources": [
+        {
+            "apiVersion": "[variables('apiVersionAvailabilitySets')]",
+            "type": "Microsoft.Compute/availabilitySets",
+            "name": "[variables('availabilitySetName')]",
+            "location": "[parameters('location')]",
+            "properties": {}
+        },
+        {
+            "apiVersion": "[variables('apiVersionDeployments')]",
+            "name": "loadBalancerLinkedTemplate",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "incremental",
+                "templateLink": {
+                    "uri": "[concat(parameters('baseUrl'), '/nested/loadBalancer.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "loadBalancerName": {
+                        "value": "[variables('loadBalancerName')]"
+                    },
+                    "subnetId": {
+                        "value": "[variables('txSubnetRef')]"
+                    },
+                    "loadBalancerBackendAddressPoolName": {
+                        "value": "[variables('loadBalancerBackendAddressPoolName')]"
+                    },
+                    "frontendPort1": {
+                        "value": "[variables('httpPort')]"
+                    },
+                    "backendPort1": {
+                        "value": "[variables('adminSitePort')]"
+                    },
+                    "frontendPort2": {
+                        "value": "[variables('gethRPCPort')]"
+                    },
+                    "backendPort2": {
+                        "value": "[variables('gethRPCPort')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "[variables('apiVersionDeployments')]",
+            "name": "txVMLinkedTemplate",
+            "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/availabilitySets/', variables('availabilitySetName'))]",
+                "loadBalancerLinkedTemplate"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(parameters('baseUrl'), '/nested/txVMAuth', '-', parameters('authType'), '.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "apiVersionVirtualMachines": {
+                        "value": "[variables('apiVersionVirtualMachines')]"
+                    },
+                    "apiVersionNetworkInterfaces": {
+                        "value": "[variables('apiVersionNetworkInterfaces')]"
+                    },
+                    "apiVersionStorageAccounts": {
+                        "value": "[variables('apiVersionStorageAccounts')]"
+                    },
+                    "loadBalancerName": {
+                        "value": "[variables('loadBalancerName')]"
+                    },
+                    "loadBalancerBackendAddressPoolName": {
+                        "value": "[variables('loadBalancerBackendAddressPoolName')]"
+                    },
+                    "txSubnetRef": {
+                        "value": "[variables('txSubnetRef')]"
+                    },
+                    "txVMNamePrefix": {
+                        "value": "[variables('txVMNamePrefix')]"
+                    },
+                    "numTXNodes": {
+                        "value": "[parameters('numTXNodes')]"
+                    },
+                    "txStorageAcctName": {
+                        "value": "[variables('txStorageAcctName')]"
+                    },
+                    "txNIPrefix": {
+                        "value": "[variables('txNIPrefix')]"
+                    },
+                    "storageAccountType": {
+                        "value": "[parameters('txStorageAccountType')]"
+                    },
+                    "availabilitySetName": {
+                        "value": "[variables('availabilitySetName')]"
+                    },
+                    "txNodeVMSize": {
+                        "value": "[parameters('txNodeVMSize')]"
+                    },
+                    "adminUsername": {
+                        "value": "[parameters('adminUsername')]"
+                    },
+                    "adminPassword": {
+                        "value": "[parameters('adminPassword')]"
+                    },
+                    "adminSSHKey": {
+                        "value": "[parameters('adminSSHKey')]"
+                    },
+                    "ubuntuImage": {
+                        "value": "[variables('ubuntuImage')]"
+                    },
+                    "namingInfix": {
+                        "value": "[variables('namingInfix')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "[variables('apiVersionDeployments')]",
+            "name": "mnVMLinkedTemplate",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(parameters('baseUrl'), '/nested/mnVMAuth', '-', parameters('authType'), '.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "apiVersionVirtualMachines": {
+                        "value": "[variables('apiVersionVirtualMachines')]"
+                    },
+                    "apiVersionNetworkInterfaces": {
+                        "value": "[variables('apiVersionNetworkInterfaces')]"
+                    },
+                    "apiVersionStorageAccounts": {
+                        "value": "[variables('apiVersionStorageAccounts')]"
+                    },
+                    "mnVMNamePrefix": {
+                        "value": "[variables('mnVMNamePrefix')]"
+                    },
+                    "numMNNodes": {
+                        "value": "[variables('numMNNodes')]"
+                    },
+                    "mnNICPrefix": {
+                        "value": "[variables('mnNICPrefix')]"
+                    },
+                    "mnStorageAcctNames": {
+                        "value": "[variables('mnStorageAcctNames')]"
+                    },
+                    "mnStorageAcctCount": {
+                        "value": "[variables('mnStorageAcctCount')]"
+                    },
+                    "vnetID": {
+                        "value": "[variables('vnetID')]"
+                    },
+                    "mnSubnetRefArray": {
+                        "value": "[parameters('mnSubnetNames')]"
+                    },
+                    "numConsortiumMembers": {
+                        "value": "[parameters('numConsortiumMembers')]"
+                    },
+                    "storageAccountType": {
+                        "value": "[parameters('mnStorageAccountType')]"
+                    },
+                    "mnNodeVMSize": {
+                        "value": "[parameters('mnNodeVMSize')]"
+                    },
+                    "adminUsername": {
+                        "value": "[parameters('adminUsername')]"
+                    },
+                    "adminPassword": {
+                        "value": "[parameters('adminPassword')]"
+                    },
+                    "adminSSHKey": {
+                        "value": "[parameters('adminSSHKey')]"
+                    },
+                    "ubuntuImage": {
+                        "value": "[variables('ubuntuImage')]"
+                    },
+                    "namingInfix": {
+                        "value": "[variables('namingInfix')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "[variables('apiVersionDeployments')]",
+            "name": "vmExtensionLinkedTemplate",
+            "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "txVMLinkedTemplate",
+                "mnVMLinkedTemplate"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(parameters('baseUrl'), '/nested/vmExtension.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "numBootNodes": {
+                        "value": "[parameters('numConsortiumMembers')]"
+                    },
+                    "txVMNamePrefix": {
+                        "value": "[variables('txVMNamePrefix')]"
+                    },
+                    "numTXNodes": {
+                        "value": "[parameters('numTXNodes')]"
+                    },
+                    "mnVMNamePrefix": {
+                        "value": "[variables('mnVMNamePrefix')]"
+                    },
+                    "numMNNodes": {
+                        "value": "[variables('numMNNodes')]"
+                    },
+                    "artifactsLocationURL": {
+                        "value": "[parameters('baseUrl')]"
+                    },
+                    "adminUsername": {
+                        "value": "[parameters('adminUsername')]"
+                    },
+                    "ethereumAccountPsswd": {
+                        "value": "[parameters('ethereumAccountPsswd')]"
+                    },
+                    "ethereumAccountPassphrase": {
+                        "value": "[parameters('ethereumAccountPassphrase')]"
+                    },
+                    "ethereumNetworkID": {
+                        "value": "[parameters('ethereumNetworkID')]"
+                    },
+                    "gethIPCPort": {
+                        "value": "[variables('gethIPCPort')]"
+                    },
+                    "adminSitePort": {
+                        "value": "[variables('adminSitePort')]"
+                    },
+                    "apiVersionStorageAccounts": {
+                        "value": "[variables('apiVersionStorageAccounts')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {
+    }
+}

@@ -1,0 +1,99 @@
+{
+    "$schema": "https://raw.githubusercontent.com/mspnp/template-building-blocks/master/schemas/buildingBlocks.json",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "buildingBlocks": {
+            "value": [
+                {
+                    "type": "VirtualMachine",
+                    "settings": {
+                        "vmCount": 2,
+                        "osType": "linux",
+                        "namePrefix": "tx",
+                        "computerNamePrefix": "tx",
+                        "adminUsername": "azureuser",
+                        "adminPassword": "testPassw0rd!23",
+                        "nics": [
+                            {
+                                "subnetName": "tx",
+                                "isPublic": false,
+                                "backendPoolNames": [
+                                    "ethereum-lb-be"
+                                ]
+                            }
+                        ],
+                        "virtualNetwork": {
+                            "resourceGroupName": "msft-ethereum-net-rg",
+                            "name": "msft-ethereum-vnet"
+                        },
+                        "loadBalancerSettings": {
+                            "name": "ethereum-lb",
+                            "frontendIPConfigurations": [
+                                {
+                                    "name": "ethereum-lb-fe",
+                                    "internalLoadBalancerSettings": {
+                                    "subnetName": "tx",
+                                    "privateIPAddress": "10.0.0.200"
+                                }}
+                            ],
+                            "backendPools": [
+                                {"name": "ethereum-lb-be"}
+                            ],
+                            "loadBalancingRules": [
+                                {
+                                    "name": "ethereum-lb-http",
+                                    "backendPoolName": "ethereum-tx-pool",
+                                    "frontendIPConfigurationName": "ethereum-lb-fe",
+                                    "probeName": "httpprobe",
+                                    "protocol": "Tcp",
+                                    "frontendPort": 80,
+                                    "backendPort": 3000
+                                },
+                                {
+                                    "name": "ethereum-lb-gethRPC",
+                                    "backendPoolName": "ethereum-tx-pool",
+                                    "frontendIPConfigurationName": "ethereum-lb-fe",
+                                    "probeName": "rpcprobe",
+                                    "protocol": "Tcp",
+                                    "frontendPort": 8545,
+                                    "backendPort": 8545
+                                }
+                            ],
+                            "probes": [
+                                {
+                                    "name": "httpprobe",
+                                    "port": 80,
+                                    "protocol": "Http",
+                                    "requestPath": "/"
+                                },
+                                {
+                                    "name": "rpcprobe",
+                                    "port": 8545,
+                                    "protocol": "Http",
+                                    "requestPath": "/"
+                                }
+                            ]
+                        },
+                        "extensions": [
+                            {
+                                "name": "ethereum-tx",
+                                "publisher": "Microsoft.Azure.Extensions",
+                                "type": "CustomScript",
+                                "typeHandlerVersion": "2.0",
+                                "autoUpgradeMinorVersion": true,
+                                "settings": {
+                                    "fileUris": [
+                                      "https://raw.githubusercontent.com/telmosampaio/azure-blockchain/master/ethereum/azbb/scripts/configure-geth.sh"
+                                    ]
+                                  },
+                                  "protectedSettings": {
+                                    "commandToExecute": "/bin/bash configure-geth.sh \"ethadmin\" \"testPassw0rd!23\" \"testPassw0rd!23\" \"https://raw.githubusercontent.com/telmosampaio/azure-blockchain/master/ethereum/azbb\" \"123123123\" \"25\" \"0\" \"30303\" \"3\" \"4\" \"mn-vm\" \"2\" \"tx-vm\" \"3000\""
+                                  }
+                            }
+                        ]                        
+                    }
+                }                         
+            ]
+        }
+    }
+}

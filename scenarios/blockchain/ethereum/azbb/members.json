@@ -1,0 +1,48 @@
+{
+    "$schema": "https://raw.githubusercontent.com/mspnp/template-building-blocks/master/schemas/buildingBlocks.json",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "buildingBlocks": {
+            "value": [
+                {
+                    "type": "VirtualMachine",
+                    "settings": {
+                        "vmCount": 4,
+                        "osType": "linux",
+                        "namePrefix": "mn1",
+                        "computerNamePrefix": "mn1",
+                        "adminUsername": "azureuser",
+                        "adminPassword": "testPassw0rd!23",
+                        "nics": [
+                            {
+                                "subnetName": "member1",
+                                "isPublic": false
+                            }
+                        ],
+                        "virtualNetwork": {
+                            "resourceGroupName": "msft-ethereum-net-rg",
+                            "name": "msft-ethereum-vnet"
+                        },
+                        "extensions": [
+                            {
+                                "name": "ethereum-mn1",
+                                "publisher": "Microsoft.Azure.Extensions",
+                                "type": "CustomScript",
+                                "typeHandlerVersion": "2.0",
+                                "autoUpgradeMinorVersion": true,
+                                "settings": {
+                                    "fileUris": [
+                                      "https://raw.githubusercontent.com/telmosampaio/azure-blockchain/master/ethereum/azbb/scripts/configure.sh"
+                                    ]
+                                  },
+                                  "protectedSettings": {
+                                    "commandToExecute": "/bin/bash configure.sh \"orderer\" \"azureuser\" \"https://raw.githubusercontent.com/telmosampaio/azure-blockchain/master/ethereum/azbb/\" \"1\" \"ca-vm\" \"1\" \"orderer-vm\" \"1\" \"peer-vm\" \"3\" \"caUser\" \"caP@$$w0rd\" \"uniquednsname\""
+                                  }
+                            }
+                        ]  
+                    }
+                }                          
+            ]
+        }
+    }
+}

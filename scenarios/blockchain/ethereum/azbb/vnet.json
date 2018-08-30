@@ -1,0 +1,43 @@
+{
+    "$schema": "https://raw.githubusercontent.com/mspnp/template-building-blocks/master/schemas/buildingBlocks.json",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "buildingBlocks": {
+        "value": [
+          {
+            "type": "VirtualNetwork",
+            "settings": [
+              {
+                "name": "msft-ethereum-vnet",
+                "addressPrefixes": [
+                  "10.0.0.0/16"
+                ],
+                "subnets": [
+                  {
+                    "name": "mgmt",
+                    "addressPrefix": "10.0.128.0/24"
+                  },
+                  {
+                    "name": "tx",
+                    "addressPrefix": "10.0.0.0/24"
+                  },
+                  {
+                    "name": "member1",
+                    "addressPrefix": "10.0.1.0/24"
+                  },
+                  {
+                    "name": "member2",
+                    "addressPrefix": "10.0.2.0/24"
+                  },
+                  {
+                    "name": "member3",
+                    "addressPrefix": "10.0.3.0/24"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }

@@ -1,0 +1,128 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "caVMNamePrefix": {
+        "type": "string"
+      },
+      "numMemberships": {
+        "type": "int"
+      },
+      "ordererVMNamePrefix": {
+        "type": "string"
+      },
+      "numOrderers": {
+        "type": "int"
+      },
+      "peerVMNamePrefix": {
+        "type": "string"
+      },
+      "numPeers": {
+        "type": "int"
+      },
+      "adminUsername": {
+        "type": "string"
+      },
+      "adminSitePort": {
+        "type": "int"
+      },
+      "artifactsLocationURL": {
+        "type": "string"
+      },
+      "CAUsername": {
+        "type": "string"
+      },
+      "CAPassword": {
+        "type": "securestring"
+      },
+      "namingInfix": {
+        "type": "string"
+      },
+      "location": {
+        "type": "string"
+      }
+    },
+    "variables": {
+      "apiVersionVirtualMachinesExtensions": "2016-03-30"
+    },
+    "resources": [
+      {
+        "apiVersion": "[variables('apiVersionVirtualMachinesExtensions')]",
+        "type": "Microsoft.Compute/virtualMachines/extensions",
+        "name": "[concat(parameters('caVMNamePrefix'), copyIndex(), '/newuserscript')]",
+        "copy": {
+          "name": "caConfigLoop",
+          "count": "[parameters('numMemberships')]"
+        },
+        "location": "[parameters('location')]",
+        "properties": {
+          "publisher": "Microsoft.Azure.Extensions",
+          "type": "CustomScript",
+          "typeHandlerVersion": "2.0",
+          "autoUpgradeMinorVersion": true,
+          "settings": {
+            "fileUris": [
+              "[concat(parameters('artifactsLocationURL'), '/scripts/configure.sh')]"
+            ]
+          },
+          "protectedSettings": {
+            "commandToExecute": "[concat('/bin/bash configure.sh \"ca\" \"', parameters('adminUsername'), '\" \"', parameters('artifactsLocationURL'), '\" \"', copyIndex(), '\" \"', parameters('caVMNamePrefix'), '\" \"', parameters('numMemberships'), '\" \"', parameters('ordererVMNamePrefix'), '\" \"', parameters('numOrderers'), '\" \"', parameters('peerVMNamePrefix'), '\" \"', parameters('numPeers'), '\" \"', parameters('CAUsername'), '\" \"', parameters('CAPassword'), '\" \"', parameters('namingInfix'), '\"')]"
+          }
+        }
+      },
+      {
+        "apiVersion": "[variables('apiVersionVirtualMachinesExtensions')]",
+        "type": "Microsoft.Compute/virtualMachines/extensions",
+        "dependsOn": [
+          "[concat('Microsoft.Compute/virtualMachines/', parameters('caVMNamePrefix'), '0', '/extensions/newuserscript')]"
+        ],
+        "name": "[concat(parameters('ordererVMNamePrefix'), copyIndex(), '/newuserscript')]",
+        "copy": {
+          "name": "orderersConfigLoop",
+          "count": "[parameters('numOrderers')]"
+        },
+        "location": "[parameters('location')]",
+        "properties": {
+          "publisher": "Microsoft.Azure.Extensions",
+          "type": "CustomScript",
+          "typeHandlerVersion": "2.0",
+          "autoUpgradeMinorVersion": true,
+          "settings": {
+            "fileUris": [
+              "[concat(parameters('artifactsLocationURL'), '/scripts/configure.sh')]"
+            ]
+          },
+          "protectedSettings": {
+            "commandToExecute": "[concat('/bin/bash configure.sh \"orderer\" \"', parameters('adminUsername'), '\" \"', parameters('artifactsLocationURL'), '\" \"', copyIndex(), '\" \"', parameters('caVMNamePrefix'), '\" \"', parameters('numMemberships'), '\" \"', parameters('ordererVMNamePrefix'), '\" \"', parameters('numOrderers'), '\" \"', parameters('peerVMNamePrefix'), '\" \"', parameters('numPeers'), '\" \"', parameters('CAUsername'), '\" \"', parameters('CAPassword'), '\" \"', parameters('namingInfix'), '\"')]"
+          }
+        }
+      },
+      {
+        "apiVersion": "[variables('apiVersionVirtualMachinesExtensions')]",
+        "type": "Microsoft.Compute/virtualMachines/extensions",
+        "dependsOn": [
+          "[concat('Microsoft.Compute/virtualMachines/', parameters('caVMNamePrefix'), '0', '/extensions/newuserscript')]"
+        ],
+        "name": "[concat(parameters('peerVMNamePrefix'), copyIndex(), '/newuserscript')]",
+        "copy": {
+          "name": "peersConfigLoop",
+          "count": "[parameters('numPeers')]"
+        },
+        "location": "[parameters('location')]",
+        "properties": {
+          "publisher": "Microsoft.Azure.Extensions",
+          "type": "CustomScript",
+          "typeHandlerVersion": "2.0",
+          "autoUpgradeMinorVersion": true,
+          "settings": {
+            "fileUris": [
+              "[concat(parameters('artifactsLocationURL'), '/scripts/configure.sh')]"
+            ]
+          },
+          "protectedSettings": {
+            "commandToExecute": "[concat('/bin/bash configure.sh \"peer\" \"', parameters('adminUsername'), '\" \"', parameters('artifactsLocationURL'), '\" \"', copyIndex(), '\" \"', parameters('caVMNamePrefix'), '\" \"', parameters('numMemberships'), '\" \"', parameters('ordererVMNamePrefix'), '\" \"', parameters('numOrderers'), '\" \"', parameters('peerVMNamePrefix'), '\" \"', parameters('numPeers'), '\" \"', parameters('CAUsername'), '\" \"', parameters('CAPassword'), '\" \"', parameters('namingInfix'), '\"')]"
+          }
+        }
+      }
+    ]
+  }

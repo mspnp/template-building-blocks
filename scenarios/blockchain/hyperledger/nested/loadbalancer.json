@@ -1,0 +1,128 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "loadBalancerName": {
+      "type": "string"
+    },
+    "dnsHostName": {
+      "type": "string"
+    },
+    "loadBalancerBackendAddressPoolName": {
+      "type": "string"
+    },
+    "loadBalancerInboundNatRuleNamePrefix": {
+      "type": "string"
+    },
+    "frontendPort1": {
+      "type": "int"
+    },
+    "backendPort1": {
+      "type": "int"
+    },
+    "numInboundNATRules": {
+      "type": "int"
+    },
+    "inboundNATRuleSSHStartingPort": {
+      "type": "int"
+    },
+    "inboundNATRuleSSHBackendPort": {
+      "type": "int"
+    },
+    "subnetId": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "apiVersionPublicIPAddresses": "2016-09-01",
+    "apiVersionLoadBalancers": "2016-09-01",
+    "apiVersionLoadBalanceInboundNATRules": "2016-09-01",
+    "lbID": "[resourceId('Microsoft.Network/loadBalancers', parameters('loadBalancerName'))]",
+    "lbFrontEndIpConfigName": "LoadBalancerFrontEnd",
+    "lbFrontEndIPConfigID": "[concat(variables('lbID'),'/frontendIPConfigurations/',variables('lbFrontEndIpConfigName'))]",
+    "lbBackendAddressPoolID": "[concat(variables('lbID'), '/backendAddressPools/', parameters('loadBalancerBackendAddressPoolName'))]",
+    "loadBalancerInboundNatRuleIDprefix": "[concat(variables('lbID'),'/inboundNatRules/',parameters('loadBalancerInboundNatRuleNamePrefix'))]"
+  },
+  "resources": [
+    {
+      "apiVersion": "[variables('apiVersionLoadBalancers')]",
+      "name": "[parameters('loadBalancerName')]",
+      "type": "Microsoft.Network/loadBalancers",
+      "location": "[parameters('location')]",
+      "properties": {
+        "frontendIPConfigurations": [
+          {
+            "name": "[variables('lbFrontEndIpConfigName')]",
+            "properties": {
+              "subnet":{
+                "id": "[parameters('subnetid')]"
+              }
+            }
+          }
+        ],
+        "backendAddressPools": [
+          {
+            "name": "[parameters('loadBalancerBackendAddressPoolName')]"
+          }
+        ],
+        "loadBalancingRules": [
+          {
+            "name": "LB-Rule1",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('lbFrontEndIPConfigID')]"
+              },
+              "backendAddressPool": {
+                "id": "[variables('lbBackendAddressPoolID')]"
+              },
+              "protocol": "Tcp",
+              "frontendPort": "[parameters('FrontendPort1')]",
+              "backendPort": "[parameters('BackendPort1')]",
+              "enableFloatingIP": false,
+              "idleTimeoutInMinutes": 5,
+              "probe": {
+                "id": "[concat(variables('lbID'),'/probes/lbProbe1')]"
+              }
+            }
+          }
+        ],
+        "probes": [
+          {
+            "name": "lbProbe1",
+            "properties": {
+              "protocol": "Tcp",
+              "port": "[parameters('BackendPort1')]",
+              "intervalInSeconds": 5,
+              "numberOfProbes": 2
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "[variables('apiVersionLoadBalanceInboundNATRules')]",
+      "type": "Microsoft.Network/loadBalancers/inboundNatRules",
+      "name": "[concat(parameters('loadBalancerName'), '/', parameters('loadBalancerInboundNatRuleNamePrefix'), 'ssh', copyIndex())]",
+      "location": "[parameters('location')]",
+      "copy": {
+        "name": "lbNatLoop1",
+        "count": "[parameters('numInboundNATRules')]"
+      },
+      "dependsOn": [
+        "[concat('Microsoft.Network/loadBalancers/', parameters('loadBalancerName'))]"
+      ],
+      "properties": {
+        "frontendIPConfiguration": {
+          "id": "[variables('lbFrontEndIPConfigID')]"
+        },
+        "protocol": "tcp",
+        "frontendPort": "[copyIndex(parameters('inboundNATRuleSSHStartingPort'))]",
+        "backendPort": "[parameters('inboundNATRuleSSHBackendPort')]",
+        "enableFloatingIP": false
+      }
+    }
+  ]
+}

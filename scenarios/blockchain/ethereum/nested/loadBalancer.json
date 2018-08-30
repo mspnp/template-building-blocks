@@ -1,0 +1,122 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "loadBalancerName": {
+        "type": "string"
+      },
+      "subnetId": {
+        "type": "string"
+      },
+      "loadBalancerBackendAddressPoolName": {
+        "type": "string"
+      },
+      "frontendPort1": {
+        "type": "int"
+      },
+      "backendPort1": {
+        "type": "int"
+      },
+      "frontendPort2": {
+        "type": "int"
+      },
+      "backendPort2": {
+        "type": "int"
+      },
+      "location": {
+        "type": "string"
+      }
+    },
+    "variables": {
+      "apiVersionLoadBalancers": "2016-09-01",
+      "lbID": "[resourceId('Microsoft.Network/loadBalancers', parameters('loadBalancerName'))]",
+      "lbFrontEndIpConfigName": "LoadBalancerFrontEnd",
+      "lbFrontEndIPConfigID": "[concat(variables('lbID'),'/frontendIPConfigurations/',variables('lbFrontEndIpConfigName'))]",
+      "lbBackendAddressPoolID": "[concat(variables('lbID'), '/backendAddressPools/', parameters('loadBalancerBackendAddressPoolName'))]"
+    },
+    "resources": [
+      {
+        "apiVersion": "[variables('apiVersionLoadBalancers')]",
+        "name": "[parameters('loadBalancerName')]",
+        "type": "Microsoft.Network/loadBalancers",
+        "location": "[parameters('location')]",
+        "properties": {
+          "frontendIPConfigurations": [
+            {
+              "name": "[variables('lbFrontEndIpConfigName')]",
+              "properties": {
+                "subnet":{
+                  "id": "[parameters('subnetId')]"
+                }
+              }
+            }
+          ],
+          "backendAddressPools": [
+            {
+              "name": "[parameters('loadBalancerBackendAddressPoolName')]"
+            }
+          ],
+          "loadBalancingRules": [
+            {
+              "name": "LB-Rule1",
+              "properties": {
+                "frontendIPConfiguration": {
+                  "id": "[variables('lbFrontEndIPConfigID')]"
+                },
+                "backendAddressPool": {
+                  "id": "[variables('lbBackendAddressPoolID')]"
+                },
+                "protocol": "Tcp",
+                "frontendPort": "[parameters('FrontendPort1')]",
+                "backendPort": "[parameters('BackendPort1')]",
+                "enableFloatingIP": false,
+                "idleTimeoutInMinutes": 5,
+                "probe": {
+                  "id": "[concat(variables('lbID'),'/probes/lbProbe1')]"
+                }
+              }
+            },
+            {
+              "name": "LB-Rule2",
+              "properties": {
+                "frontendIPConfiguration": {
+                  "id": "[variables('lbFrontEndIPConfigID')]"
+                },
+                "backendAddressPool": {
+                  "id": "[variables('lbBackendAddressPoolID')]"
+                },
+                "protocol": "Tcp",
+                "frontendPort": "[parameters('FrontendPort2')]",
+                "backendPort": "[parameters('BackendPort2')]",
+                "enableFloatingIP": false,
+                "idleTimeoutInMinutes": 5,
+                "probe": {
+                  "id": "[concat(variables('lbID'),'/probes/lbProbe2')]"
+                }
+              }
+            }
+          ],
+          "probes": [
+            {
+              "name": "lbProbe1",
+              "properties": {
+                "protocol": "Tcp",
+                "port": "[parameters('BackendPort1')]",
+                "intervalInSeconds": 5,
+                "numberOfProbes": 2
+              }
+            },
+            {
+              "name": "lbProbe2",
+              "properties": {
+                "protocol": "Tcp",
+                "port": "[parameters('BackendPort2')]",
+                "intervalInSeconds": 5,
+                "numberOfProbes": 2
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
