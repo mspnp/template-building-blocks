@@ -11,7 +11,8 @@ let spawnAz = ({args, spawnOptions, azOptions}) => {
 
     spawnOptions = spawnOptions || {
         stdio: 'pipe',
-        shell: true
+        shell: true,
+        maxBuffer : 1024*1024*10
     };
 
     azOptions = azOptions || {
