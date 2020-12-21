@@ -5,7 +5,7 @@
 
 ![Build status](https://travis-ci.org/mspnp/template-building-blocks.svg?branch=master) [![npm version](https://img.shields.io/npm/v/@mspnp/azure-building-blocks.svg?style=flat)](https://www.npmjs.com/package/@mspnp/azure-building-blocks)
 
-> __Important__: The Azure Building Blocks project will not be undergoing further development.  For advanced deployment template capabilities refer to [Bicep](http://aka.ms/bicep), [Azure Resource Manager template specs](http://aka.ms/templatespecs) and the [Azure Resource Manager template documentation](https://aka.ms/arm-template-docs). New development should not leverage Azure Building Blocks.
+> __Important__: The Azure Building Blocks project will not be undergoing further development.  For advanced deployment template capabilities refer to [Bicep](https://aka.ms/bicep), [Azure Resource Manager template specs](https://aka.ms/templatespecs) and the [Azure Resource Manager template documentation](https://aka.ms/arm-template-docs). New development should not leverage Azure Building Blocks.
 
 > __Note__: Version 2.1.1 of Azure Building Blocks introduced breaking changes to versions earlier than 2.0.4. Versions earlier than 2.0.4 will no longer function. Please upgrade to version 2.0.4 or greater to continue using Azure Building Blocks. 
 

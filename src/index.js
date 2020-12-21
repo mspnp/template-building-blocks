@@ -645,9 +645,9 @@ try {
         '',
         '  Important: The Azure Building Blocks project will not be undergoing',
         '  further development.  For advanced deployment template capabilities',
-        '  refer to Bicep(http://aka.ms/bicep), Azure Resource Manager template',
-        '  specs(http://aka.ms/templatespecs) and the Azure Resource Manager',
-        '  template documentation(https://aka.ms/arm-template-docs). New',
+        '  refer to Bicep (https://aka.ms/bicep), Azure Resource Manager template',
+        '  specs (https://aka.ms/templatespecs) and the Azure Resource Manager',
+        '  template documentation (https://aka.ms/arm-template-docs). New',
         '  development should not leverage Azure Building Blocks.'
     ];
 
