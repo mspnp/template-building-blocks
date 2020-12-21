@@ -11,7 +11,7 @@ const az = require('./azCLI');
 const semver = require('semver');
 
 
-const AZBB_VERSION = '2.2.3';
+const AZBB_VERSION = '2.2.4';
 
 let getDefaultOptions = () => {
     let defaultOptions = {
@@ -641,7 +641,14 @@ try {
         '  | (_| |/ /| |_) | |_) |',
         '   \\__,_/___|_.__/|_.__/ ',
         '',
-        '  A tool for deploying Azure infrastructure based on proven practices.'
+        '  A tool for deploying Azure infrastructure based on proven practices.',
+        '',
+        '  Important: The Azure Building Blocks project will not be undergoing',
+        '  further development.  For advanced deployment template capabilities',
+        '  refer to Bicep (https://aka.ms/bicep), Azure Resource Manager template',
+        '  specs (https://aka.ms/templatespecs) and the Azure Resource Manager',
+        '  template documentation (https://aka.ms/arm-template-docs). New',
+        '  development should not leverage Azure Building Blocks.'
     ];
 
     commander

@@ -1,6 +1,6 @@
 {
   "name": "@mspnp/azure-building-blocks",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "description": "A tool for deploying Azure infrastructure based on proven practices. Azure building blocks take advantage of the Azure CLI and Azure Resource Manager templates to provision collections of resources as logical units with production-ready settings.",
   "keywords": [
     "azure",
